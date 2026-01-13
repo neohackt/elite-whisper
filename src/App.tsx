@@ -150,7 +150,7 @@ function App() {
       <div className="w-64 bg-white flex flex-col justify-between border-r border-gray-200 shadow-sm">
         <div className="p-6">
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-            AI<span className="text-indigo-600">Voice</span>
+            Elite<span className="text-indigo-600">Whisper</span>
           </h1>
         </div>
 
