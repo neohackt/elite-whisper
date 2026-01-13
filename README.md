@@ -6,7 +6,9 @@
 
 ![Status](https://img.shields.io/badge/Status-Coming%20Soon-blueviolet?style=for-the-badge) 
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-success?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge)
+![Windows](https://img.shields.io/badge/Windows-Ready-blue?style=for-the-badge)
+![macOS](https://img.shields.io/badge/macOS-In%20Dev-gray?style=for-the-badge)
+![Mobile](https://img.shields.io/badge/iOS%20%26%20Android-Planned-orange?style=for-the-badge)
 
 ---
 
