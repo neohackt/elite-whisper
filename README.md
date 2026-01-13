@@ -64,6 +64,19 @@ Built for speed and beauty.
 
 ---
 
+## 💎 Pricing Model
+
+**Say goodbye to monthly subscriptions.** 
+Elite Whisper will be available as a **One-Time Purchase** for Lifetime Access. 
+
+- ✅ **Pay Once, Use Forever**
+- ✅ **All Future Updates Included**
+- ✅ **No Hidden Fees**
+
+*Official launch price to be announced.*
+
+---
+
 ## 📬 Get Notified
 
 We are polishing the final details (UI animations, model selection, and performance tuning). 
