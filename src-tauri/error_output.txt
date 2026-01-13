@@ -1,0 +1,81 @@
+    Checking elite_whisper v0.1.0 (D:\Personal\voiceapp\src-tauri)
+error[E0432]: unresolved import `enigo::KeyboardControllable`
+   --> src\main.rs:204:20
+    |
+204 | use enigo::{Enigo, KeyboardControllable};
+    |                    ^^^^^^^^^^^^^^^^^^^^ no `KeyboardControllable` in the root
+
+warning: unused import: `Path`
+ --> src\main.rs:6:17
+  |
+6 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::str::FromStr`
+ --> src\main.rs:8:5
+  |
+8 | use std::str::FromStr;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Code`, `GlobalShortcutExt`, and `Modifiers`
+   --> src\main.rs:205:36
+    |
+205 | use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState, Code, Modifiers};
+    |                                    ^^^^^^^^^^^^^^^^^                 ^^^^  ^^^^^^^^^
+
+error[E0061]: this function takes 1 argument but 0 arguments were supplied
+   --> src\main.rs:209:21
+    |
+209 |     let mut enigo = Enigo::new();
+    |                     ^^^^^^^^^^-- argument #1 of type `&Settings` is missing
+    |
+note: associated function defined here
+   --> C:\Users\Tapan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\enigo-0.2.1\src\win\win_impl.rs:409:12
+    |
+409 |     pub fn new(settings: &Settings) -> Result<Self, NewConError> {
+    |            ^^^
+help: provide the argument
+    |
+209 |     let mut enigo = Enigo::new(/* &Settings */);
+    |                                +++++++++++++++
+
+error[E0599]: no method named `key_sequence` found for enum `Result<T, E>` in the current scope
+   --> src\main.rs:210:11
+    |
+210 |     enigo.key_sequence(&text);
+    |           ^^^^^^^^^^^^ method not found in `Result<Enigo, NewConError>`
+
+error[E0599]: no method named `with_handler` found for enum `Result<T, E>` in the current scope
+   --> src\main.rs:221:18
+    |
+218 |   ...   tauri_plugin_global_shortcut::Builder::new()
+    |         --------------------------------------------
+    |         |
+    |  _______method `with_handler` is available on `tauri_plugin_global_shortcut::Builder<_>`
+    | |
+219 | | ...       .with_shortcut("F2")
+220 | | ...
+221 | | ...       .with_handler(|app: &tauri::AppHandle, shortcut: &tauri_plugin_global_shortcut::Shortcut, event: &tauri_plugin_global_shortcut:...
+    | |           -^^^^^^^^^^^^ method not found in `Result<tauri_plugin_global_shortcut::Builder<_>, tauri_plugin_global_shortcut::Error>`
+    | |___________|
+    |
+    |
+note: the method `with_handler` exists on the type `tauri_plugin_global_shortcut::Builder<_>`
+   --> C:\Users\Tapan\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-plugin-global-shortcut-2.3.1\src\lib.rs:380:5
+    |
+380 | /     pub fn with_handler<F: Fn(&AppHandle<R>, &Shortcut, ShortcutEvent) + Send + Sync + 'static>(
+381 | |         mut self,
+382 | |         handler: F,
+383 | |     ) -> Self {
+    | |_____________^
+help: consider using `Result::expect` to unwrap the `tauri_plugin_global_shortcut::Builder<_>` value, panicking if the value is a `Result::Err`
+    |
+219 |                 .with_shortcut("F2").expect("REASON")
+    |                                     +++++++++++++++++
+
+Some errors have detailed explanations: E0061, E0432, E0599.
+For more information about an error, try `rustc --explain E0061`.
+warning: `elite_whisper` (bin "elite_whisper") generated 3 warnings
+error: could not compile `elite_whisper` (bin "elite_whisper") due to 4 previous errors; 3 warnings emitted

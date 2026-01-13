@@ -15,7 +15,22 @@
         "title": "Elite Whisper",
         "width": 800,
         "height": 600,
-        "resizable": true
+        "resizable": true,
+        "transparent": false,
+        "label": "main"
+      },
+      {
+        "title": "Widget",
+        "width": 300,
+        "height": 120,
+        "resizable": false,
+        "transparent": true,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "visible": false,
+        "skipTaskbar": true,
+        "label": "widget",
+        "url": "/widget"
       }
     ]
   },
