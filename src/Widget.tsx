@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { writeFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { writeFile, mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { appLocalDataDir, join } from '@tauri-apps/api/path';
+import { STORAGE_KEY_RECORDING_PATH } from './components/SettingsView';
 import { writeWavHeader, floatTo16BitPCM } from './audioHelpers';
 
 export default function Widget() {
@@ -222,9 +224,28 @@ export default function Widget() {
         const uint8Array = new Uint8Array(wavData.buffer);
         const fileName = `recording_widget_${Date.now()}.wav`;
 
+        let fullPath = '';
+        const customPath = localStorage.getItem(STORAGE_KEY_RECORDING_PATH);
+
         try {
-            // Save file
-            await writeFile(fileName, uint8Array, { baseDir: BaseDirectory.Download });
+            // Save file logic (unified with App.tsx)
+            if (customPath) {
+                try {
+                    await mkdir(customPath, { recursive: true });
+                } catch (e) { console.log("Dir check/create error (might exist):", e); }
+
+                fullPath = await join(customPath, fileName);
+                await writeFile(fullPath, uint8Array);
+            } else {
+                try {
+                    await mkdir('recorded_audio', { baseDir: BaseDirectory.AppLocalData, recursive: true });
+                } catch (e) { }
+
+                await writeFile(`recorded_audio/${fileName}`, uint8Array, { baseDir: BaseDirectory.AppLocalData });
+
+                const appDataDir = await appLocalDataDir();
+                fullPath = await join(appDataDir, 'recorded_audio', fileName);
+            }
 
             // Transcribe
             const result = await invoke<string>('cmd_transcribe', {
@@ -234,8 +255,8 @@ export default function Widget() {
             // Global Auto-Type
             await invoke('cmd_type_text', { text: result });
 
-            // Save to History (Using main app's history command)
-            await invoke('cmd_save_history', { transcript: result, filename: fileName });
+            // Save to History (Using main app's history command with FULL PATH)
+            await invoke('cmd_save_history', { transcript: result, filename: fullPath, title: "Widget Recording" });
 
             console.log("Transcription done:", result);
 

@@ -195,7 +195,7 @@ fn cmd_save_history(
         title,
     };
 
-    history.push(item.clone());
+    history.insert(0, item.clone());
 
     // Create dir if not exists
     if let Some(parent) = path.parent() {
@@ -217,7 +217,7 @@ fn cmd_get_history(app: tauri::AppHandle) -> Result<Vec<HistoryItem>, String> {
     let file = File::open(&path).map_err(|e| e.to_string())?;
     let history: Vec<HistoryItem> = serde_json::from_reader(file).unwrap_or_default();
     // Return reverse chronological order
-    Ok(history.into_iter().rev().collect())
+    Ok(history)
 }
 
 #[tauri::command]
@@ -255,8 +255,30 @@ fn cmd_disable_shadow(window: tauri::Window) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+async fn cmd_show_in_folder(path: String) -> Result<(), String> {
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .args(["/select,", &path]) // The comma after select is important
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        // Fallback for other OSs - just open the parent folder
+        // if let Some(parent) = std::path::Path::new(&path).parent() {
+        //      // Requires 'open' crate
+        //      // open::that(parent).map_err(|e| e.to_string())?;
+        // }
+    }
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
@@ -287,7 +309,8 @@ fn main() {
             cmd_get_history,
             cmd_delete_history,
             cmd_type_text,
-            cmd_disable_shadow
+            cmd_disable_shadow,
+            cmd_show_in_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

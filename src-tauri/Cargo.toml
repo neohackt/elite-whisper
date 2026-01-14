@@ -22,4 +22,6 @@ hound = "3.5"
 uuid = { version = "1.10.0", features = ["v4", "fast-rng", "macro-diagnostics"] }
 enigo = "0.2"
 tauri-plugin-global-shortcut = "2.0"
+tauri-plugin-dialog = "2.5.0"
+tauri-plugin-shell = "2.3.4"
 
