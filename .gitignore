@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+sherpa-static.tar.bz2
+sherpa-onnx-v1.10.30-win-x64-static/
+bin/

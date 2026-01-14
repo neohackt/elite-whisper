@@ -1,0 +1,144 @@
+D:\a\sherpa-onnx\sherpa-onnx\sherpa-onnx\csrc\parse-options.cc:PrintUsage:416 
+
+Speech recognition using non-streaming models with sherpa-onnx.
+
+Usage:
+
+(1) Transducer from icefall
+
+See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/offline-transducer/index.html
+
+  ./bin/sherpa-onnx-offline \
+    --tokens=/path/to/tokens.txt \
+    --encoder=/path/to/encoder.onnx \
+    --decoder=/path/to/decoder.onnx \
+    --joiner=/path/to/joiner.onnx \
+    --num-threads=1 \
+    --decoding-method=greedy_search \
+    /path/to/foo.wav [bar.wav foobar.wav ...]
+
+
+(2) Paraformer from FunASR
+
+See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/offline-paraformer/index.html
+
+  ./bin/sherpa-onnx-offline \
+    --tokens=/path/to/tokens.txt \
+    --paraformer=/path/to/model.onnx \
+    --num-threads=1 \
+    --decoding-method=greedy_search \
+    /path/to/foo.wav [bar.wav foobar.wav ...]
+
+(3) Moonshine models
+
+See https://k2-fsa.github.io/sherpa/onnx/moonshine/index.html
+
+  ./bin/sherpa-onnx-offline \
+    --moonshine-preprocessor=/Users/fangjun/open-source/sherpa-onnx/scripts/moonshine/preprocess.onnx \
+    --moonshine-encoder=/Users/fangjun/open-source/sherpa-onnx/scripts/moonshine/encode.int8.onnx \
+    --moonshine-uncached-decoder=/Users/fangjun/open-source/sherpa-onnx/scripts/moonshine/uncached_decode.int8.onnx \
+    --moonshine-cached-decoder=/Users/fangjun/open-source/sherpa-onnx/scripts/moonshine/cached_decode.int8.onnx \
+    --tokens=/Users/fangjun/open-source/sherpa-onnx/scripts/moonshine/tokens.txt \
+    --num-threads=1 \
+    /path/to/foo.wav [bar.wav foobar.wav ...]
+
+(4) Whisper models
+
+See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/whisper/tiny.en.html
+
+  ./bin/sherpa-onnx-offline \
+    --whisper-encoder=./sherpa-onnx-whisper-base.en/base.en-encoder.int8.onnx \
+    --whisper-decoder=./sherpa-onnx-whisper-base.en/base.en-decoder.int8.onnx \
+    --tokens=./sherpa-onnx-whisper-base.en/base.en-tokens.txt \
+    --num-threads=1 \
+    /path/to/foo.wav [bar.wav foobar.wav ...]
+
+(5) NeMo CTC models
+
+See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/offline-ctc/index.html
+
+  ./bin/sherpa-onnx-offline \
+    --tokens=./sherpa-onnx-nemo-ctc-en-conformer-medium/tokens.txt \
+    --nemo-ctc-model=./sherpa-onnx-nemo-ctc-en-conformer-medium/model.onnx \
+    --num-threads=2 \
+    --decoding-method=greedy_search \
+    --debug=false \
+    ./sherpa-onnx-nemo-ctc-en-conformer-medium/test_wavs/0.wav \
+    ./sherpa-onnx-nemo-ctc-en-conformer-medium/test_wavs/1.wav \
+    ./sherpa-onnx-nemo-ctc-en-conformer-medium/test_wavs/8k.wav
+
+(6) TDNN CTC model for the yesno recipe from icefall
+
+See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/offline-ctc/yesno/index.html
+      //
+  ./build/bin/sherpa-onnx-offline \
+    --sample-rate=8000 \
+    --feat-dim=23 \
+    --tokens=./sherpa-onnx-tdnn-yesno/tokens.txt \
+    --tdnn-model=./sherpa-onnx-tdnn-yesno/model-epoch-14-avg-2.onnx \
+    ./sherpa-onnx-tdnn-yesno/test_wavs/0_0_0_1_0_0_0_1.wav \
+    ./sherpa-onnx-tdnn-yesno/test_wavs/0_0_1_0_0_0_1_0.wav
+
+Note: It supports decoding multiple files in batches
+
+foo.wav should be of single channel, 16-bit PCM encoded wave file; its
+sampling rate can be arbitrary and does not need to be 16kHz.
+
+Please refer to
+https://k2-fsa.github.io/sherpa/onnx/pretrained_models/index.html
+for a list of pre-trained models to download.
+
+Options:
+  --sense-voice-language      : Valid values: auto, zh, en, ja, ko, yue. If left empty, auto is used (string, default = "auto")
+  --decoder                   : Path to decoder.onnx (string, default = "")
+  --high-freq                 : High cutoff frequency for mel bins (if <= 0, offset from Nyquist) (float, default = -400)
+  --moonshine-encoder         : Path to onnx encoder of moonshine, e.g., encode.onnx (string, default = "")
+  --feat-dim                  : Feature dimension. Must match the one expected by the model. Not used by whisper and CED models (int, default = 80)
+  --provider                  : Specify a provider to use: cpu, cuda, coreml (string, default = "cpu")
+  --sample-rate               : Sampling rate of the input waveform. Note: You can have a different sample rate for the input waveform. We will do resampling inside the feature extractor (int, default = 16000)
+  --low-freq                  : Low cutoff frequency for mel bins (float, default = 20)
+  --ctc.graph                 : Path to H.fst, HL.fst, or HLG.fst (string, default = "")
+  --dither                    : Dithering constant (0.0 means no dither). By default the audio samples are in range [-1,+1], so 0.00003 is a good value, equivalent to the default 1.0 from kaldi (float, default = 0)
+  --lm-num-threads            : Number of threads to run the neural network of LM model (int, default = 1)
+  --encoder                   : Path to encoder.onnx (string, default = "")
+  --lm                        : Path to LM model. (string, default = "")
+  --paraformer                : Path to model.onnx of paraformer. (string, default = "")
+  --joiner                    : Path to joiner.onnx (string, default = "")
+  --nemo-ctc-model            : Path to model.onnx of Nemo EncDecCtcModel. (string, default = "")
+  --whisper-encoder           : Path to onnx encoder of whisper, e.g., tiny-encoder.onnx, medium.en-encoder.onnx. (string, default = "")
+  --ctc.max-active            : Decoder max active states.  Larger->slower; more accurate (int, default = 3000)
+  --whisper-decoder           : Path to onnx decoder of whisper, e.g., tiny-decoder.onnx, medium.en-decoder.onnx. (string, default = "")
+  --whisper-language          : The spoke language in the input audio file. Example values: en, de, fr, zh, jp. If it is not given for a multilingual model, we will infer the language from the input audio file. Please refer to https://github.com/openai/whisper/blob/main/whisper/tokenizer.py#L10 for valid values. Note that for non-multilingual models, it supports only 'en' (string, default = "")
+  --whisper-task              : Valid values: transcribe, translate. Note that for non-multilingual models, it supports only 'transcribe' (string, default = "transcribe")
+  --whisper-tail-paddings     : Suggested value: 50 for English models. 300 for multilingual models. Since we have removed the 30-second constraint, we need to add some tail padding frames so that whisper can detect the eot token. Leave it to -1 to use 1000. (int, default = -1)
+  --wenet-ctc-model           : Path to model.onnx from WeNet. Please see https://github.com/k2-fsa/sherpa-onnx/pull/425 for available models (string, default = "")
+  --tdnn-model                : Path to onnx model (string, default = "")
+  --zipformer-ctc-model       : Path to zipformer CTC model (string, default = "")
+  --hotwords-file             : The file containing hotwords, one words/phrases per line, For example: HELLO WORLDΣ╜áσÑ╜Σ╕ûτòî (string, default = "")
+  --sense-voice-model         : Path to model.onnx of SenseVoice. (string, default = "")
+  --sense-voice-use-itn       : True to enable inverse text normalization. False to disable it. (bool, default = false)
+  --moonshine-preprocessor    : Path to onnx preprocessor of moonshine, e.g., preprocess.onnx (string, default = "")
+  --moonshine-uncached-decoder : Path to onnx uncached_decoder of moonshine, e.g., uncached_decode.onnx (string, default = "")
+  --moonshine-cached-decoder  : Path to onnx cached_decoder of moonshine, e.g., cached_decode.onnx (string, default = "")
+  --telespeech-ctc            : Path to model.onnx for telespeech ctc (string, default = "")
+  --tokens                    : Path to tokens.txt (string, default = "")
+  --num-threads               : Number of threads to run the neural network (int, default = 2)
+  --debug                     : true to print model information while loading it. (bool, default = false)
+  --model-type                : Specify it to reduce model initialization time. Valid values are: transducer, paraformer, nemo_ctc, whisper, tdnn, zipformer2_ctc, telespeech_ctc.All other values lead to loading the model twice. (string, default = "")
+  --modeling-unit             : The modeling unit of the model, commonly used units are bpe, cjkchar, cjkchar+bpe, etc. Currently, it is needed only when hotwords are provided, we need it to encode the hotwords into token sequence. (string, default = "cjkchar")
+  --bpe-vocab                 : The vocabulary generated by google's sentencepiece program. It is a file has two columns, one is the token, the other is the log probability, you can get it from the directory where your bpe model is generated. Only used when hotwords provided and the modeling unit is bpe or cjkchar+bpe (string, default = "")
+  --lm-scale                  : LM scale. (float, default = 0.5)
+  --lm-provider               : Specify a provider to LM model use: cpu, cuda, coreml (string, default = "cpu")
+  --decoding-method           : decoding method,Valid values: greedy_search, modified_beam_search. modified_beam_search is applicable only for transducer models. (string, default = "greedy_search")
+  --max-active-paths          : Used only when decoding_method is modified_beam_search (int, default = 4)
+  --blank-penalty             : The penalty applied on blank symbol during decoding. Note: It is a positive value. Increasing value will lead to lower deletion at the costof higher insertions. Currently only applicable for transducer models. (float, default = 0)
+  --hotwords-score            : The bonus score for each token in context word/phrase. Used only when decoding_method is modified_beam_search (float, default = 1.5)
+  --rule-fsts                 : If not empty, it specifies fsts for inverse text normalization. If there are multiple fsts, they are separated by a comma. (string, default = "")
+  --rule-fars                 : If not empty, it specifies fst archives for inverse text normalization. If there are multiple archives, they are separated by a comma. (string, default = "")
+
+Standard options:
+  --config                    : Configuration file to read (this option may be repeated) (string, default = "")
+  --help                      : Print out usage message (bool, default = false)
+  --print-args                : Print the command line arguments (to stderr) (bool, default = true)
+
+

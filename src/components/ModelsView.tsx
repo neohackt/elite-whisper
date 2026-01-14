@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Download, Check, Cpu, Brain, Activity, Zap, Trash2 } from 'lucide-react';
 import { invoke } from '@tauri-apps/api/core';
-import { exists, writeFile, BaseDirectory, mkdir, remove } from '@tauri-apps/plugin-fs';
+import { listen } from '@tauri-apps/api/event';
+import { exists, BaseDirectory, mkdir, remove } from '@tauri-apps/plugin-fs';
 import { appLocalDataDir, join } from '@tauri-apps/api/path';
 
 interface ModelCardProps {
@@ -12,8 +13,10 @@ interface ModelCardProps {
     size: string;
     speed: number;
     accuracy: number;
-    url: string;
+    url?: string;
+    files?: any;
     filename: string;
+    type: 'whisper' | 'sherpa';
     isActive: boolean;
     isDownloaded: boolean;
     onDownload: () => void;
@@ -75,7 +78,7 @@ const ModelCard = ({ id, name, description, language, size, speed, accuracy, isA
 
                 {/* Action Button */}
                 <div className="w-40 flex-shrink-0 flex justify-end items-center gap-2">
-                    {/* Delete Icon - Only show if downloaded and not active */}
+                    {/* Delete Icon */}
                     {isDownloaded && !isActive && (
                         <button
                             onClick={(e) => {
@@ -88,14 +91,6 @@ const ModelCard = ({ id, name, description, language, size, speed, accuracy, isA
                             <Trash2 size={18} />
                         </button>
                     )}
-
-                    {/* 
-                        States:
-                        1. Active/In Use -> "In Use" (Green/Purple, Disabled)
-                        2. Downloading -> Progress % (Disabled)
-                        3. Downloaded -> "Activate" (Active color, Clickable to select)
-                        4. Not Downloaded -> "Download" (Outline/White, Clickable)
-                    */}
 
                     {isActive ? (
                         <button
@@ -137,6 +132,7 @@ const ModelCard = ({ id, name, description, language, size, speed, accuracy, isA
 const AVAILABLE_MODELS = [
     {
         id: 'whisper-base-en',
+        type: 'whisper' as const,
         name: 'Whisper Base',
         description: 'Optimized for English transcription. Good balance of speed and accuracy.',
         language: 'English',
@@ -148,6 +144,7 @@ const AVAILABLE_MODELS = [
     },
     {
         id: 'whisper-tiny-en',
+        type: 'whisper' as const,
         name: 'Whisper Tiny',
         description: 'Ultra-fast model for quick dictation. Lower accuracy but instant response.',
         language: 'English',
@@ -159,6 +156,7 @@ const AVAILABLE_MODELS = [
     },
     {
         id: 'whisper-small-en',
+        type: 'whisper' as const,
         name: 'Whisper Small',
         description: 'Higher accuracy model for professional work. Slightly slower processing.',
         language: 'English',
@@ -167,6 +165,56 @@ const AVAILABLE_MODELS = [
         accuracy: 92,
         url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin',
         filename: 'ggml-small.en.bin'
+    },
+    {
+        id: 'parakeet-0.6b-v2',
+        type: 'sherpa' as const,
+        name: 'Parakeet 0.6B v2',
+        description: 'High-accuracy streaming-ready RNN-T model by NVIDIA. Extremely fast inference.',
+        language: 'English',
+        size: '~660 MB',
+        speed: 95,
+        accuracy: 94,
+        filename: 'parakeet-0.6b-v2',
+        files: {
+            'tokens.txt': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8/resolve/main/tokens.txt',
+            'encoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8/resolve/main/encoder.int8.onnx',
+            'decoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8/resolve/main/decoder.int8.onnx',
+            'joiner.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8/resolve/main/joiner.int8.onnx',
+        }
+    },
+    {
+        id: 'parakeet-0.6b-v3',
+        type: 'sherpa' as const,
+        name: 'Parakeet 0.6B v3',
+        description: 'Improved version with better multilingual support and timestamp accuracy.',
+        language: 'English+',
+        size: '~660 MB',
+        speed: 92,
+        accuracy: 96,
+        filename: 'parakeet-0.6b-v3',
+        files: {
+            'tokens.txt': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/main/tokens.txt',
+            'encoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/main/encoder.int8.onnx',
+            'decoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/main/decoder.int8.onnx',
+            'joiner.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/main/joiner.int8.onnx',
+        }
+    },
+    {
+        id: 'distil-whisper-large-v3',
+        type: 'sherpa' as const,
+        name: 'Distil-Whisper Large v3',
+        description: 'Distilled Version of Whisper Large v3. Optimized for Sherpa-ONNX. Fast and accurate.',
+        language: 'English',
+        size: '~1.1 GB', // encoder 668MB + decoder 315MB + weights
+        speed: 90,
+        accuracy: 95,
+        filename: 'distil-whisper-large-v3',
+        files: {
+            'tokens.txt': 'https://huggingface.co/csukuangfj/sherpa-onnx-whisper-distil-large-v3/resolve/main/distil-large-v3-tokens.txt',
+            'encoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-whisper-distil-large-v3/resolve/main/distil-large-v3-encoder.int8.onnx',
+            'decoder.int8.onnx': 'https://huggingface.co/csukuangfj/sherpa-onnx-whisper-distil-large-v3/resolve/main/distil-large-v3-decoder.int8.onnx',
+        }
     }
 ];
 
@@ -179,7 +227,10 @@ export function ModelsView() {
 
     useEffect(() => {
         checkDownloadedModels();
-        // Here we could also fetch the currently active model from backend if we persist it there
+        invoke<string>('get_current_model').then(_name => {
+            // We can't easily map back to ID from name without more complex logic, 
+            // but activeModel state will track standard usage.
+        });
     }, []);
 
     const checkDownloadedModels = async () => {
@@ -190,11 +241,14 @@ export function ModelsView() {
         const found = new Set<string>();
         for (const model of AVAILABLE_MODELS) {
             try {
-                // Just checking if we can write there basically implies exist check on Windows for now effectively or 
-                // re-using the exists logic properly
-                const existsResult = await exists(`models/${model.filename}`, { baseDir: BaseDirectory.AppLocalData });
-                if (existsResult) found.add(model.id);
-            } catch (e) { console.error(e); }
+                if (model.type === 'whisper') {
+                    const existsResult = await exists(`models/${model.filename}`, { baseDir: BaseDirectory.AppLocalData });
+                    if (existsResult) found.add(model.id);
+                } else {
+                    const existsResult = await exists(`models/${model.filename}/tokens.txt`, { baseDir: BaseDirectory.AppLocalData });
+                    if (existsResult) found.add(model.id);
+                }
+            } catch (e) { }
         }
         setDownloadedModels(found);
     };
@@ -205,42 +259,59 @@ export function ModelsView() {
             setProgress(0);
             setError(null);
 
-            const response = await fetch(model.url);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            await mkdir('models', { baseDir: BaseDirectory.AppLocalData, recursive: true });
 
-            const contentLength = response.headers.get('content-length');
-            const total = contentLength ? parseInt(contentLength, 10) : 0;
-            let loaded = 0;
-
-            const reader = response.body?.getReader();
-            if (!reader) throw new Error("ReadableStream not supported");
-
-            const chunks: Uint8Array[] = [];
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                if (value) {
-                    chunks.push(value);
-                    loaded += value.length;
-                    if (total > 0) {
-                        setProgress(Math.round((loaded / total) * 100));
+            // Set up progress listener
+            const unlisten = await listen<any>('download-progress', (event) => {
+                // Check if this progress event matches our current download
+                // Simple check: if filename is part of what we are downloading
+                if (model.type === 'sherpa') {
+                    // For sherpa, we might get progress for subfiles. 
+                    // We roughly map individual file progress to total progress or just show current file progress.
+                    // For simplicity in this crash-fix, we'll rely on the backend emission.
+                    // However, handling multiple files means 'progress' from backend is 0-100 per file.
+                    // We can just show that, or try to aggregate.
+                    // The shared logic below will just show whatever comes in.
+                    if (event.payload.filename.includes(model.filename)) {
+                        setProgress(event.payload.progress);
                     }
+                } else {
+                    if (event.payload.filename === model.filename) {
+                        setProgress(event.payload.progress);
+                    }
+                }
+            });
+
+            if (model.type === 'whisper' && model.url) {
+                await invoke('cmd_download_file', {
+                    url: model.url,
+                    filename: model.filename
+                });
+            } else if (model.type === 'sherpa' && model.files) {
+                const folder = model.filename;
+                // Create folder first to be safe, though backend does it too
+                await mkdir(`models/${folder}`, { baseDir: BaseDirectory.AppLocalData, recursive: true });
+
+                const fileList = Object.entries(model.files);
+                // const totalFiles = fileList.length;
+                let completedFiles = 0;
+
+                for (const [fname, url] of fileList) {
+                    // Reset progress for next file (visual feedback)
+                    setProgress(0);
+
+                    await invoke('cmd_download_file', {
+                        url: url,
+                        filename: `${folder}/${fname}`
+                    });
+
+                    completedFiles++;
+                    // Optional: Update overall progress if we want a "Total" bar
+                    // setProgress(Math.round((completedFiles / totalFiles) * 100));
                 }
             }
 
-            // Combine chunks
-            const combined = new Uint8Array(loaded);
-            let offset = 0;
-            for (const chunk of chunks) {
-                combined.set(chunk, offset);
-                offset += chunk.length;
-            }
-
-            await mkdir('models', { baseDir: BaseDirectory.AppLocalData, recursive: true });
-            await writeFile(`models/${model.filename}`, combined, { baseDir: BaseDirectory.AppLocalData });
-
+            unlisten();
             setDownloadedModels(prev => new Set(prev).add(model.id));
         } catch (err) {
             console.error("Download failed:", err);
@@ -254,7 +325,7 @@ export function ModelsView() {
     const handleSelect = async (model: typeof AVAILABLE_MODELS[0]) => {
         try {
             const appData = await appLocalDataDir();
-            const modelPath = await join(appData, 'models', model.filename);
+            let modelPath = await join(appData, 'models', model.filename);
 
             await invoke('cmd_load_model', { modelPath });
             setActiveModel(model.filename);
@@ -266,7 +337,11 @@ export function ModelsView() {
 
     const handleDelete = async (model: typeof AVAILABLE_MODELS[0]) => {
         try {
-            await remove(`models/${model.filename}`, { baseDir: BaseDirectory.AppLocalData });
+            if (model.type === 'whisper') {
+                await remove(`models/${model.filename}`, { baseDir: BaseDirectory.AppLocalData });
+            } else {
+                await remove(`models/${model.filename}`, { baseDir: BaseDirectory.AppLocalData, recursive: true });
+            }
 
             setDownloadedModels(prev => {
                 const next = new Set(prev);
@@ -285,7 +360,7 @@ export function ModelsView() {
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">AI Models</h1>
-                        <p className="text-gray-500 mt-1">Manage and switch between local speech recognition models</p>
+                        <p className="text-gray-500 mt-1">Manage and switch between local speech recognition models (Whisper & Parakeet)</p>
                     </div>
                 </div>
             </div>
@@ -312,7 +387,6 @@ export function ModelsView() {
                         />
                     ))}
 
-                    {/* Placeholder for future cloud models */}
                     <div className="border border-dashed border-gray-300 rounded-2xl p-8 flex items-center justify-center text-center bg-gray-50/50">
                         <div className="flex flex-col items-center gap-2">
                             <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
@@ -320,7 +394,7 @@ export function ModelsView() {
                             </div>
                             <h3 className="font-bold text-gray-600">More Models Coming Soon</h3>
                             <p className="text-sm text-gray-400">
-                                We are optimizing Parakeet and S1 for local execution.
+                                We are actively optimizing more models for local execution.
                             </p>
                         </div>
                     </div>

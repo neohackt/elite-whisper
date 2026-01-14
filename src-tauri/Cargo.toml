@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
+default-run = "elite_whisper"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -25,5 +26,7 @@ tauri-plugin-global-shortcut = "2.0"
 tauri-plugin-dialog = "2.5.0"
 tauri-plugin-shell = "2.3.4"
 active-win-pos-rs = "0.9.1"
+futures-util = "0.3.31"
+reqwest = { version = "0.13.1", features = ["stream", "blocking"] }
 
 
