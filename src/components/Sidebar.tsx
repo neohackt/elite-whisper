@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Sparkles, Book, Settings, Volume2, History } from 'lucide-react';
+import { Home, Sparkles, Book, Settings, Volume2, History, Cpu } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
     { id: 'modes', label: 'Modes', icon: Sparkles, bgClass: 'bg-blue-500', iconClass: 'text-white' },
     { id: 'vocabulary', label: 'Vocabulary', icon: Book, bgClass: 'bg-blue-500', iconClass: 'text-white' },
     { id: 'settings', label: 'Settings', icon: Settings, bgClass: 'bg-gray-700', iconClass: 'text-white' },
+    { id: 'models', label: 'AI Models', icon: Cpu, bgClass: 'bg-purple-500', iconClass: 'text-white' },
     { id: 'sound', label: 'Sound', icon: Volume2, bgClass: 'bg-gray-700', iconClass: 'text-white' },
     { id: 'history', label: 'History', icon: History, bgClass: 'bg-indigo-500', iconClass: 'text-white' },
 ];

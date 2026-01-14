@@ -12,6 +12,7 @@ import { Dashboard } from './components/Dashboard';
 
 import { HistoryView } from './components/HistoryView';
 import { SettingsView } from './components/SettingsView';
+import { ModelsView } from './components/ModelsView';
 import { HistoryItem } from './components/HistoryInfoPanel';
 const STORAGE_KEY_RECORDING_PATH = 'elite_whisper_recording_path';
 
@@ -452,6 +453,9 @@ function App() {
 
       case 'settings':
         return <SettingsView />;
+
+      case 'models':
+        return <ModelsView />;
 
       case 'modes':
       case 'vocabulary':

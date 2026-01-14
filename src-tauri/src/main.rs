@@ -288,6 +288,24 @@ async fn cmd_show_in_folder(path: String) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+async fn cmd_load_model(model_path: String, state: State<'_, AppState>) -> Result<String, String> {
+    println!("Loading new model from: {}", model_path);
+
+    let mut ctx_guard = state
+        .whisper_ctx
+        .lock()
+        .map_err(|_| "Failed to lock state")?;
+
+    let ctx = WhisperContext::new_with_params(&model_path, Default::default())
+        .map_err(|e| format!("Failed to load model: {}", e))?;
+
+    println!("Model loaded successfully!");
+    *ctx_guard = Some(ctx);
+
+    Ok("Model loaded successfully".to_string())
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -323,7 +341,8 @@ fn main() {
             cmd_delete_history,
             cmd_type_text,
             cmd_disable_shadow,
-            cmd_show_in_folder
+            cmd_show_in_folder,
+            cmd_load_model
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
