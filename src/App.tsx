@@ -11,8 +11,9 @@ import { TopBar } from './components/TopBar';
 import { Dashboard } from './components/Dashboard';
 
 import { HistoryView } from './components/HistoryView';
-import { SettingsView, STORAGE_KEY_RECORDING_PATH } from './components/SettingsView';
+import { SettingsView } from './components/SettingsView';
 import { HistoryItem } from './components/HistoryInfoPanel';
+const STORAGE_KEY_RECORDING_PATH = 'elite_whisper_recording_path';
 
 
 
@@ -28,6 +29,8 @@ function App() {
   // Microphone selection state
   const [inputDevices, setInputDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
+  const [lastDuration, setLastDuration] = useState<number>(0);
+  const [lastRecordingPath, setLastRecordingPath] = useState<string>("");
 
 
   // Navigation State
@@ -268,32 +271,112 @@ function App() {
         audioData: Array.from(uint8Array)
       });
 
+      setLastDuration(totalLength / 16000);
+      setLastRecordingPath(fullPath);
+
       if (isGlobalShortcut || isGlobalRef.current) {
         await invoke('cmd_type_text', { text: result });
+
+        // Auto-save for global shortcut
+        const newHistoryItem = await invoke<HistoryItem>('cmd_save_history', {
+          transcript: result,
+          filename: fullPath,
+          title: noteTitle || "Untitled Note",
+          duration: totalLength / 16000
+        });
+        setHistory(prev => [newHistoryItem, ...prev]);
+        setStatus("Done");
+      } else {
+        // Manual recording: Wait for explicit save
+        setStatus("Unsaved");
       }
 
-      const newHistoryItem = await invoke<HistoryItem>('cmd_save_history', {
-        transcript: result,
-        filename: fullPath, // Store FULL PATH now
-        title: noteTitle || "Untitled Note"
-      });
-
-      // Update local history immediately
-      setHistory(prev => [newHistoryItem, ...prev]);
-
       setContent(result);
-      setStatus("Done");
     } catch (err) {
       setStatus(`Error: ${err} `);
       console.error(err);
     }
   };
 
+  const saveNote = async () => {
+    try {
+      if (!content.trim()) return;
+
+      // Use the path stored from stopRecording
+      const fullPath = lastRecordingPath;
+
+      if (!fullPath) {
+        console.error("No recording path found");
+        setStatus("Error: No Audio");
+        return;
+      }
+
+      const newHistoryItem = await invoke<HistoryItem>('cmd_save_history', {
+        transcript: content,
+        filename: fullPath,
+        title: noteTitle || "Untitled Note",
+        duration: lastDuration
+      });
+
+      setHistory(prev => [newHistoryItem, ...prev]);
+      setStatus("Saved");
+    } catch (err) {
+      console.error("Failed to save:", err);
+      setStatus("Save Failed");
+    }
+  };
+
+
+
+  const getStats = () => {
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // Filter items from the last week
+    const weeklyItems = history.filter(item => {
+      // Assuming item.timestamp is in seconds (Unix timestamp)
+      const itemDate = new Date(item.timestamp * 1000);
+      return itemDate >= oneWeekAgo;
+    });
+
+    // 1. Words this week
+    const wordsThisWeek = weeklyItems.reduce((acc, item) => {
+      return acc + (item.transcript ? item.transcript.trim().split(/\s+/).length : 0);
+    }, 0);
+
+    // 2. Apps used (Unique apps in the last week)
+    const uniqueApps = new Set(weeklyItems.map(item => item.app_name).filter(Boolean));
+    const appsUsed = uniqueApps.size;
+
+    // 3. WPM (Average Speed)
+    // Formula: Total Words / Total Minutes
+    const totalWordsAllTime = history.reduce((acc, item) => acc + (item.transcript ? item.transcript.trim().split(/\s+/).length : 0), 0);
+    const totalDurationSeconds = history.reduce((acc, item) => acc + (item.duration || 0), 0);
+    const totalDurationMinutes = totalDurationSeconds / 60;
+
+    // Default to a reasonable number if no data (e.g., 0 or user's last speed)
+    // If totalDurationMinutes is extremely small, avoid Infinity.
+    const wpm = totalDurationMinutes > 0.1 ? Math.round(totalWordsAllTime / totalDurationMinutes) : 0;
+
+
+    // 4. Saved this week (Time saved)
+    // Formula: Words this week / 40 WPM (Average typing speed)
+    const minutesSaved = Math.round(wordsThisWeek / 40);
+    const savedTime = `${minutesSaved} minute${minutesSaved !== 1 ? 's' : ''}`;
+
+    return {
+      wpm: wpm > 0 ? wpm : 0, // Fallback
+      wordsThisWeek,
+      appsUsed,
+      savedTime
+    };
+  };
+
   // --- RENDER HELPERS ---
   const renderContent = () => {
     switch (view) {
       case 'home':
-        return <Dashboard onStartRecording={() => { setView('recorder'); startRecording(); }} />;
+        return <Dashboard onStartRecording={() => { setView('recorder'); }} stats={getStats()} />;
 
       case 'recorder':
         return (
@@ -334,13 +417,27 @@ function App() {
             </div>
 
             <div className="px-8 py-6 bg-white border-t border-gray-200 flex justify-between items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
-              <button className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors" onClick={() => setView('home')}>Cancel / Back</button>
               <button
-                className={`px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-200 transition-all transform active:scale-95 
+                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors w-24"
+                onClick={() => setView('home')}
+              >
+                Back
+              </button>
+
+              <button
+                className={`px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-200 transition-all transform active:scale-95 flex items-center justify-center gap-2 min-w-[180px]
                         ${isRecording ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse shadow-red-200' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
                 onClick={() => isRecording ? stopRecording(false) : startRecording(false)}
               >
-                {isRecording ? "Stop Recording" : "Start Recording"}
+                {isRecording ? "Stop" : "Record"}
+              </button>
+
+              <button
+                className="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-lg transition-colors w-24 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={saveNote}
+                disabled={isRecording || !content}
+              >
+                Save
               </button>
             </div>
           </div>

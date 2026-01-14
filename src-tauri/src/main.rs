@@ -158,6 +158,10 @@ struct HistoryItem {
     timestamp: u64,
     #[serde(default)]
     title: String,
+    #[serde(default)]
+    duration: f64,
+    #[serde(default)]
+    app_name: String,
 }
 
 fn get_history_file_path(app: &tauri::AppHandle) -> PathBuf {
@@ -175,6 +179,7 @@ fn cmd_save_history(
     transcript: String,
     filename: String,
     title: String,
+    duration: f64,
 ) -> Result<HistoryItem, String> {
     let path = get_history_file_path(&app);
     let mut history: Vec<HistoryItem> = if path.exists() {
@@ -182,6 +187,12 @@ fn cmd_save_history(
         serde_json::from_reader(file).unwrap_or_default()
     } else {
         Vec::new()
+    };
+
+    // Detect active window
+    let app_name = match active_win_pos_rs::get_active_window() {
+        Ok(active_window) => active_window.app_name,
+        Err(_) => "Unknown".to_string(),
     };
 
     let item = HistoryItem {
@@ -193,6 +204,8 @@ fn cmd_save_history(
             .unwrap()
             .as_secs(),
         title,
+        duration,
+        app_name,
     };
 
     history.insert(0, item.clone());

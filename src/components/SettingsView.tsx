@@ -4,11 +4,11 @@ import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import { Folder, RotateCcw, Check } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
+export const STORAGE_KEY_RECORDING_PATH = 'elite_whisper_recording_path';
+
 interface SettingsViewProps {
 
 }
-
-export const STORAGE_KEY_RECORDING_PATH = 'elite_whisper_recording_path';
 
 export function SettingsView({ }: SettingsViewProps) {
     const [recordingPath, setRecordingPath] = useState<string | null>(null);

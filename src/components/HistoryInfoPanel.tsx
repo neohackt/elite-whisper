@@ -15,6 +15,8 @@ export interface HistoryItem {
     language?: string;
     device?: string;
     appVersion?: string;
+    duration?: number;
+    app_name?: string;
 }
 
 interface HistoryInfoPanelProps {

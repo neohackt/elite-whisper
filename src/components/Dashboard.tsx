@@ -2,19 +2,27 @@ import React from 'react';
 import { StatsCard } from './StatsCard';
 import { Command, Sparkles, Book } from 'lucide-react';
 
-interface DashboardProps {
-    onStartRecording: () => void;
+export interface DashboardStats {
+    wpm: number;
+    wordsThisWeek: number;
+    appsUsed: number;
+    savedTime: string; // e.g., "12 minutes"
 }
 
-export function Dashboard({ onStartRecording }: DashboardProps) {
+interface DashboardProps {
+    onStartRecording: () => void;
+    stats: DashboardStats;
+}
+
+export function Dashboard({ onStartRecording, stats }: DashboardProps) {
     return (
         <div className="flex-1 p-8 overflow-y-auto">
             {/* Stats Row */}
             <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] mb-10 flex justify-between items-start">
-                <StatsCard label="Average speed" value="117 WPM" subtext="" />
-                <StatsCard label="Words this week" value="46" subtext="" />
-                <StatsCard label="Apps used" value="0" subtext="" />
-                <StatsCard label="Saved this week" value="1 minutes" subtext="" hasSettings />
+                <StatsCard label="Average speed" value={`${stats.wpm} WPM`} subtext="" />
+                <StatsCard label="Words this week" value={stats.wordsThisWeek} subtext="" />
+                <StatsCard label="Apps used" value={stats.appsUsed} subtext="" />
+                <StatsCard label="Saved this week" value={stats.savedTime} subtext="" hasSettings />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -35,8 +43,7 @@ export function Dashboard({ onStartRecording }: DashboardProps) {
                                 <div className="flex justify-between items-center mb-0.5">
                                     <h4 className="text-sm font-bold text-gray-800">Start recording</h4>
                                     <div className="flex gap-1">
-                                        <span className="text-[10px] bg-gray-200 text-gray-500 px-1 rounded">Ctrl</span>
-                                        <span className="text-[10px] bg-gray-200 text-gray-500 px-1 rounded">Space</span>
+                                        <span className="text-[10px] bg-gray-200 text-gray-500 px-1 rounded">F2</span>
                                     </div>
                                 </div>
                                 <p className="text-xs text-gray-500">Turn your voice to text with a single click.</p>
