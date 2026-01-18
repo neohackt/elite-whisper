@@ -33,26 +33,39 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
-        // Hardcoded path for default Whisper model
-        let model_path = "d:/Personal/voiceapp/src-tauri/whisper.cpp/ggml-base.en.bin";
-        println!("Loading initial model from: {}", model_path);
-
-        let engine = match WhisperContext::new_with_params(model_path, Default::default()) {
-            Ok(ctx) => {
-                println!("Initial Whisper model loaded successfully!");
-                TranscriptionEngine::Whisper(ctx)
-            }
-            Err(e) => {
-                println!("Failed to load initial model: {}", e);
-                TranscriptionEngine::None
-            }
-        };
-
         Self {
-            engine: Mutex::new(engine),
-            current_model_name: Mutex::new("Whisper Base (Local)".to_string()),
+            engine: Mutex::new(TranscriptionEngine::None),
+            current_model_name: Mutex::new("None".to_string()),
         }
     }
+}
+
+#[tauri::command]
+async fn cmd_load_default_model(state: State<'_, AppState>) -> Result<String, String> {
+    let model_path = "d:/Personal/voiceapp/src-tauri/whisper.cpp/ggml-base.en.bin";
+    println!("Loading default model from: {}", model_path);
+
+    let engine = match WhisperContext::new_with_params(model_path, Default::default()) {
+        Ok(ctx) => {
+            println!("Default Whisper model loaded successfully!");
+            TranscriptionEngine::Whisper(ctx)
+        }
+        Err(e) => {
+            println!("Failed to load default model: {}", e);
+            return Err(e.to_string());
+        }
+    };
+
+    let mut engine_guard = state.engine.lock().map_err(|_| "Failed to lock state")?;
+    let mut name_guard = state
+        .current_model_name
+        .lock()
+        .map_err(|_| "Failed to lock name")?;
+
+    *engine_guard = engine;
+    *name_guard = "Whisper Base (Local)".to_string();
+
+    Ok("Whisper Base (Local)".to_string())
 }
 
 fn read_wav_from_bytes(data: Vec<u8>) -> Result<Vec<f32>, String> {
@@ -232,7 +245,6 @@ async fn cmd_transcribe(
                 args.push(format!("--decoder={}", config.decoder));
                 args.push(format!("--joiner={}", joiner));
                 args.push("--decoding-method=greedy_search".to_string());
-                args.push("--model-type=transducer".to_string());
             } else {
                 // Whisper Mode
                 args.push(format!("--whisper-encoder={}", config.encoder));
@@ -338,6 +350,8 @@ struct HistoryItem {
     duration: f64,
     #[serde(default)]
     app_name: String,
+    #[serde(default)]
+    processing_time: f64,
 }
 
 fn get_history_file_path(app: &tauri::AppHandle) -> PathBuf {
@@ -356,6 +370,7 @@ fn cmd_save_history(
     filename: String,
     title: String,
     duration: f64,
+    processing_time: f64,
 ) -> Result<HistoryItem, String> {
     let path = get_history_file_path(&app);
     let mut history: Vec<HistoryItem> = if path.exists() {
@@ -382,6 +397,7 @@ fn cmd_save_history(
         title,
         duration,
         app_name,
+        processing_time,
     };
 
     history.insert(0, item.clone());
@@ -424,6 +440,77 @@ fn cmd_delete_history(app: tauri::AppHandle, id: String) -> Result<(), String> {
     serde_json::to_writer_pretty(file, &history).map_err(|e| e.to_string())?;
 
     Ok(())
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct DashboardStats {
+    wpm: u64,
+    words_this_week: u64,
+    apps_used: u64,
+    saved_time: String,
+}
+
+#[tauri::command]
+fn cmd_get_dashboard_stats(app: tauri::AppHandle) -> Result<DashboardStats, String> {
+    let path = get_history_file_path(&app);
+    let history: Vec<HistoryItem> = if path.exists() {
+        let file = File::open(&path).map_err(|e| e.to_string())?;
+        serde_json::from_reader(file).unwrap_or_default()
+    } else {
+        Vec::new()
+    };
+
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+    let one_week_ago = now.saturating_sub(7 * 24 * 60 * 60);
+
+    let weekly_items: Vec<&HistoryItem> = history
+        .iter()
+        .filter(|item| item.timestamp >= one_week_ago)
+        .collect();
+
+    let words_this_week: u64 = weekly_items
+        .iter()
+        .map(|item| item.transcript.split_whitespace().count() as u64)
+        .sum();
+
+    let mut unique_apps = std::collections::HashSet::new();
+    for item in &weekly_items {
+        if !item.app_name.is_empty() {
+            unique_apps.insert(&item.app_name);
+        }
+    }
+    let apps_used = unique_apps.len() as u64;
+
+    let total_words_all_time: u64 = history
+        .iter()
+        .map(|item| item.transcript.split_whitespace().count() as u64)
+        .sum();
+    let total_duration_seconds: f64 = history.iter().map(|item| item.duration).sum();
+    let total_duration_minutes = total_duration_seconds / 60.0;
+
+    let wpm = if total_duration_minutes > 0.1 {
+        (total_words_all_time as f64 / total_duration_minutes).round() as u64
+    } else {
+        0
+    };
+
+    let minutes_saved = (words_this_week as f64 / 40.0).round() as u64;
+    let saved_time = format!(
+        "{} minute{}",
+        minutes_saved,
+        if minutes_saved != 1 { "s" } else { "" }
+    );
+
+    Ok(DashboardStats {
+        wpm,
+        words_this_week,
+        apps_used,
+        saved_time,
+    })
 }
 
 use enigo::{Enigo, Keyboard, Settings};
@@ -639,11 +726,13 @@ fn main() {
             set_model,
             cmd_save_history,
             cmd_get_history,
+            cmd_get_dashboard_stats,
             cmd_delete_history,
             cmd_type_text,
             cmd_disable_shadow,
             cmd_show_in_folder,
             cmd_load_model,
+            cmd_load_default_model,
             cmd_download_file
         ])
         .run(tauri::generate_context!())

@@ -10,6 +10,7 @@ export interface HistoryItem {
     title: string;
     // Optional fields for future/metadata
     processingTime?: string;
+    processing_time?: number; // Backend field
     mode?: string;
     model?: string;
     language?: string;
@@ -73,7 +74,11 @@ export function HistoryInfoPanel({ item, onClose }: HistoryInfoPanelProps) {
 
                     <div className="flex justify-between py-2 border-b border-gray-200/50">
                         <span className="text-gray-500 font-medium">Processing time</span>
-                        <span className="text-gray-900">{item.processingTime || "3.7s"}</span>
+                        <span className="text-gray-900">
+                            {item.processing_time !== undefined
+                                ? `${item.processing_time.toFixed(2)}s`
+                                : item.processingTime || "0.0s"}
+                        </span>
                     </div>
 
                     <div className="flex justify-between py-2 border-b border-gray-200/50">

@@ -8,7 +8,7 @@ import { writeWavHeader, floatTo16BitPCM } from './audioHelpers';
 // Components
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
-import { Dashboard } from './components/Dashboard';
+import { Dashboard, DashboardStats } from './components/Dashboard';
 
 import { HistoryView } from './components/HistoryView';
 import { SettingsView } from './components/SettingsView';
@@ -31,6 +31,7 @@ function App() {
   const [inputDevices, setInputDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
   const [lastDuration, setLastDuration] = useState<number>(0);
+  const [lastProcessingTime, setLastProcessingTime] = useState<number>(0);
   const [lastRecordingPath, setLastRecordingPath] = useState<string>("");
 
 
@@ -38,6 +39,12 @@ function App() {
   // valid views: 'home', 'recorder', 'modes', 'vocabulary', 'configuration', 'sound', 'history'
   const [view, setView] = useState<string>('home');
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
+    wpm: 0,
+    wordsThisWeek: 0,
+    appsUsed: 0,
+    savedTime: "0 minutes"
+  });
 
   // Visualizer State
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(40).fill(10));
@@ -47,6 +54,7 @@ function App() {
   const mediaRecorder = useRef<any>(null);
   const isGlobalRef = useRef(false);
   const isRecordingRef = useRef(false);
+  const hasInitialized = useRef(false);
 
   // Sync ref with state
   useEffect(() => { isRecordingRef.current = isRecording; }, [isRecording]);
@@ -77,21 +85,70 @@ function App() {
     }
   };
 
+  const loadStats = async () => {
+    try {
+      const stats = await invoke<DashboardStats>('cmd_get_dashboard_stats');
+      setDashboardStats(stats);
+    } catch (err) {
+      console.error("Failed to load stats:", err);
+    }
+  };
+
 
   // 1.2 View Change Effect
   useEffect(() => {
     if (view === 'history') {
       loadHistory();
     }
+    // Refresh stats when returning to home, to ensure latest numbers
+    if (view === 'home') {
+      loadStats();
+    }
   }, [view]);
 
   // 1. Load Model Status on Startup
   useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     async function init() {
       try {
-        const model = await invoke<string>('get_current_model');
-        setCurrentModel(model);
-        setSelectedModel(model);
+        // Load stats on startup
+        loadStats();
+
+        // Check for saved model preference
+        const savedModel = localStorage.getItem('elite_whisper_active_model');
+
+        if (savedModel) {
+          console.log("Found saved model preference:", savedModel);
+          try {
+            // Construct path for saved model
+            const appData = await appLocalDataDir();
+            const modelPath = await join(appData, 'models', savedModel);
+
+            // Attempt to load it
+            await invoke('cmd_load_model', { modelPath });
+            setCurrentModel(savedModel);
+            setSelectedModel(savedModel);
+            console.log("Restored saved model:", savedModel);
+          } catch (e) {
+            console.error("Failed to restore saved model, falling back to default:", e);
+            // Fallback to whatever backend has
+            const model = await invoke<string>('get_current_model');
+            setCurrentModel(model);
+            setSelectedModel(model);
+          }
+        } else {
+          // No preference, load default explicitly
+          try {
+            const model = await invoke<string>('cmd_load_default_model');
+            setCurrentModel(model);
+            setSelectedModel(model);
+          } catch (e) {
+            console.error("Failed to load default model:", e);
+            setStatus("Error: No Model");
+          }
+        }
 
         // Auto-open widget on launch
         setTimeout(() => {
@@ -139,6 +196,7 @@ function App() {
     try {
       await invoke('cmd_delete_history', { id });
       setHistory(prev => prev.filter(item => item.id !== id));
+      // Optionally reload stats if we want immediate sync, but view change handles it mostly
     } catch (err) {
       console.error("Failed to delete item:", err);
     }
@@ -268,12 +326,15 @@ function App() {
 
       setStatus("Transcribing locally...");
 
+      const startTime = performance.now();
       const result = await invoke<string>('cmd_transcribe', {
         audioData: Array.from(uint8Array)
       });
+      const procTime = (performance.now() - startTime) / 1000;
 
       setLastDuration(totalLength / 16000);
       setLastRecordingPath(fullPath);
+      setLastProcessingTime(procTime);
 
       if (isGlobalShortcut || isGlobalRef.current) {
         await invoke('cmd_type_text', { text: result });
@@ -283,9 +344,12 @@ function App() {
           transcript: result,
           filename: fullPath,
           title: noteTitle || "Untitled Note",
-          duration: totalLength / 16000
+          duration: totalLength / 16000,
+          processing_time: procTime
         });
         setHistory(prev => [newHistoryItem, ...prev]);
+        // Update stats
+        loadStats();
         setStatus("Done");
       } else {
         // Manual recording: Wait for explicit save
@@ -316,10 +380,12 @@ function App() {
         transcript: content,
         filename: fullPath,
         title: noteTitle || "Untitled Note",
-        duration: lastDuration
+        duration: lastDuration,
+        processing_time: lastProcessingTime
       });
 
       setHistory(prev => [newHistoryItem, ...prev]);
+      loadStats();
       setStatus("Saved");
     } catch (err) {
       console.error("Failed to save:", err);
@@ -327,57 +393,11 @@ function App() {
     }
   };
 
-
-
-  const getStats = () => {
-    const now = new Date();
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    // Filter items from the last week
-    const weeklyItems = history.filter(item => {
-      // Assuming item.timestamp is in seconds (Unix timestamp)
-      const itemDate = new Date(item.timestamp * 1000);
-      return itemDate >= oneWeekAgo;
-    });
-
-    // 1. Words this week
-    const wordsThisWeek = weeklyItems.reduce((acc, item) => {
-      return acc + (item.transcript ? item.transcript.trim().split(/\s+/).length : 0);
-    }, 0);
-
-    // 2. Apps used (Unique apps in the last week)
-    const uniqueApps = new Set(weeklyItems.map(item => item.app_name).filter(Boolean));
-    const appsUsed = uniqueApps.size;
-
-    // 3. WPM (Average Speed)
-    // Formula: Total Words / Total Minutes
-    const totalWordsAllTime = history.reduce((acc, item) => acc + (item.transcript ? item.transcript.trim().split(/\s+/).length : 0), 0);
-    const totalDurationSeconds = history.reduce((acc, item) => acc + (item.duration || 0), 0);
-    const totalDurationMinutes = totalDurationSeconds / 60;
-
-    // Default to a reasonable number if no data (e.g., 0 or user's last speed)
-    // If totalDurationMinutes is extremely small, avoid Infinity.
-    const wpm = totalDurationMinutes > 0.1 ? Math.round(totalWordsAllTime / totalDurationMinutes) : 0;
-
-
-    // 4. Saved this week (Time saved)
-    // Formula: Words this week / 40 WPM (Average typing speed)
-    const minutesSaved = Math.round(wordsThisWeek / 40);
-    const savedTime = `${minutesSaved} minute${minutesSaved !== 1 ? 's' : ''}`;
-
-    return {
-      wpm: wpm > 0 ? wpm : 0, // Fallback
-      wordsThisWeek,
-      appsUsed,
-      savedTime
-    };
-  };
-
   // --- RENDER HELPERS ---
   const renderContent = () => {
     switch (view) {
       case 'home':
-        return <Dashboard onStartRecording={() => { setView('recorder'); }} stats={getStats()} />;
+        return <Dashboard onStartRecording={() => { setView('recorder'); }} stats={dashboardStats} />;
 
       case 'recorder':
         return (

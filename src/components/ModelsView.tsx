@@ -29,14 +29,14 @@ interface ModelCardProps {
 const ModelCard = ({ id, name, description, language, size, speed, accuracy, isActive, isDownloaded, onDownload, onSelect, onDelete, isDownloading, progress }: ModelCardProps) => {
     return (
         <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ${isActive ? 'border-purple-500 bg-purple-50/40 shadow-sm' : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-md'}`}>
-            <div className="flex items-center p-6 gap-6">
+            <div className="flex flex-wrap lg:flex-nowrap items-center p-6 gap-4 lg:gap-6">
                 {/* Icon */}
                 <div className={`w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center ${isActive ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-500'}`}>
                     {id.includes('whisper') ? <Cpu size={28} /> : <Brain size={28} />}
                 </div>
 
                 {/* Main Info */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-[280px]">
                     <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-bold text-gray-900 text-lg truncate">{name}</h3>
                         {isActive && (
@@ -57,7 +57,7 @@ const ModelCard = ({ id, name, description, language, size, speed, accuracy, isA
                 </div>
 
                 {/* Stats */}
-                <div className="flex flex-col gap-2 w-48 flex-shrink-0 px-4 border-l border-gray-100">
+                <div className="flex flex-col gap-2 w-48 flex-shrink-0 px-4 border-l-0 lg:border-l border-gray-100 min-w-[200px]">
                     <div className="flex items-center gap-2 text-xs">
                         <div className="flex items-center gap-1.5 text-gray-500 w-20">
                             <Zap size={12} /> Speed
@@ -77,7 +77,7 @@ const ModelCard = ({ id, name, description, language, size, speed, accuracy, isA
                 </div>
 
                 {/* Action Button */}
-                <div className="w-40 flex-shrink-0 flex justify-end items-center gap-2">
+                <div className="w-full lg:w-40 flex-shrink-0 flex justify-end items-center gap-2 mt-2 lg:mt-0">
                     {/* Delete Icon */}
                     {isDownloaded && !isActive && (
                         <button
@@ -227,9 +227,13 @@ export function ModelsView() {
 
     useEffect(() => {
         checkDownloadedModels();
-        invoke<string>('get_current_model').then(_name => {
-            // We can't easily map back to ID from name without more complex logic, 
-            // but activeModel state will track standard usage.
+        invoke<string>('get_current_model').then(name => {
+            console.log("Synced active model from backend:", name);
+            if (name) {
+                setActiveModel(name);
+            }
+        }).catch(err => {
+            console.error("Failed to sync active model:", err);
         });
     }, []);
 
@@ -329,6 +333,7 @@ export function ModelsView() {
 
             await invoke('cmd_load_model', { modelPath });
             setActiveModel(model.filename);
+            localStorage.setItem('elite_whisper_active_model', model.filename);
         } catch (err) {
             console.error("Failed to load model:", err);
             setError(`Failed to load model: ${err}`);
