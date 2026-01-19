@@ -248,20 +248,29 @@ export default function Widget() {
             }
 
             // Transcribe
+            const startTime = performance.now();
             const result = await invoke<string>('cmd_transcribe', {
                 audioData: Array.from(uint8Array)
             });
+            const procTime = (performance.now() - startTime) / 1000;
 
             // Global Auto-Type
             await invoke('cmd_type_text', { text: result });
 
             // Save to History (Using main app's history command with FULL PATH)
-            await invoke('cmd_save_history', { transcript: result, filename: fullPath, title: "Widget Recording" });
+            await invoke('cmd_save_history', {
+                transcript: result,
+                filename: fullPath,
+                title: "Widget Recording",
+                duration: totalLength / 16000,
+                processingTime: procTime
+            });
 
             console.log("Transcription done:", result);
 
         } catch (err) {
             console.error(err);
+            alert(`Widget Error: ${err}`);
         }
     };
 

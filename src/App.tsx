@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { writeFile, mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { appLocalDataDir, join } from '@tauri-apps/api/path';
@@ -192,6 +193,30 @@ function App() {
     };
   }, []);
 
+  // Listen for history updates from Widget or other windows
+  useEffect(() => {
+    const setupListener = async () => {
+      const unlisten = await listen<HistoryItem>('history-updated', (event) => {
+        console.log("Received history update:", event.payload);
+        setHistory(prev => {
+          if (prev.some(item => item.id === event.payload.id)) return prev;
+          return [event.payload, ...prev];
+        });
+        // Also refresh stats
+        loadStats();
+      });
+      return () => unlisten();
+    };
+
+    // We handle the unlisten cleanup via the returned function from useEffect
+    let unlistenFn: (() => void) | undefined;
+    setupListener().then(fn => { unlistenFn = fn; });
+
+    return () => {
+      if (unlistenFn) unlistenFn();
+    };
+  }, []);
+
   const deleteHistoryItem = async (id: string) => {
     try {
       await invoke('cmd_delete_history', { id });
@@ -345,9 +370,12 @@ function App() {
           filename: fullPath,
           title: noteTitle || "Untitled Note",
           duration: totalLength / 16000,
-          processing_time: procTime
+          processingTime: procTime
         });
-        setHistory(prev => [newHistoryItem, ...prev]);
+        setHistory(prev => {
+          if (prev.some(item => item.id === newHistoryItem.id)) return prev;
+          return [newHistoryItem, ...prev];
+        });
         // Update stats
         loadStats();
         setStatus("Done");
@@ -381,10 +409,13 @@ function App() {
         filename: fullPath,
         title: noteTitle || "Untitled Note",
         duration: lastDuration,
-        processing_time: lastProcessingTime
+        processingTime: lastProcessingTime
       });
 
-      setHistory(prev => [newHistoryItem, ...prev]);
+      setHistory(prev => {
+        if (prev.some(item => item.id === newHistoryItem.id)) return prev;
+        return [newHistoryItem, ...prev];
+      });
       loadStats();
       setStatus("Saved");
     } catch (err) {
