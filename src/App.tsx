@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { writeFile, mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import { writeWavHeader, floatTo16BitPCM } from './audioHelpers';
+import { exists } from '@tauri-apps/plugin-fs'; // Add exists for model checking
+import { AI_PROFILES, AUTO_MODE_RULES } from './config/profiles';
+import { AVAILABLE_MODELS } from './config/models';
 
 // Components
 import { Sidebar } from './components/Sidebar';
@@ -25,8 +28,10 @@ function App() {
   const [noteTitle, setNoteTitle] = useState("Untitled Note");
   const [status, setStatus] = useState("Ready");
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("openai/whisper-base");
-  const [currentModel, setCurrentModel] = useState("");
+  const [_selectedModel, setSelectedModel] = useState("openai/whisper-base");
+
+  const [_currentModel, setCurrentModel] = useState("");
+  const [isAutoMode, setIsAutoMode] = useState(false); // Add Auto Mode State
 
   // Microphone selection state
   const [inputDevices, setInputDevices] = useState<MediaDeviceInfo[]>([]);
@@ -150,6 +155,10 @@ function App() {
             setStatus("Error: No Model");
           }
         }
+
+        // Restore Auto Mode preference
+        const savedAuto = localStorage.getItem('elite_whisper_auto_mode');
+        if (savedAuto === 'true') setIsAutoMode(true);
 
         // Auto-open widget on launch
         setTimeout(() => {
@@ -349,6 +358,53 @@ function App() {
         fullPath = await join(appDataDir, 'recorded_audio', fileName);
       }
 
+      // --- AUTO MODE LOGIC ---
+
+      if (isAutoMode) {
+        const duration = totalLength / 16000;
+        const matchedRule = AUTO_MODE_RULES.find(rule => {
+          const minOk = rule.minDuration ? duration >= rule.minDuration : true;
+          const maxOk = rule.maxDuration ? duration < rule.maxDuration : true;
+          return minOk && maxOk;
+        });
+
+        if (matchedRule) {
+          const profile = AI_PROFILES.find(p => p.id === matchedRule.profileId);
+          if (profile) {
+            const modelDef = AVAILABLE_MODELS.find(m => m.id === profile.primaryModelId);
+            if (modelDef) {
+              try {
+                // Check if model exists
+                const modelFile = modelDef.filename;
+
+                const checkPath = modelDef.type === 'sherpa' ? `models/${modelFile}/tokens.txt` : `models/${modelFile}`;
+
+                const hasModel = await exists(checkPath, { baseDir: BaseDirectory.AppLocalData });
+
+                if (hasModel) {
+                  // If current loaded model is different, switch!
+                  // We store full filename in _currentModel state usually, or get from backend
+                  const currentName = await invoke<string>('get_current_model');
+                  if (currentName !== modelFile) {
+                    setStatus(`Switching to ${profile.label}...`);
+                    const appData = await appLocalDataDir();
+                    const modelPath = await join(appData, 'models', modelFile);
+                    await invoke('cmd_load_model', { modelPath });
+                    setCurrentModel(modelFile);
+                    // Don't update "selectedModel" or profile because this is temporary for this recording? 
+                    // Or maybe we should? For now, transient switch.
+                  }
+                } else {
+                  console.warn(`AutoMode: Model for ${profile.label} not found locally.`);
+                }
+              } catch (e) {
+                console.error("AutoMode Error:", e);
+              }
+            }
+          }
+        }
+      }
+
       setStatus("Transcribing locally...");
 
       const startTime = performance.now();
@@ -506,7 +562,10 @@ function App() {
         return <SettingsView />;
 
       case 'models':
-        return <ModelsView />;
+        return <ModelsView isAutoMode={isAutoMode} setAutoMode={(val: boolean) => {
+          setIsAutoMode(val);
+          localStorage.setItem('elite_whisper_auto_mode', String(val));
+        }} />;
 
       case 'modes':
       case 'vocabulary':
@@ -534,6 +593,7 @@ function App() {
           selectedDeviceId={selectedDeviceId}
           onSelectDevice={setSelectedDeviceId}
         />
+
         {renderContent()}
       </div>
     </div>

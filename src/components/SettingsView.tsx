@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { open } from '@tauri-apps/plugin-dialog';
 import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import { Folder, RotateCcw, Check } from 'lucide-react';
-import { twMerge } from 'tailwind-merge';
 
 export const STORAGE_KEY_RECORDING_PATH = 'elite_whisper_recording_path';
 

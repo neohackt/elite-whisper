@@ -18,7 +18,7 @@ export default function Widget() {
 
     // Visualizer State
     const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(40).fill(10));
-    const animationFrameRef = useRef<number>();
+    const animationFrameRef = useRef<number>(0);
 
     // Refs for Audio Recording
     const mediaRecorder = useRef<any>(null);
@@ -296,7 +296,7 @@ export default function Widget() {
         }
     };
 
-    const handleMouseUp = (e: React.MouseEvent) => {
+    const handleMouseUp = (_e: React.MouseEvent) => {
         // If mouse didn't move enough to start drag, treat as click
         // In new design, clicking the pill background no longer expands.
         // Expansion is handled by the explicit expand button.

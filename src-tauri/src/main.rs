@@ -10,7 +10,7 @@ pub struct SherpaConfig {
     decoder: String,
     joiner: Option<String>,
     tokens: String,
-    model_name: String,
+    _model_name: String,
 }
 use std::fs::File;
 use std::io::Cursor;
@@ -608,7 +608,7 @@ async fn cmd_load_model(model_path: String, state: State<'_, AppState>) -> Resul
             encoder: encoder.to_string_lossy().to_string(),
             decoder: decoder.to_string_lossy().to_string(),
             joiner: joiner.map(|p| p.to_string_lossy().to_string()),
-            model_name: path
+            _model_name: path
                 .file_name()
                 .unwrap_or_default()
                 .to_string_lossy()

@@ -1,4 +1,3 @@
-import React from 'react';
 import { StatsCard } from './StatsCard';
 import { Command, Sparkles, Book } from 'lucide-react';
 
