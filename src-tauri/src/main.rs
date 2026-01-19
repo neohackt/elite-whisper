@@ -372,19 +372,24 @@ fn cmd_save_history(
     duration: f64,
     processing_time: f64,
 ) -> Result<HistoryItem, String> {
+    println!("cmd_save_history called for: {}", filename);
     let path = get_history_file_path(&app);
+
     let mut history: Vec<HistoryItem> = if path.exists() {
         let file = File::open(&path).map_err(|e| e.to_string())?;
-        serde_json::from_reader(file).unwrap_or_default()
+        match serde_json::from_reader(file) {
+            Ok(h) => h,
+            Err(e) => {
+                println!("Failed to parse history.json (using empty): {}", e);
+                Vec::new()
+            }
+        }
     } else {
         Vec::new()
     };
 
-    // Detect active window
-    let app_name = match active_win_pos_rs::get_active_window() {
-        Ok(active_window) => active_window.app_name,
-        Err(_) => "Unknown".to_string(),
-    };
+    // Detect active window - Disabled for stability
+    let app_name = "Unknown".to_string();
 
     let item = HistoryItem {
         id: Uuid::new_v4().to_string(),
@@ -402,13 +407,19 @@ fn cmd_save_history(
 
     history.insert(0, item.clone());
 
-    // Create dir if not exists
     if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+        if let Err(e) = std::fs::create_dir_all(parent) {
+            println!("Failed to create history directory: {}", e);
+        }
     }
 
+    println!("Writing history to: {:?}", path);
     let file = File::create(&path).map_err(|e| e.to_string())?;
     serde_json::to_writer_pretty(file, &history).map_err(|e| e.to_string())?;
+
+    // Emit event for real-time sync
+    let _ = app.emit("history-updated", &item);
+    println!("History saved successfully.");
 
     Ok(item)
 }
