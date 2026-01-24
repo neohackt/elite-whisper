@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Global Styles for Light Mode */
+html,
+body,
+#root {
+  background-color: transparent;
+  color: #111827;
+  /* gray-900 */
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  /* Prevent scrolling if app is fullscreen */
+}
+
+/* Prevent any focus/active backgrounds */
+*:focus,
+*:active,
+*:focus-visible {
+  outline: none !important;
+  background-color: transparent !important;
+}
+
+/* Ensure no gray highlight on tap/click on mobile/touch */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure body stays transparent on all states */
+body:hover,
+body:focus,
+body:active {
+  background-color: transparent !important;
+}
