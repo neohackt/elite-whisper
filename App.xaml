@@ -1,0 +1,19 @@
+﻿<Application x:Class="EliteWhisper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:EliteWhisper"
+             xmlns:converters="clr-namespace:EliteWhisper.Converters"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
+                <ResourceDictionary Source="Resources/Icons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <converters:IconNameToGeometryConverter x:Key="IconNameToGeometryConverter"/>
+            <converters:BoolToStringConverter x:Key="BoolToStringConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

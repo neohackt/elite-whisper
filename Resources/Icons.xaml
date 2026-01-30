@@ -1,0 +1,195 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 
+    ╔═══════════════════════════════════════════════════════════════════════════╗
+    ║  PHOSPHOR ICONS - Vector Icon Library                                     ║
+    ║  Source: https://phosphoricons.com (Regular weight)                       ║
+    ║  License: MIT                                                             ║
+    ║  Converted from SVG to WPF Path data for clean scaling                    ║
+    ╚═══════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- ==================== NAVIGATION ICONS ==================== -->
+    
+    <!-- House (Home) -->
+    <Geometry x:Key="IconHomeGeometry">M 219.6 121.6 L 131.6 49.6 A 12 12 0 0 0 116.4 49.6 L 28.4 121.6 A 12 12 0 0 0 24 130.6 V 208 A 20 20 0 0 0 44 228 H 96 A 12 12 0 0 0 108 216 V 164 H 140 V 216 A 12 12 0 0 0 152 228 H 204 A 20 20 0 0 0 224 208 V 130.6 A 12 12 0 0 0 219.6 121.6 Z M 200 204 H 164 V 152 A 12 12 0 0 0 152 140 H 96 A 12 12 0 0 0 84 152 V 204 H 48 V 137 L 124 73.8 L 200 137 Z</Geometry>
+    <DrawingImage x:Key="IconHome">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconHomeGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Brain (AI Models) -->
+    <Geometry x:Key="IconBrainGeometry">M 128 20 A 76 76 0 0 0 52 96 A 76 76 0 0 0 56 120 A 56 56 0 0 0 44 188 V 196 A 12 12 0 0 0 56 208 H 80 V 224 A 12 12 0 0 0 104 224 V 208 H 128 V 224 A 12 12 0 0 0 152 224 V 208 H 176 V 224 A 12 12 0 0 0 200 224 V 208 H 200 A 12 12 0 0 0 212 196 V 188 A 56 56 0 0 0 200 120 A 76 76 0 0 0 204 96 A 76 76 0 0 0 128 20 Z M 68 96 A 60 60 0 0 1 188 96 A 60 60 0 0 1 184 113 A 12 12 0 0 0 188 124 A 40 40 0 0 1 196 148 V 184 H 60 V 148 A 40 40 0 0 1 68 124 A 12 12 0 0 0 72 113 A 60 60 0 0 1 68 96 Z M 100 108 A 16 16 0 1 0 100 140 A 16 16 0 0 0 100 108 Z M 156 108 A 16 16 0 1 0 156 140 A 16 16 0 0 0 156 108 Z</Geometry>
+    <DrawingImage x:Key="IconBrain">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconBrainGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Gear (Configuration/Settings) -->
+    <Geometry x:Key="IconGearGeometry">M 128 76 A 52 52 0 1 0 180 128 A 52 52 0 0 0 128 76 Z M 128 164 A 36 36 0 1 1 164 128 A 36 36 0 0 1 128 164 Z M 237.2 100.2 L 221.6 95 A 92 92 0 0 0 213.5 77.4 L 222.8 63 A 12 12 0 0 0 221 46.8 L 209.2 35 A 12 12 0 0 0 193 33.2 L 178.6 42.5 A 92 92 0 0 0 161 34.4 L 155.8 18.8 A 12 12 0 0 0 144.4 12 H 111.6 A 12 12 0 0 0 100.2 18.8 L 95 34.4 A 92 92 0 0 0 77.4 42.5 L 63 33.2 A 12 12 0 0 0 46.8 35 L 35 46.8 A 12 12 0 0 0 33.2 63 L 42.5 77.4 A 92 92 0 0 0 34.4 95 L 18.8 100.2 A 12 12 0 0 0 12 111.6 V 144.4 A 12 12 0 0 0 18.8 155.8 L 34.4 161 A 92 92 0 0 0 42.5 178.6 L 33.2 193 A 12 12 0 0 0 35 209.2 L 46.8 221 A 12 12 0 0 0 63 222.8 L 77.4 213.5 A 92 92 0 0 0 95 221.6 L 100.2 237.2 A 12 12 0 0 0 111.6 244 H 144.4 A 12 12 0 0 0 155.8 237.2 L 161 221.6 A 92 92 0 0 0 178.6 213.5 L 193 222.8 A 12 12 0 0 0 209.2 221 L 221 209.2 A 12 12 0 0 0 222.8 193 L 213.5 178.6 A 92 92 0 0 0 221.6 161 L 237.2 155.8 A 12 12 0 0 0 244 144.4 V 111.6 A 12 12 0 0 0 237.2 100.2 Z M 228 139.8 L 213.8 144.6 A 12 12 0 0 0 206.2 153.4 A 76 76 0 0 1 195.6 175.5 A 12 12 0 0 0 196.2 187.8 L 204.6 200.6 L 200.6 204.6 L 187.8 196.2 A 12 12 0 0 0 175.5 195.6 A 76 76 0 0 1 153.4 206.2 A 12 12 0 0 0 144.6 213.8 L 139.8 228 H 116.2 L 111.4 213.8 A 12 12 0 0 0 102.6 206.2 A 76 76 0 0 1 80.5 195.6 A 12 12 0 0 0 68.2 196.2 L 55.4 204.6 L 51.4 200.6 L 59.8 187.8 A 12 12 0 0 0 60.4 175.5 A 76 76 0 0 1 49.8 153.4 A 12 12 0 0 0 42.2 144.6 L 28 139.8 V 116.2 L 42.2 111.4 A 12 12 0 0 0 49.8 102.6 A 76 76 0 0 1 60.4 80.5 A 12 12 0 0 0 59.8 68.2 L 51.4 55.4 L 55.4 51.4 L 68.2 59.8 A 12 12 0 0 0 80.5 60.4 A 76 76 0 0 1 102.6 49.8 A 12 12 0 0 0 111.4 42.2 L 116.2 28 H 139.8 L 144.6 42.2 A 12 12 0 0 0 153.4 49.8 A 76 76 0 0 1 175.5 60.4 A 12 12 0 0 0 187.8 59.8 L 200.6 51.4 L 204.6 55.4 L 196.2 68.2 A 12 12 0 0 0 195.6 80.5 A 76 76 0 0 1 206.2 102.6 A 12 12 0 0 0 213.8 111.4 L 228 116.2 Z</Geometry>
+    <DrawingImage x:Key="IconGear">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconGearGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Microphone (Sound) -->
+    <Geometry x:Key="IconMicrophoneGeometry">M 128 172 A 44 44 0 0 0 172 128 V 64 A 44 44 0 0 0 84 64 V 128 A 44 44 0 0 0 128 172 Z M 100 64 A 28 28 0 0 1 156 64 V 128 A 28 28 0 0 1 100 128 Z M 200 128 A 8 8 0 0 0 184 128 A 56 56 0 0 1 72 128 A 8 8 0 0 0 56 128 A 72 72 0 0 0 120 199.4 V 224 H 96 A 8 8 0 0 0 96 240 H 160 A 8 8 0 0 0 160 224 H 136 V 199.4 A 72 72 0 0 0 200 128 Z</Geometry>
+    <DrawingImage x:Key="IconMicrophone">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconMicrophoneGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Clock Counter Clockwise (History) -->
+    <Geometry x:Key="IconHistoryGeometry">M 136 80 V 128 A 8 8 0 0 1 132.2 135 L 108.2 159 A 8 8 0 0 1 96.9 147.8 L 120 124.7 V 80 A 8 8 0 0 1 136 80 Z M 224 128 A 96 96 0 1 1 60.8 56.2 A 8 8 0 0 1 49.2 67.8 A 80 80 0 1 0 128 48 A 79.2 79.2 0 0 0 69.7 72 H 96 A 8 8 0 0 1 96 88 H 48 A 8 8 0 0 1 40 80 V 32 A 8 8 0 0 1 56 32 V 53.8 A 96 96 0 0 1 224 128 Z</Geometry>
+    <DrawingImage x:Key="IconHistory">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconHistoryGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Info (About) -->
+    <Geometry x:Key="IconInfoGeometry">M 128 24 A 104 104 0 1 0 232 128 A 104 104 0 0 0 128 24 Z M 128 216 A 88 88 0 1 1 216 128 A 88 88 0 0 1 128 216 Z M 128 76 A 16 16 0 1 0 144 92 A 16 16 0 0 0 128 76 Z M 128 120 A 8 8 0 0 0 120 128 V 168 A 8 8 0 0 0 136 168 V 128 A 8 8 0 0 0 128 120 Z</Geometry>
+    <DrawingImage x:Key="IconInfo">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconInfoGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- ==================== ACTION ICONS ==================== -->
+    
+    <!-- Keyboard -->
+    <Geometry x:Key="IconKeyboardGeometry">M 224 56 H 32 A 16 16 0 0 0 16 72 V 184 A 16 16 0 0 0 32 200 H 224 A 16 16 0 0 0 240 184 V 72 A 16 16 0 0 0 224 56 Z M 224 184 H 32 V 72 H 224 Z M 64 96 H 80 A 8 8 0 0 1 80 112 H 64 A 8 8 0 0 1 64 96 Z M 112 96 H 144 A 8 8 0 0 1 144 112 H 112 A 8 8 0 0 1 112 96 Z M 192 96 A 8 8 0 0 1 184 104 H 176 A 8 8 0 0 1 176 88 H 184 A 8 8 0 0 1 192 96 Z M 64 128 H 80 A 8 8 0 0 1 80 144 H 64 A 8 8 0 0 1 64 128 Z M 192 128 A 8 8 0 0 1 184 136 H 176 A 8 8 0 0 1 176 120 H 184 A 8 8 0 0 1 192 128 Z M 112 128 H 144 A 8 8 0 0 1 144 144 H 112 A 8 8 0 0 1 112 128 Z M 176 160 H 80 A 8 8 0 0 1 80 176 H 176 A 8 8 0 0 1 176 160 Z</Geometry>
+    <DrawingImage x:Key="IconKeyboard">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconKeyboardGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Wave Sine (Audio Test) -->
+    <Geometry x:Key="IconWaveSineGeometry">M 232 128 A 8 8 0 0 1 224 136 H 209 C 199 164 184 200 160 200 C 130 200 110 100 80 100 C 60 100 47 136 40 160 H 32 A 8 8 0 0 1 32 144 H 47 C 57 116 72 80 96 80 C 126 80 146 180 176 180 C 196 180 209 144 216 120 H 224 A 8 8 0 0 1 232 128 Z</Geometry>
+    <DrawingImage x:Key="IconWaveSine">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconWaveSineGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- ==================== MODEL ICONS ==================== -->
+    
+    <!-- Lightning (Fast) -->
+    <Geometry x:Key="IconLightningGeometry">M 215.8 118.2 A 8 8 0 0 0 208 112 H 145.8 L 164.6 33.4 A 8 8 0 0 0 150.2 27.4 L 54.2 139.4 A 8 8 0 0 0 60 152 H 118.2 L 91.4 230.6 A 8 8 0 0 0 105.8 240 L 201.8 116.6 A 8 8 0 0 0 215.8 118.2 Z M 120.4 194 L 138.6 140.6 A 8 8 0 0 0 131 128 H 78.8 L 152 44 L 133.4 99.4 A 8 8 0 0 0 141 112 H 197.2 Z</Geometry>
+    <DrawingImage x:Key="IconLightning">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconLightningGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Scales (Balanced) -->
+    <Geometry x:Key="IconScalesGeometry">M 239.4 133 L 207.4 53 A 8 8 0 0 0 192 53 V 40 A 8 8 0 0 0 176 40 V 53 L 144 53 A 8 8 0 0 0 129.6 53 L 97.6 133 A 8 8 0 0 0 96 137 A 40 40 0 0 0 176 137 A 8 8 0 0 0 174.4 133 L 147.4 69 H 176 V 216 H 80 V 69 H 108.6 L 81.6 133 A 8 8 0 0 0 80 137 A 40 40 0 0 0 160 137 A 8 8 0 0 0 158.4 133 L 126.4 53 A 8 8 0 0 0 112 53 L 80 53 A 8 8 0 0 0 64 53 V 69 L 32 69 A 8 8 0 0 0 17.6 69 L 17.6 133 A 8 8 0 0 0 16 137 A 40 40 0 0 0 96 137 A 8 8 0 0 0 94.4 133 L 62.4 53 H 80 V 224 A 8 8 0 0 0 88 232 H 168 A 8 8 0 0 0 176 224 V 53 H 193.6 L 161.6 133 A 8 8 0 0 0 160 137 A 40 40 0 0 0 240 137 A 8 8 0 0 0 239.4 133 Z</Geometry>
+    <DrawingImage x:Key="IconScales">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconScalesGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Target (Accurate) -->
+    <Geometry x:Key="IconTargetGeometry">M 221.9 83.6 L 178.2 127.3 A 8 8 0 0 1 166.9 116 L 210.6 72.3 A 88 88 0 1 0 183.7 183.7 A 88 88 0 0 0 221.9 83.6 Z M 128 196 A 68 68 0 1 1 196 128 A 68 68 0 0 1 128 196 Z M 128 92 A 36 36 0 1 0 164 128 A 36 36 0 0 0 128 92 Z M 128 148 A 20 20 0 1 1 148 128 A 20 20 0 0 1 128 148 Z M 240 40 V 88 A 8 8 0 0 1 224 88 V 56 H 192 A 8 8 0 0 1 192 40 H 232 A 8 8 0 0 1 240 48 Z</Geometry>
+    <DrawingImage x:Key="IconTarget">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconTargetGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- ==================== STATUS ICONS ==================== -->
+    
+    <!-- Arrow Down (Download) -->
+    <Geometry x:Key="IconDownloadGeometry">M 224 144 V 208 A 16 16 0 0 1 208 224 H 48 A 16 16 0 0 1 32 208 V 144 A 8 8 0 0 1 48 144 V 208 H 208 V 144 A 8 8 0 0 1 224 144 Z M 117.7 154.3 A 8 8 0 0 0 138.3 154.3 L 178.3 114.3 A 8 8 0 0 0 166.9 103 L 136 133.9 V 40 A 8 8 0 0 0 120 40 V 133.9 L 89.1 103 A 8 8 0 0 0 77.7 114.3 Z</Geometry>
+    <DrawingImage x:Key="IconDownload">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconDownloadGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Check Circle (Installed/Success) -->
+    <Geometry x:Key="IconCheckCircleGeometry">M 128 24 A 104 104 0 1 0 232 128 A 104 104 0 0 0 128 24 Z M 128 216 A 88 88 0 1 1 216 128 A 88 88 0 0 1 128 216 Z M 173.7 98.3 A 8 8 0 0 1 173.7 109.7 L 117.7 165.7 A 8 8 0 0 1 106.3 165.7 L 82.3 141.7 A 8 8 0 0 1 93.7 130.3 L 112 148.7 L 162.3 98.3 A 8 8 0 0 1 173.7 98.3 Z</Geometry>
+    <DrawingImage x:Key="IconCheckCircle">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconCheckCircleGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Trash (Delete) -->
+    <Geometry x:Key="IconTrashGeometry">M 216 48 H 176 V 40 A 24 24 0 0 0 152 16 H 104 A 24 24 0 0 0 80 40 V 48 H 40 A 8 8 0 0 0 40 64 H 48 V 208 A 16 16 0 0 0 64 224 H 192 A 16 16 0 0 0 208 208 V 64 H 216 A 8 8 0 0 0 216 48 Z M 96 40 A 8 8 0 0 1 104 32 H 152 A 8 8 0 0 1 160 40 V 48 H 96 Z M 192 208 H 64 V 64 H 192 Z M 112 104 V 168 A 8 8 0 0 1 96 168 V 104 A 8 8 0 0 1 112 104 Z M 160 104 V 168 A 8 8 0 0 1 144 168 V 104 A 8 8 0 0 1 160 104 Z</Geometry>
+    <DrawingImage x:Key="IconTrash">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconTrashGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Circle (Ready Status) -->
+    <Geometry x:Key="IconCircleGeometry">M 128 24 A 104 104 0 1 0 232 128 A 104 104 0 0 0 128 24 Z M 128 216 A 88 88 0 1 1 216 128 A 88 88 0 0 1 128 216 Z</Geometry>
+    <DrawingImage x:Key="IconCircle">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconCircleGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Warning (Error) -->
+    <Geometry x:Key="IconWarningGeometry">M 236.8 188.1 L 149.4 36.2 A 24 24 0 0 0 106.6 36.2 L 19.2 188.1 A 23.9 23.9 0 0 0 40 224 H 216 A 23.9 23.9 0 0 0 236.8 188.1 Z M 222 208 H 34 L 121.4 56 A 8 8 0 0 1 134.6 56 L 222 208 Z M 120 144 V 104 A 8 8 0 0 1 136 104 V 144 A 8 8 0 0 1 120 144 Z M 128 176 A 12 12 0 1 1 128 200 A 12 12 0 0 1 128 176 Z</Geometry>
+    <DrawingImage x:Key="IconWarning">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconWarningGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Spinner (Processing) -->
+    <Geometry x:Key="IconSpinnerGeometry">M 128 24 A 104 104 0 0 1 232 128 A 8 8 0 0 1 216 128 A 88 88 0 0 0 128 40 A 8 8 0 0 1 128 24 Z</Geometry>
+    <DrawingImage x:Key="IconSpinner">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconSpinnerGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Play (Start/Test) -->
+    <Geometry x:Key="IconPlayGeometry">M 232.4 114.5 L 88.3 26.4 A 16 16 0 0 0 64 40 V 216 A 16 16 0 0 0 88.3 229.6 L 232.4 141.5 A 16 16 0 0 0 232.4 114.5 Z M 80 215.9 V 40.1 L 224 128 Z</Geometry>
+    <DrawingImage x:Key="IconPlay">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconPlayGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- Notepad/File Text (History item) -->
+    <Geometry x:Key="IconNotepadGeometry">M 200 24 H 56 A 16 16 0 0 0 40 40 V 216 A 16 16 0 0 0 56 232 H 200 A 16 16 0 0 0 216 216 V 40 A 16 16 0 0 0 200 24 Z M 200 216 H 56 V 40 H 200 Z M 88 72 H 168 A 8 8 0 0 1 168 88 H 88 A 8 8 0 0 1 88 72 Z M 88 120 H 168 A 8 8 0 0 1 168 136 H 88 A 8 8 0 0 1 88 120 Z M 88 168 H 128 A 8 8 0 0 1 128 184 H 88 A 8 8 0 0 1 88 168 Z</Geometry>
+    <DrawingImage x:Key="IconNotepad">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}" Geometry="{StaticResource IconNotepadGeometry}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- ==================== ICON STYLE FOR PATH USAGE ==================== -->
+    
+    <Style x:Key="IconPath" TargetType="Path">
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+    </Style>
+    
+    <Style x:Key="IconPathSmall" TargetType="Path">
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+    </Style>
+
+    <!-- Folder -->
+    <Geometry x:Key="IconFolderGeometry">M 32 80 A 16 16 0 0 1 48 64 H 96 L 112 88 H 208 A 16 16 0 0 1 224 104 V 200 A 16 16 0 0 1 208 216 H 48 A 16 16 0 0 1 32 200 V 80 Z</Geometry>
+    
+    <!-- DotsThree (More Horizontal) -->
+    <Geometry x:Key="IconDotsThreeGeometry">M 128 96 A 32 32 0 1 0 160 128 A 32 32 0 0 0 128 96 Z M 48 96 A 32 32 0 1 0 80 128 A 32 32 0 0 0 48 96 Z M 208 96 A 32 32 0 1 0 240 128 A 32 32 0 0 0 208 96 Z</Geometry>
+
+</ResourceDictionary>

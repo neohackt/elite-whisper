@@ -1,0 +1,148 @@
+<UserControl x:Class="EliteWhisper.Views.Pages.AboutPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="700">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32">
+            
+            <!-- App Identity -->
+            <StackPanel HorizontalAlignment="Center" Margin="0,32,0,48">
+                
+                <!-- App Icon -->
+                <Border Background="{StaticResource AccentPrimary}" CornerRadius="20" Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Path Data="{StaticResource IconMicrophoneGeometry}" Fill="White" Stretch="Uniform" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                
+                <!-- App Name -->
+                <TextBlock Text="Elite Whisper" 
+                           Style="{StaticResource HeadingLarge}" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,4"/>
+                
+                <!-- Tagline -->
+                <TextBlock Text="AI-Powered Dictation for Windows" 
+                           Style="{StaticResource BodyText}" 
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,16"/>
+                
+                <!-- Version -->
+                <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="12,6" HorizontalAlignment="Center">
+                    <TextBlock Text="Version 1.0.0" Style="{StaticResource CaptionText}"/>
+                </Border>
+                
+            </StackPanel>
+            
+            <!-- Credits Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconInfoGeometry}" Fill="{StaticResource TextPrimary}" Stretch="Uniform" Width="18" Height="18" Margin="0,0,10,0"/>
+                        <TextBlock Text="Credits" Style="{StaticResource HeadingSmall}"/>
+                    </StackPanel>
+                    
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Developer" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text="Your Name" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                    
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Powered by" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text="OpenAI Whisper" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Built with" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text=".NET 8, WPF, whisper.cpp" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <!-- License Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="License" Style="{StaticResource HeadingSmall}" Margin="0,0,0,12"/>
+                    <TextBlock Style="{StaticResource BodyText}">
+                        <Run Text="This software is provided 'as-is' without any warranty. Elite Whisper uses open-source components including whisper.cpp (MIT License) and NAudio (Ms-PL)."/>
+                    </TextBlock>
+                    <Button Content="View Full License" Style="{StaticResource SecondaryButton}" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Links Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Links" Style="{StaticResource HeadingSmall}" Margin="0,0,0,16"/>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource SecondaryButton}" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconNotepadGeometry}" Fill="{StaticResource TextPrimary}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Documentation" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SecondaryButton}" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconWarningGeometry}" Fill="{StaticResource TextPrimary}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Report Issue" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- System Info Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconGearGeometry}" Fill="{StaticResource TextPrimary}" Stretch="Uniform" Width="18" Height="18" Margin="0,0,10,0"/>
+                        <TextBlock Text="System Information" Style="{StaticResource HeadingSmall}"/>
+                    </StackPanel>
+                    
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Windows" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text="Windows 11 Pro" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                    
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text=".NET Runtime" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text=".NET 8.0.0" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Architecture" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Grid.Column="1" Text="x64" Foreground="{StaticResource TextPrimary}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

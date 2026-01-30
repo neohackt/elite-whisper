@@ -1,0 +1,9 @@
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+dist_v*/
+publish/
+*.pdb
+*.exe
+!dist_v5/EliteWhisper.exe

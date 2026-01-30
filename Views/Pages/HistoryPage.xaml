@@ -1,0 +1,67 @@
+<UserControl x:Class="EliteWhisper.Views.Pages.HistoryPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="700">
+    
+    <Grid Margin="32">
+        
+        <!-- Empty State -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="400">
+            
+            <!-- Icon -->
+            <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="20" Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,24">
+                <Path Data="{StaticResource IconNotepadGeometry}" Fill="{StaticResource TextSecondary}" Stretch="Uniform" Width="36" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            
+            <!-- Title -->
+            <TextBlock Text="No dictations yet" 
+                       Style="{StaticResource HeadingMedium}" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,12"/>
+            
+            <!-- Description -->
+            <TextBlock Text="Your dictation history will appear here. Start dictating by pressing F2 anywhere, and your transcriptions will be saved automatically." 
+                       Style="{StaticResource BodyText}" 
+                       TextAlignment="Center"
+                       Margin="0,0,0,24"/>
+            
+            <!-- Action -->
+            <Button Style="{StaticResource PrimaryButton}" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <Path Data="{StaticResource IconMicrophoneGeometry}" Fill="White" Stretch="Uniform" Width="16" Height="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Start Your First Dictation" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            
+            <!-- Tips -->
+            <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusMedium}" Padding="16" Margin="0,32,0,0">
+                <StackPanel>
+                    <TextBlock Text="What you'll see here:" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,8"/>
+                    <StackPanel Margin="0,4">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="12" Height="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="Complete transcription text" Style="{StaticResource BodyText}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="12" Height="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="Date and time of each dictation" Style="{StaticResource BodyText}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="12" Height="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="Duration and word count" Style="{StaticResource BodyText}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="12" Height="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="Search across all your dictations" Style="{StaticResource BodyText}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

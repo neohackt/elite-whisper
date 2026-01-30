@@ -1,0 +1,99 @@
+<UserControl x:Class="EliteWhisper.Views.Pages.ConfigurationPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="700">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32">
+            
+            <!-- Page Header -->
+            <TextBlock Text="Configuration" Style="{StaticResource HeadingLarge}" Margin="0,0,0,8"/>
+            <TextBlock Text="Customize how Elite Whisper works for you." Style="{StaticResource BodyText}" Margin="0,0,0,32"/>
+            
+            <!-- Whisper Location Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Whisper Location" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Select the folder containing your Whisper installation files." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="12,10">
+                            <TextBlock Text="E:\Elite Whisper Resources" Foreground="{StaticResource TextPrimary}" FontFamily="Consolas"/>
+                        </Border>
+                        <Button Grid.Column="1" Content="Browse" Style="{StaticResource SecondaryButton}" Margin="12,0,0,0"/>
+                    </Grid>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <Ellipse Width="8" Height="8" Fill="{StaticResource AccentSuccess}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Whisper configured correctly" Foreground="{StaticResource AccentSuccess}" FontSize="13"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- Language Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Language" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Choose the primary language for transcription. Auto-detect works well for most cases." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <ComboBox Width="250" HorizontalAlignment="Left" Padding="12,10">
+                        <ComboBoxItem Content="Auto-detect" IsSelected="True"/>
+                        <ComboBoxItem Content="English"/>
+                        <ComboBoxItem Content="Spanish"/>
+                        <ComboBoxItem Content="French"/>
+                        <ComboBoxItem Content="German"/>
+                        <ComboBoxItem Content="Hindi"/>
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+            
+            <!-- Hotkey Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Keyboard Shortcut" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Press this key combination to start and stop dictation." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="20,12" Margin="0,0,12,0">
+                            <TextBlock Text="F2" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                        </Border>
+                        <Button Content="Change" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- Startup Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Startup" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Control how Elite Whisper behaves when you log in to Windows." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <StackPanel>
+                        <CheckBox Margin="0,0,0,12" IsChecked="True">
+                            <StackPanel>
+                                <TextBlock Text="Launch at Windows startup" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
+                                <TextBlock Text="Elite Whisper will start minimized to the system tray" Style="{StaticResource CaptionText}"/>
+                            </StackPanel>
+                        </CheckBox>
+                        
+                        <CheckBox>
+                            <StackPanel>
+                                <TextBlock Text="Start minimized" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
+                                <TextBlock Text="Hide the main window on startup" Style="{StaticResource CaptionText}"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
