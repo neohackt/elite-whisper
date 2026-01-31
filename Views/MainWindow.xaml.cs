@@ -8,10 +8,10 @@ namespace EliteWhisper.Views
     {
         private readonly DashboardViewModel _viewModel;
 
-        public MainWindow()
+        public MainWindow(DashboardViewModel viewModel)
         {
             InitializeComponent();
-            _viewModel = new DashboardViewModel();
+            _viewModel = viewModel;
             DataContext = _viewModel;
         }
 

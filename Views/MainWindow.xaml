@@ -11,6 +11,7 @@
         Height="650" Width="950"
         MinHeight="500" MinWidth="750"
         WindowStartupLocation="CenterScreen"
+        Icon="/Assets/app.ico"
         Background="{StaticResource BackgroundPrimary}">
     
     <Grid>
@@ -31,9 +32,8 @@
                 <!-- App Logo & Title -->
                 <StackPanel Grid.Row="0" Margin="20,24,20,32">
                     <StackPanel Orientation="Horizontal">
-                        <Border Background="{StaticResource AccentPrimary}" CornerRadius="8" Width="36" Height="36" Margin="0,0,12,0">
-                            <TextBlock Text="🎙️" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </Border>
+                        <Image Source="/Assets/logo.png" Width="36" Height="36" Margin="0,0,12,0" 
+                               RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True"/>
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Elite Whisper" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}"/>
                             <TextBlock Text="AI Dictation" FontSize="11" Foreground="{StaticResource TextTertiary}"/>
@@ -98,10 +98,10 @@
                 <Border Grid.Row="2" Margin="12,0,12,16" Style="{StaticResource StatusCapsule}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                            <Ellipse Width="8" Height="8" Fill="{StaticResource AccentSuccess}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Ready" Foreground="{StaticResource TextPrimary}" FontSize="13" FontWeight="Medium"/>
+                            <Ellipse Width="8" Height="8" Fill="{Binding StatusColor}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding AppStatus}" Foreground="{StaticResource TextPrimary}" FontSize="13" FontWeight="Medium"/>
                         </StackPanel>
-                        <TextBlock Text="Press F2 to dictate" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource CaptionText}"/>
                     </StackPanel>
                 </Border>
                 

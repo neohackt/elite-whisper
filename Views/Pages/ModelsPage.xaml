@@ -104,15 +104,15 @@
                                             <Button.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Activate" 
-                                                              Command="{Binding DataContext.ActivateModelCommand, ElementName=ModelsList}"
+                                                              Command="{Binding DataContext.ActivateModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                               CommandParameter="{Binding}"
                                                               Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}"/>
                                                     <MenuItem Header="Reveal in Explorer"
-                                                              Command="{Binding DataContext.RevealInFolderCommand, ElementName=ModelsList}"
+                                                              Command="{Binding DataContext.RevealInFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                               CommandParameter="{Binding}"/>
                                                     <Separator/>
                                                     <MenuItem Header="Delete Model" Foreground="{StaticResource AccentDanger}"
-                                                              Command="{Binding DataContext.DeleteModelCommand, ElementName=ModelsList}"
+                                                              Command="{Binding DataContext.DeleteModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                               CommandParameter="{Binding}"/>
                                                 </ContextMenu>
                                             </Button.ContextMenu>
@@ -220,7 +220,7 @@
                                 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="24,0,0,0">
                                     <Button Margin="0,0,0,8"
-                                            Command="{Binding DataContext.DownloadModelCommand, ElementName=ModelsList}"
+                                            Command="{Binding DataContext.DownloadModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}"
                                             Height="36" MinWidth="110" Padding="12,0">
                                         <Button.Style>
@@ -244,7 +244,7 @@
                                     </Button>
                                     
                                     <Button Margin="0,0,0,8"
-                                            Command="{Binding DataContext.ActivateModelCommand, ElementName=ModelsList}"
+                                            Command="{Binding DataContext.ActivateModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}"
                                             Height="36" MinWidth="110" Padding="12,0">
                                         <Button.Style>
@@ -258,7 +258,7 @@
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                     </DataTrigger>
                                                     <!-- Disable when engine is busy -->
-                                                    <DataTrigger Binding="{Binding DataContext.IsBusy, ElementName=ModelsList}" Value="True">
+                                                    <DataTrigger Binding="{Binding DataContext.IsBusy, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                     </DataTrigger>
                                                     <!-- But keep loading button technically enabled so it looks active (or disabled but styled?) -->

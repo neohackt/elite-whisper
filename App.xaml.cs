@@ -35,6 +35,7 @@ namespace EliteWhisper
                     // Views and ViewModels
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton<MainViewModel>();
+                    services.AddSingleton<DashboardViewModel>();
                     services.AddTransient<ModelsViewModel>();
                     
                     // Widget
