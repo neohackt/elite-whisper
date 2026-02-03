@@ -60,6 +60,22 @@
                         </StackPanel>
                     </RadioButton>
                     
+                    <RadioButton x:Name="NavModes" Style="{StaticResource NavButton}" 
+                                 IsChecked="{Binding IsModesPage, Mode=TwoWay}" GroupName="Nav">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconGearGeometry}" Fill="{StaticResource TextSecondary}" Stretch="Uniform" Width="20" Height="20" Margin="0,0,12,0"/>
+                            <TextBlock Text="Modes" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </RadioButton>
+                    
+                    <RadioButton x:Name="NavAiProviders" Style="{StaticResource NavButton}" 
+                                 IsChecked="{Binding IsAiProvidersPage, Mode=TwoWay}" GroupName="Nav">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconBrainGeometry}" Fill="{StaticResource TextSecondary}" Stretch="Uniform" Width="20" Height="20" Margin="0,0,12,0"/>
+                            <TextBlock Text="AI Providers" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </RadioButton>
+                    
                     <RadioButton x:Name="NavConfiguration" Style="{StaticResource NavButton}" 
                                  IsChecked="{Binding IsConfigurationPage, Mode=TwoWay}" GroupName="Nav">
                         <StackPanel Orientation="Horizontal">
@@ -125,6 +141,20 @@
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <pages:ModelsPage/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentPage}" Value="{x:Static models:AppPage.Modes}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <pages:ModesPage/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentPage}" Value="{x:Static models:AppPage.AiProviders}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <pages:AiProvidersView/>
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EliteWhisper.Views;
@@ -20,9 +21,11 @@ namespace EliteWhisper
         {
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
-            AppHost = Host.CreateDefaultBuilder()
-                .ConfigureServices((hostContext, services) =>
-                {
+            try 
+            {
+                AppHost = Host.CreateDefaultBuilder()
+                    .ConfigureServices((hostContext, services) =>
+                    {
                     // Services
                     services.AddSingleton<HotkeyService>();
                     services.AddSingleton<TextInjectionService>();
@@ -31,12 +34,55 @@ namespace EliteWhisper
                     services.AddSingleton<AIEngineService>();
                     services.AddSingleton<TrayIconService>();
                     services.AddSingleton<ModelRegistryService>();
+                    services.AddSingleton<HistoryService>();
+                    
+                    // LLM Services
+                    services.AddHttpClient("Ollama", client =>
+                    {
+                        client.Timeout = TimeSpan.FromSeconds(10); // Fast check
+                    });
+                    
+                    services.AddHttpClient("Gemini", client =>
+                    {
+                        client.Timeout = TimeSpan.FromSeconds(30);
+                    });
+                    
+                    services.AddHttpClient("OpenRouter", client =>
+                    {
+                        client.Timeout = TimeSpan.FromSeconds(30);
+                    });
+
+                    services.AddSingleton<Services.LLM.OllamaProvider>(sp =>
+                    {
+                        var factory = sp.GetRequiredService<IHttpClientFactory>();
+                        return new Services.LLM.OllamaProvider(factory.CreateClient("Ollama"));
+                    });
+                    services.AddSingleton<Services.LLM.GeminiProvider>(sp =>
+                    {
+                        var factory = sp.GetRequiredService<IHttpClientFactory>();
+                        var configService = sp.GetRequiredService<WhisperConfigurationService>();
+                        var apiKey = configService.CurrentConfiguration.GeminiApiKey;
+                        return new Services.LLM.GeminiProvider(factory.CreateClient("Gemini"), apiKey);
+                    });
+                    services.AddSingleton<Services.LLM.OpenRouterProvider>(sp =>
+                    {
+                        var factory = sp.GetRequiredService<IHttpClientFactory>();
+                        var configService = sp.GetRequiredService<WhisperConfigurationService>();
+                        var apiKey = configService.CurrentConfiguration.OpenRouterApiKey;
+                        return new Services.LLM.OpenRouterProvider(factory.CreateClient("OpenRouter"), apiKey);
+                    });
+                    services.AddSingleton<LlmService>();
+                    services.AddSingleton<PostProcessingService>();
+                    services.AddSingleton<ModeService>();
                     
                     // Views and ViewModels
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<DashboardViewModel>();
                     services.AddTransient<ModelsViewModel>();
+                    services.AddTransient<ModesViewModel>();
+                    services.AddTransient<AiProvidersViewModel>();
+                    services.AddTransient<HistoryViewModel>();
                     
                     // Widget
                     services.AddSingleton<WidgetWindow>();
@@ -46,6 +92,12 @@ namespace EliteWhisper
                     services.AddSingleton<DictationService>();
                 })
                 .Build();
+            }
+            catch (Exception ex)
+            {
+                 MessageBox.Show($"Startup Error: {ex.Message}");
+                 throw; 
+            }
         }
 
         protected override async void OnStartup(StartupEventArgs e)

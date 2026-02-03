@@ -1,0 +1,29 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\App.xaml.cs(101,37): warning CS8602: Dereference of a possibly null reference. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(99,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(119,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(152,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Views\Pages\AiProvidersView.xaml(127,44): error MC3048: '{converters:CountToVisibilityConverter Invert=True}' value is not a valid MarkupExtension expression. Cannot resolve 'CountToVisibilityConverter' in namespace 'clr-namespace:EliteWhisper.Converters'. 'CountToVisibilityConverter' must be a subclass of MarkupExtension. Line 127 Position 44. [d:\Personal\voiceapp\EliteWhisper.csproj]
+
+Build FAILED.
+
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\App.xaml.cs(101,37): warning CS8602: Dereference of a possibly null reference. [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(99,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(119,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Services\ModeService.cs(152,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [d:\Personal\voiceapp\EliteWhisper_x3thk4ej_wpftmp.csproj]
+d:\Personal\voiceapp\Views\Pages\AiProvidersView.xaml(127,44): error MC3048: '{converters:CountToVisibilityConverter Invert=True}' value is not a valid MarkupExtension expression. Cannot resolve 'CountToVisibilityConverter' in namespace 'clr-namespace:EliteWhisper.Converters'. 'CountToVisibilityConverter' must be a subclass of MarkupExtension. Line 127 Position 44. [d:\Personal\voiceapp\EliteWhisper.csproj]
+    9 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:02.61

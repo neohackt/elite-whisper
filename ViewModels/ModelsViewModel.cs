@@ -26,8 +26,13 @@ namespace EliteWhisper.ViewModels
 
         [ObservableProperty]
         private bool _isBusy;
-
-        private ModelCardViewModel? _activatingCard;
+        
+        /// <summary>
+        /// Single source of truth for which model is currently active.
+        /// Stores the model ID (e.g., "fast", "balanced", "accurate").
+        /// </summary>
+        [ObservableProperty]
+        private string? _activeModelId;
 
         public ModelsViewModel(
             ModelRegistryService registryService,
@@ -64,27 +69,36 @@ namespace EliteWhisper.ViewModels
             Models.Clear();
             
             var config = _configService.CurrentConfiguration;
-            var installedFiles = (config.AvailableModels ?? new System.Collections.Generic.List<string>())
-                .Select(p => Path.GetFileName(p))
-                .Where(n => n != null)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase)!;
+            string? modelsDir = config.ModelsDirectory;
+            
+            // If no models directory is configured, use default
+            if (string.IsNullOrEmpty(modelsDir))
+            {
+                modelsDir = Path.Combine(config.BaseDirectory ?? AppDomain.CurrentDomain.BaseDirectory, "models");
+            }
 
-            string? activeModelFile = config.DefaultModelPath != null ? Path.GetFileName(config.DefaultModelPath) : null;
+            // Get active model from config
+            string? activeModelPath = config.DefaultModelPath;
+            string? activeModelFilename = activeModelPath != null ? Path.GetFileName(activeModelPath) : null;
 
             foreach (var entry in _registryService.AvailableModels)
             {
                 var card = new ModelCardViewModel(entry);
                 
-                // Check if installed
-                if (installedFiles.Contains(entry.Filename))
+                // Check if installed by looking for the actual file on disk
+                if (!string.IsNullOrEmpty(modelsDir))
                 {
-                    card.IsInstalled = true;
+                    string modelPath = Path.Combine(modelsDir, entry.Filename);
+                    if (File.Exists(modelPath))
+                    {
+                        card.IsInstalled = true;
+                    }
                 }
                 
-                // Check if active
-                if (activeModelFile != null && activeModelFile.Equals(entry.Filename, StringComparison.OrdinalIgnoreCase))
+                // Set ActiveModelId if this is the active model
+                if (activeModelFilename != null && activeModelFilename.Equals(entry.Filename, StringComparison.OrdinalIgnoreCase))
                 {
-                    card.IsActive = true;
+                    ActiveModelId = entry.Id;
                 }
 
                 Models.Add(card);
@@ -151,7 +165,9 @@ namespace EliteWhisper.ViewModels
         [RelayCommand]
         private void DeleteModel(ModelCardViewModel card)
         {
-            if (!card.IsInstalled || card.IsActive) return;
+            // Don't allow deleting the active model or non-installed models
+            bool isActiveModel = card.Id.Equals(ActiveModelId, StringComparison.OrdinalIgnoreCase);
+            if (!card.IsInstalled || isActiveModel) return;
 
             var result = MessageBox.Show(
                 $"Are you sure you want to delete the '{card.Name}' model?\nThis will remove the file from your disk.",
@@ -324,45 +340,23 @@ namespace EliteWhisper.ViewModels
             {
                 UpdateBusyState(state);
                 
-                if (state == EngineState.Loading && _activatingCard != null)
+                if (state == EngineState.Ready)
                 {
-                    _activatingCard.IsLoading = true;
-                }
-                else if (state == EngineState.Ready)
-                {
-                    // If we were loading a card, clear it
-                    if (_activatingCard != null)
+                    // Refresh ActiveModelId from config
+                    string? activePath = _configService.CurrentConfiguration.DefaultModelPath;
+                    string? activeFilename = activePath != null ? Path.GetFileName(activePath) : null;
+                    
+                    // Find the model card with matching filename and set ActiveModelId
+                    if (activeFilename != null)
                     {
-                        var wasLoading = _activatingCard.IsLoading;
-                        _activatingCard.IsLoading = false;
+                        var activeCard = Models.FirstOrDefault(m => 
+                            m.Filename.Equals(activeFilename, StringComparison.OrdinalIgnoreCase));
                         
-                        // Check if it actually became active (Success)
-                        if (wasLoading && _activatingCard.IsActive)
+                        if (activeCard != null)
                         {
-                            // Success feedback could go here, or simple refresh
-                        }
-                        
-                        _activatingCard = null;
-                        
-                        // Refresh active states based on config
-                        string? activePath = _configService.CurrentConfiguration.DefaultModelPath;
-                        string? activeFile = activePath != null ? Path.GetFileName(activePath) : null;
-                        
-                        foreach (var m in Models)
-                        {
-                            // Update active state
-                            bool isActive = activeFile != null && activeFile.Equals(m.Filename, StringComparison.OrdinalIgnoreCase);
-                            m.IsActive = isActive;
+                            ActiveModelId = activeCard.Id;
                         }
                     }
-                }
-                else if (state == EngineState.Error)
-                {
-                     if (_activatingCard != null)
-                     {
-                         _activatingCard.IsLoading = false;
-                         _activatingCard = null;
-                     }
                 }
             });
         }
@@ -382,22 +376,15 @@ namespace EliteWhisper.ViewModels
 
             string fullPath = Path.Combine(modelsDir, card.Filename);
             
-            _activatingCard = card;
-            
             try 
             {
-                // UI updates driven by OnEngineStateChanged
+                // Activate the model via engine service
                 bool success = await _aiEngine.ActivateModelAsync(fullPath);
                 
                 if (success)
                 {
-                    // Toast or subtle confirmation handled by state transition or here
-                    // MessageBox.Show($"{card.Name} is ready.", "Model Ready", MessageBoxButton.OK, MessageBoxImage.Information); 
-                    // Requirement says "Subtle confirmation: '{ModelName} is ready.'"
-                    // We can't show a generic MessageBox for subtle. 
-                    // Ideally we'd have a Toast service. 
-                    // For now, we'll assume the UI state change "Using This" is the primary specific feedback, 
-                    // effectively fulfilling "Update selected card to 'Using This'".
+                    // Update single source of truth
+                    ActiveModelId = card.Id;
                 }
                 else
                 {

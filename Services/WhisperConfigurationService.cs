@@ -147,6 +147,9 @@ namespace EliteWhisper.Services
             if (!validation.IsValid)
                 throw new InvalidOperationException("Cannot apply invalid configuration");
 
+            // Capture existing user preferences to preserve them
+            var existingConfig = _currentConfig;
+
             _currentConfig = new WhisperConfiguration
             {
                 BaseDirectory = baseDirectory,
@@ -154,8 +157,22 @@ namespace EliteWhisper.Services
                 ModelsDirectory = validation.ModelsDirectory,
                 DefaultModelPath = validation.AvailableModels.FirstOrDefault(),
                 AvailableModels = validation.AvailableModels,
-                LastValidated = DateTime.Now
+                LastValidated = DateTime.Now,
+
+                // Restore persistent user settings
+                HasCompletedFirstRun = existingConfig.HasCompletedFirstRun,
+                HistoryStoragePath = existingConfig.HistoryStoragePath,
+                Modes = existingConfig.Modes ?? new List<DictationMode>(),
+                ActiveModeId = existingConfig.ActiveModeId,
+                GeminiApiKey = existingConfig.GeminiApiKey,
+                OpenRouterApiKey = existingConfig.OpenRouterApiKey,
+                DefaultProviderPreference = existingConfig.DefaultProviderPreference
             };
+
+            // If we have a custom models directory set in the wizard (that might differ from auto-discovery),
+            // and the user hasn't just reset everything, we might want to respect it. 
+            // However, validation result dictates what's actually available. 
+            // For now, determining valid models takes precedence to ensure app works.
 
             SaveConfiguration(_currentConfig);
         }
@@ -169,6 +186,27 @@ namespace EliteWhisper.Services
                 throw new FileNotFoundException("Model file not found", modelPath);
 
             _currentConfig.DefaultModelPath = modelPath;
+            SaveConfiguration(_currentConfig);
+        }
+
+        /// <summary>
+        /// Set the custom history storage path
+        /// </summary>
+        public void SetHistoryStoragePath(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException($"Cannot access or create directory: {path}", ex);
+                }
+            }
+
+            _currentConfig.HistoryStoragePath = path;
             SaveConfiguration(_currentConfig);
         }
 
@@ -206,10 +244,13 @@ namespace EliteWhisper.Services
         /// <summary>
         /// Save configuration to disk
         /// </summary>
-        private void SaveConfiguration(WhisperConfiguration config)
+        public void SaveConfiguration(WhisperConfiguration config)
         {
             try
             {
+                // Ensure keys are encrypted before saving
+                EncryptApiKeys(config);
+
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string json = JsonSerializer.Serialize(config, options);
                 File.WriteAllText(_configFilePath, json);
@@ -218,6 +259,71 @@ namespace EliteWhisper.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to save config: {ex.Message}");
             }
+        }
+
+        private void EncryptApiKeys(WhisperConfiguration config)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(config.GeminiApiKey) && !IsBase64String(config.GeminiApiKey))
+                {
+                    config.GeminiApiKey = EncryptString(config.GeminiApiKey);
+                }
+
+                if (!string.IsNullOrEmpty(config.OpenRouterApiKey) && !IsBase64String(config.OpenRouterApiKey))
+                {
+                    config.OpenRouterApiKey = EncryptString(config.OpenRouterApiKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Encryption failed: {ex.Message}");
+            }
+        }
+
+        public string? DecryptApiKey(string? encryptedKey)
+        {
+            if (string.IsNullOrEmpty(encryptedKey)) return null;
+            
+            try
+            {
+                // If it's not base64, assume it's legacy plaintext
+                if (!IsBase64String(encryptedKey))
+                {
+                    // It will get encrypted on next save
+                    System.Diagnostics.Debug.WriteLine("Migrated legacy API key to encrypted storage");
+                    return encryptedKey; 
+                }
+
+                return DecryptString(encryptedKey);
+            }
+            catch
+            {
+                // Decryption failed (maybe machine changed?), return empty
+                return null;
+            }
+        }
+
+        private string EncryptString(string plainText)
+        {
+            byte[] plainBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptedBytes = System.Security.Cryptography.ProtectedData.Protect(
+                plainBytes, null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encryptedBytes);
+        }
+
+        private string DecryptString(string encryptedText)
+        {
+            byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+            byte[] plainBytes = System.Security.Cryptography.ProtectedData.Unprotect(
+                encryptedBytes, null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            return System.Text.Encoding.UTF8.GetString(plainBytes);
+        }
+
+        private bool IsBase64String(string s)
+        {
+            Span<byte> buffer = new Span<byte>(new byte[s.Length]);
+            return Convert.TryFromBase64String(s, buffer, out _);
         }
 
         /// <summary>

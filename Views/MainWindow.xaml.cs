@@ -10,7 +10,20 @@ namespace EliteWhisper.Views
 
         public MainWindow(DashboardViewModel viewModel)
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    ex.ToString(),
+                    "XAML Load Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+                throw;
+            }
+            
             _viewModel = viewModel;
             DataContext = _viewModel;
         }

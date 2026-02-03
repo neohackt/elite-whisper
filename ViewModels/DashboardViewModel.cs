@@ -97,6 +97,18 @@ namespace EliteWhisper.ViewModels
             set { if (value) CurrentPage = AppPage.Models; }
         }
 
+        public bool IsModesPage
+        {
+            get => CurrentPage == AppPage.Modes;
+            set { if (value) CurrentPage = AppPage.Modes; }
+        }
+
+        public bool IsAiProvidersPage
+        {
+            get => CurrentPage == AppPage.AiProviders;
+            set { if (value) CurrentPage = AppPage.AiProviders; }
+        }
+
         public bool IsConfigurationPage
         {
             get => CurrentPage == AppPage.Configuration;
@@ -125,6 +137,8 @@ namespace EliteWhisper.ViewModels
         {
             OnPropertyChanged(nameof(IsHomePage));
             OnPropertyChanged(nameof(IsModelsPage));
+            OnPropertyChanged(nameof(IsModesPage));
+            OnPropertyChanged(nameof(IsAiProvidersPage));
             OnPropertyChanged(nameof(IsConfigurationPage));
             OnPropertyChanged(nameof(IsSoundPage));
             OnPropertyChanged(nameof(IsHistoryPage));

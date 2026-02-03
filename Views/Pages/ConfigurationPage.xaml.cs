@@ -7,6 +7,13 @@ namespace EliteWhisper.Views.Pages
         public ConfigurationPage()
         {
             InitializeComponent();
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                if (App.AppHost != null)
+                {
+                    DataContext = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ViewModels.MainViewModel>(App.AppHost.Services);
+                }
+            }
         }
     }
 }

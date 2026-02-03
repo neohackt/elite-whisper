@@ -12,8 +12,15 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:IconNameToGeometryConverter x:Key="IconNameToGeometryConverter"/>
             <converters:BoolToStringConverter x:Key="BoolToStringConverter"/>
+            <converters:StringEqualsConverter x:Key="StringEqualsConverter"/>
+            <converters:StringEqualsToVisibilityConverter x:Key="StringEqualsToVisibilityConverter"/>
+            <converters:StringNotEqualsToVisibilityConverter x:Key="StringNotEqualsToVisibilityConverter"/>
+            <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter"/>
+            <converters:StringEqualsToVisibilityMultiConverter x:Key="StringEqualsToVisibilityMultiConverter"/>
+            <converters:EnumToBooleanConverter x:Key="EnumToBool"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

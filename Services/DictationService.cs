@@ -14,6 +14,9 @@ namespace EliteWhisper.Services
         private readonly TextInjectionService _injectionService;
         private readonly AIEngineService _aiEngine;
         private readonly WidgetViewModel _widgetViewModel;
+        private readonly HistoryService _historyService;
+        private readonly PostProcessingService _postProcessingService;
+        private readonly ModeService _modeService;
         private CancellationTokenSource? _cts;
         private string? _currentAudioPath;
         private int _retryCount = 0;
@@ -23,12 +26,18 @@ namespace EliteWhisper.Services
             AudioCaptureService audioService,
             TextInjectionService injectionService,
             AIEngineService aiEngine,
-            WidgetViewModel widgetViewModel)
+            WidgetViewModel widgetViewModel,
+            HistoryService historyService,
+            PostProcessingService postProcessingService,
+            ModeService modeService)
         {
             _audioService = audioService;
             _injectionService = injectionService;
             _aiEngine = aiEngine;
             _widgetViewModel = widgetViewModel;
+            _historyService = historyService;
+            _postProcessingService = postProcessingService;
+            _modeService = modeService;
 
             // Wire up visualization
             _audioService.AudioLevelUpdated += (s, level) => _widgetViewModel.UpdateMicLevel(level);
@@ -142,10 +151,26 @@ namespace EliteWhisper.Services
                     return;
                 }
                 
+                
                 if (!string.IsNullOrWhiteSpace(transcription))
                 {
+                    // Post-process with LLM if enabled
+                    var activeMode = _modeService.ActiveMode;
+                    var finalText = await _postProcessingService.ProcessAsync(transcription, activeMode);
+                    
                     _widgetViewModel.StatusText = "Typing...";
-                    await _injectionService.InjectTextAsync(transcription, _cts?.Token ?? CancellationToken.None);
+                    await _injectionService.InjectTextAsync(finalText, _cts?.Token ?? CancellationToken.None);
+                    
+                    // Save to History (save final text, not raw)
+                    _historyService.AddRecord(new Models.DictationRecord
+                    {
+                        Content = finalText,
+                        Timestamp = DateTime.Now,
+                        // Duration is not directly available here, could be calculated from audio file if needed
+                        ModelUsed = _aiEngine.GetConfiguration()?.DefaultModelPath ?? "Unknown",
+                        ApplicationName = "Active Window" // Placeholder, could get real window title if needed
+                    });
+
                     _widgetViewModel.StatusText = "Done!";
                 }
                 else

@@ -7,6 +7,8 @@ namespace EliteWhisper.Models
     {
         Home,
         Models,
+        Modes,
+        AiProviders,
         Configuration,
         Sound,
         History,

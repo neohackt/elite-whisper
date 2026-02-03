@@ -44,7 +44,13 @@
                                 <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
                                     <Setter Property="BorderBrush" Value="Transparent"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                    <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                    <Binding Path="Id"/>
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
                                             <Setter Property="BorderBrush" Value="{StaticResource AccentPrimary}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -77,8 +83,13 @@
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                                                 <TextBlock Text="{Binding Name}" Style="{StaticResource HeadingMedium}"/>
-                                                <Border Background="{StaticResource AccentPrimary}" CornerRadius="4" Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center"
-                                                        Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                                                <Border Background="{StaticResource AccentPrimary}" CornerRadius="4" Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center">
+                                                    <Border.Visibility>
+                                                        <MultiBinding Converter="{StaticResource StringEqualsToVisibilityMultiConverter}">
+                                                            <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                            <Binding Path="Id"/>
+                                                        </MultiBinding>
+                                                    </Border.Visibility>
                                                     <TextBlock Text="ACTIVE" Foreground="White" FontSize="10" FontWeight="Bold"/>
                                                 </Border>
                                             </StackPanel>
@@ -94,7 +105,13 @@
                                                         <DataTrigger Binding="{Binding IsInstalled}" Value="True">
                                                             <Setter Property="Visibility" Value="Visible"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <DataTrigger Value="True">
+                                                            <DataTrigger.Binding>
+                                                                <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                                    <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                                    <Binding Path="Id"/>
+                                                                </MultiBinding>
+                                                            </DataTrigger.Binding>
                                                             <Setter Property="Visibility" Value="Hidden"/> <!-- Don't let user delete active via menu easily -->
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -254,7 +271,13 @@
                                                     <DataTrigger Binding="{Binding IsInstalled}" Value="True">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <DataTrigger Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                                <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                                <Binding Path="Id"/>
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                     </DataTrigger>
                                                     <!-- Disable when engine is busy -->
@@ -283,16 +306,39 @@
                                                 <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="White" Stretch="Uniform" Width="14" Height="14" Margin="0,0,8,0">
                                                     <Path.Style>
                                                         <Style TargetType="Path">
-                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                                            <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                                            <Binding Path="Id"/>
+                                                                        </MultiBinding>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Path.Style>
                                                 </Path>
-                                                <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Using This|Activate'}" VerticalAlignment="Center"/>
+                                                <TextBlock VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="Activate"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <MultiBinding Converter="{StaticResource StringEqualsMultiConverter}">
+                                                                            <Binding Path="DataContext.ActiveModelId" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                                            <Binding Path="Id"/>
+                                                                        </MultiBinding>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="Text" Value="Using This"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </StackPanel>
 
                                             <!-- Loading Content -->

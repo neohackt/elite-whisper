@@ -93,6 +93,28 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
+
+            <!-- History Storage Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="History Storage" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Choose where your dictation history is saved." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="12,10">
+                            <TextBlock Text="{Binding HistoryPath}" Foreground="{StaticResource TextPrimary}" FontFamily="Consolas" TextTrimming="CharacterEllipsis" ToolTip="{Binding HistoryPath}"/>
+                        </Border>
+                        <Button Grid.Column="1" Content="Change Folder" 
+                                Command="{Binding BrowseHistoryFolderCommand}"
+                                Style="{StaticResource SecondaryButton}" Margin="12,0,0,0"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
             
         </StackPanel>
     </ScrollViewer>

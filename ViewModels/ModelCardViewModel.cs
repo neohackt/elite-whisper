@@ -15,13 +15,7 @@ namespace EliteWhisper.ViewModels
         private bool _isInstalled;
         
         [ObservableProperty]
-        private bool _isActive;
-        
-        [ObservableProperty]
         private bool _isDownloading;
-
-        [ObservableProperty]
-        private bool _isLoading;
         
         [ObservableProperty]
         private double _downloadProgress;
