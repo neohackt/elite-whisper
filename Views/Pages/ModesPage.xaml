@@ -160,26 +160,36 @@
                                                 
                                                 <TextBlock Text="Local Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                                 <ComboBox ItemsSource="{Binding DataContext.AvailableLocalModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                          SelectedValue="{Binding PostProcess.PreferredModel}"
+                                                          SelectedValue="{Binding PostProcess.PreferredLocalModel}"
+                                                          DropDownClosed="OnModelSelectionChanged"
                                                           Style="{StaticResource PremiumComboBox}"
-                                                          Width="200" HorizontalAlignment="Left">
-                                                     <ComboBox.InputBindings>
-                                                         <!-- Save on selection change -->
-                                                        <!-- Since ComboBox doesn't support command on selection easily without interaction triggers, we rely on property change if possible or add event listener. 
-                                                             However, we can use DropDownClosed to trigger a save or rely on the bound property update. 
-                                                             We will use an interaction trigger wrapper or just assume user will change focus. 
-                                                             Better: Bind 'SelectedValue' and use 'DropDownClosed' event via Behavior, OR simpler: 
-                                                             Just let the bindings work and if we really need immediate save, users can click something else. 
-                                                             BUT, we added SaveModeSettingsCommand. We can bind it to selection changed if we used Interactivity. 
-                                                             For standard WPF without behaviors, we might miss the save trigger.
-                                                             Let's just rely on binding updates if ModeService saves on property change? No it doesn't.
-                                                             We need to save. 
-                                                             Let's use DropDownClosed event trigger via simple attached property or accept that it saves when switching tabs if we hooked that up, but we didn't.
-                                                             Actually, let's just add a 'Save' button? No, that's ugly.
-                                                             We can use 'SelectionChanged' event in code behind to call command? No code behind.
-                                                             We will assume for now that if they change provider, it saves. Model change might imply needing to click away?
-                                                             Let's keep it simple. -->
-                                                     </ComboBox.InputBindings>
+                                                          Width="200" HorizontalAlignment="Left"
+                                                          Padding="8,6">
+                                                </ComboBox>
+                                            </StackPanel>
+
+                                            <!-- Gemini Model Selector -->
+                                            <StackPanel Margin="0,0,0,8">
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Gemini">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                
+                                                <TextBlock Text="Gemini Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                <ComboBox ItemsSource="{Binding DataContext.AvailableGeminiModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                          DisplayMemberPath="DisplayName"
+                                                          SelectedValuePath="Id"
+                                                          SelectedValue="{Binding PostProcess.PreferredGeminiModel}"
+                                                          DropDownClosed="OnModelSelectionChanged"
+                                                          Style="{StaticResource PremiumComboBox}"
+                                                          Width="200" HorizontalAlignment="Left"
+                                                          Padding="8,6">
                                                 </ComboBox>
                                             </StackPanel>
 
@@ -195,10 +205,16 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </StackPanel.Style>
-                                                <TextBlock Text="OpenRouter Model ID" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                                                <TextBox Text="{Binding PostProcess.PreferredModel, UpdateSourceTrigger=PropertyChanged}" 
-                                                         Style="{StaticResource InputField}" Width="200" HorizontalAlignment="Left"
-                                                         Tag="e.g. anthracite/claude-3-opus"/>
+                                                <TextBlock Text="OpenRouter Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                <ComboBox ItemsSource="{Binding DataContext.AvailableOpenRouterModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                          SelectedValue="{Binding PostProcess.PreferredOpenRouterModel}"
+                                                          DisplayMemberPath="DisplayName"
+                                                          SelectedValuePath="Id"
+                                                          DropDownClosed="OnModelSelectionChanged"
+                                                          Style="{StaticResource PremiumComboBox}"
+                                                          Width="250" HorizontalAlignment="Left"
+                                                          Padding="8,6">
+                                                </ComboBox>
                                             </StackPanel>
                                             
                                             <!-- Helper Text -->

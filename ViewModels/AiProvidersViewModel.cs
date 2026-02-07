@@ -15,6 +15,7 @@ namespace EliteWhisper.ViewModels
         private readonly WhisperConfigurationService _configService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly OllamaProvider _ollamaProvider;
+        private readonly GeminiProvider _geminiProvider;
 
         // Status Status
         [ObservableProperty]
@@ -25,6 +26,9 @@ namespace EliteWhisper.ViewModels
         
         [ObservableProperty]
         private bool _isOpenRouterConfigured;
+
+        [ObservableProperty]
+        private string _geminiStatusText = "";
 
         // Local Models
         public ObservableCollection<LocalModelInfo> LocalModels { get; } = new();
@@ -58,15 +62,23 @@ namespace EliteWhisper.ViewModels
         public AiProvidersViewModel(
             WhisperConfigurationService configService, 
             IHttpClientFactory httpClientFactory,
-            OllamaProvider ollamaProvider)
+            OllamaProvider ollamaProvider,
+            GeminiProvider geminiProvider)
         {
             _configService = configService;
             _httpClientFactory = httpClientFactory;
             _ollamaProvider = ollamaProvider;
+            _geminiProvider = geminiProvider;
             
             LoadConfiguration();
             CheckOllamaStatusAsync().ConfigureAwait(false);
             RefreshModelsCommand.ExecuteAsync(null);
+
+            // Auto-load Gemini if key exists
+            if (IsGeminiConfigured)
+            {
+                 RefreshGeminiModelsCommand.ExecuteAsync(null);
+            }
         }
 
         private void LoadConfiguration()
@@ -140,10 +152,24 @@ namespace EliteWhisper.ViewModels
             {
                 IsDownloading = true;
                 DownloadProgress = 0;
-                DownloadStatusText = $"Pulling {NewModelName}...";
+                // Sanitize input: remove "ollama pull" or "ollama run" if user pasted the whole command
+                var modelToPull = NewModelName.Trim();
+                if (modelToPull.StartsWith("ollama pull ", System.StringComparison.OrdinalIgnoreCase))
+                    modelToPull = modelToPull.Substring(12).Trim();
+                if (modelToPull.StartsWith("ollama run ", System.StringComparison.OrdinalIgnoreCase))
+                    modelToPull = modelToPull.Substring(11).Trim();
+
+                if (string.IsNullOrWhiteSpace(modelToPull))
+                {
+                     DownloadStatusText = "Invalid model name";
+                     IsDownloading = false;
+                     return;
+                }
+
+                DownloadStatusText = $"Pulling {modelToPull}...";
 
                 var progress = new Progress<int>(p => DownloadProgress = p);
-                await _ollamaProvider.PullModelAsync(NewModelName, progress);
+                await _ollamaProvider.PullModelAsync(modelToPull, progress);
                 
                 DownloadStatusText = "Done!";
                 NewModelName = ""; // Clear input
@@ -186,7 +212,54 @@ namespace EliteWhisper.ViewModels
         }
 
         [RelayCommand]
-        private void SaveKeys()
+        private async Task RefreshGeminiModels()
+        {
+            if (!IsGeminiConfigured) 
+            {
+                GeminiStatusText = "API Key needed";
+                return;
+            }
+
+            try
+            {
+                GeminiStatusText = "Loading models...";
+                var result = await _geminiProvider.GetAvailableModelsAsync();
+                var models = result.Models;
+                var debugLog = result.DebugLog;
+                
+                if (models.Count > 0)
+                {
+                    // Cache to config
+                    var config = _configService.CurrentConfiguration;
+                    config.GeminiModels = models;
+                    _configService.SaveConfiguration(config);
+                    
+                    GeminiStatusText = $"{models.Count} models loaded";
+                }
+                else
+                {
+                    // Show full debug info to user
+                    var lastLine = debugLog.Trim().Split('\n').LastOrDefault() ?? "Unknown error";
+                    GeminiStatusText = $"Failed: {lastLine}";
+                    
+                    System.Windows.MessageBox.Show(
+                        $"Gemini Model Discovery Failed.\n\nDebug Log:\n{debugLog}", 
+                        "Gemini Debug Info", 
+                        System.Windows.MessageBoxButton.OK, 
+                        System.Windows.MessageBoxImage.Warning);
+                        
+                    System.Diagnostics.Debug.WriteLine($"Gemini Refresh Debug: {debugLog}");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                GeminiStatusText = $"Error: {ex.Message}";
+                System.Windows.MessageBox.Show($"Unexpected Error:\n{ex}", "Gemini Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task SaveKeys()
         {
             bool changed = false;
             var config = _configService.CurrentConfiguration;
@@ -213,6 +286,11 @@ namespace EliteWhisper.ViewModels
                 _configService.SaveConfiguration(config);
                 System.Windows.MessageBox.Show("API keys saved securely.", "Configuration Saved", 
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                
+                if (IsGeminiConfigured)
+                {
+                    await RefreshGeminiModels();
+                }
             }
         }
     }

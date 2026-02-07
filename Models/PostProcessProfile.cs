@@ -36,5 +36,10 @@ namespace EliteWhisper.Models
         /// Only used if provider supports model selection.
         /// </summary>
         public string? PreferredModel { get; set; }
+        
+        // Per-Provider Persistence
+        public string? PreferredLocalModel { get; set; }
+        public string? PreferredGeminiModel { get; set; }
+        public string? PreferredOpenRouterModel { get; set; }
     }
 }

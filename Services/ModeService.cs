@@ -95,7 +95,17 @@ namespace EliteWhisper.Services
                     IsPro = false,
                     PostProcess = new PostProcessProfile
                     {
-                        PromptTemplate = "Rewrite the text as a professional email.\nConcise, polite, and clear.\n\n{{text}}",
+                        PromptTemplate = @"Rewrite the {{text}} text as a clear and professional email.
+
+Improve clarity, grammar, and structure while preserving the original intent and tone. Be polite, concise, and natural. Do not add information that is not present in the {{text}}.
+
+Organize the content logically using short paragraphs. If the content naturally fits a list, format it as bullet points.
+
+Only include a greeting or closing if they are implied by the {{text}}. Do not invent subject lines, signatures, or extra commentary.
+
+Write numbers as numerals where appropriate (e.g., ""five"" → ""5"", ""twenty dollars"" → ""$20"").
+
+Output only the email body text.",
                         RunLocally = false,
                         PreferredProvider = PreferredProvider.Auto
                     }

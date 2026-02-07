@@ -39,17 +39,17 @@ namespace EliteWhisper
                     // LLM Services
                     services.AddHttpClient("Ollama", client =>
                     {
-                        client.Timeout = TimeSpan.FromSeconds(10); // Fast check
+                        client.Timeout = TimeSpan.FromMinutes(5); // Increased for local inference
                     });
                     
                     services.AddHttpClient("Gemini", client =>
                     {
-                        client.Timeout = TimeSpan.FromSeconds(30);
+                        client.Timeout = TimeSpan.FromSeconds(60);
                     });
                     
                     services.AddHttpClient("OpenRouter", client =>
                     {
-                        client.Timeout = TimeSpan.FromSeconds(30);
+                        client.Timeout = TimeSpan.FromSeconds(60);
                     });
 
                     services.AddSingleton<Services.LLM.OllamaProvider>(sp =>
@@ -61,15 +61,13 @@ namespace EliteWhisper
                     {
                         var factory = sp.GetRequiredService<IHttpClientFactory>();
                         var configService = sp.GetRequiredService<WhisperConfigurationService>();
-                        var apiKey = configService.CurrentConfiguration.GeminiApiKey;
-                        return new Services.LLM.GeminiProvider(factory.CreateClient("Gemini"), apiKey);
+                        return new Services.LLM.GeminiProvider(factory.CreateClient("Gemini"), configService);
                     });
                     services.AddSingleton<Services.LLM.OpenRouterProvider>(sp =>
                     {
                         var factory = sp.GetRequiredService<IHttpClientFactory>();
                         var configService = sp.GetRequiredService<WhisperConfigurationService>();
-                        var apiKey = configService.CurrentConfiguration.OpenRouterApiKey;
-                        return new Services.LLM.OpenRouterProvider(factory.CreateClient("OpenRouter"), apiKey);
+                        return new Services.LLM.OpenRouterProvider(factory.CreateClient("OpenRouter"), configService);
                     });
                     services.AddSingleton<LlmService>();
                     services.AddSingleton<PostProcessingService>();
@@ -80,8 +78,22 @@ namespace EliteWhisper
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<DashboardViewModel>();
                     services.AddTransient<ModelsViewModel>();
-                    services.AddTransient<ModesViewModel>();
-                    services.AddTransient<AiProvidersViewModel>();
+                    services.AddTransient<ModesViewModel>(sp =>
+                    {
+                        var modeService = sp.GetRequiredService<ModeService>();
+                        var ollamaProvider = sp.GetRequiredService<Services.LLM.OllamaProvider>();
+                        var openRouterProvider = sp.GetRequiredService<Services.LLM.OpenRouterProvider>();
+                        var configService = sp.GetRequiredService<WhisperConfigurationService>();
+                        return new ModesViewModel(modeService, ollamaProvider, openRouterProvider, configService);
+                    });
+                    services.AddTransient<AiProvidersViewModel>(sp =>
+                    {
+                        var configService = sp.GetRequiredService<WhisperConfigurationService>();
+                        var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                        var ollamaProvider = sp.GetRequiredService<Services.LLM.OllamaProvider>();
+                        var geminiProvider = sp.GetRequiredService<Services.LLM.GeminiProvider>();
+                        return new AiProvidersViewModel(configService, httpClientFactory, ollamaProvider, geminiProvider);
+                    });
                     services.AddTransient<HistoryViewModel>();
                     
                     // Widget

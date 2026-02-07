@@ -19,5 +19,17 @@ namespace EliteWhisper.Views.Pages
                 DataContext = App.AppHost.Services.GetRequiredService<ModesViewModel>();
             }
         }
+
+        private void OnModelSelectionChanged(object sender, System.EventArgs e)
+        {
+            if (DataContext is ModesViewModel vm)
+            {
+                // Trigger save when model selection changes
+                if (vm.SaveModeSettingsCommand.CanExecute(null))
+                {
+                    vm.SaveModeSettingsCommand.Execute(null);
+                }
+            }
+        }
     }
 }

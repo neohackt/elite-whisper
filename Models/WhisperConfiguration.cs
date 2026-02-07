@@ -79,6 +79,11 @@ namespace EliteWhisper.Models
         public PreferredProvider DefaultProviderPreference { get; set; } = PreferredProvider.Auto;
 
         /// <summary>
+        /// Cached list of discovered Gemini models.
+        /// </summary>
+        public List<GeminiModelInfo> GeminiModels { get; set; } = new();
+
+        /// <summary>
         /// Available models discovered
         /// </summary>
         [JsonIgnore]

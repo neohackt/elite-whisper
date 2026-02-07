@@ -25,16 +25,9 @@ namespace EliteWhisper.Services.LLM
         {
             get
             {
-                try
-                {
-                    // Quick ping to check if Ollama is running
-                    var response = _httpClient.GetAsync($"{BaseUrl}/api/tags", new CancellationTokenSource(1000).Token).Result;
-                    return response.IsSuccessStatusCode;
-                }
-                catch
-                {
-                    return false;
-                }
+                // Optimistic availability to avoid blocking UI thread. 
+                // Actual connection issues will be caught during generation.
+                return true; 
             }
         }
         
@@ -74,9 +67,25 @@ namespace EliteWhisper.Services.LLM
             response.EnsureSuccessStatusCode();
             
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
-            var result = JsonSerializer.Deserialize<OllamaResponse>(responseJson);
+            var result = JsonSerializer.Deserialize<OllamaResponse>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
-            return result?.Response ?? string.Empty;
+            var rawText = result?.Response ?? string.Empty;
+            return StripThinking(rawText);
+        }
+
+        private static string StripThinking(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            // Remove <think>...</think> blocks (case insensitive, single line or multi line)
+            // Handles both closed tags and unclosed tags (if truncated)
+            return System.Text.RegularExpressions.Regex.Replace(
+                text,
+                @"<think>[\s\S]*?(?:</think>|$)",
+                string.Empty,
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+            ).Trim();
         }
 
         public async Task<System.Collections.Generic.List<LocalModelInfo>> GetInstalledModelsAsync()
@@ -126,9 +135,9 @@ namespace EliteWhisper.Services.LLM
              using var stream = await response.Content.ReadAsStreamAsync();
              using var reader = new System.IO.StreamReader(stream);
 
-             while (!reader.EndOfStream)
+             string? line;
+             while ((line = await reader.ReadLineAsync()) != null)
              {
-                 var line = await reader.ReadLineAsync();
                  if (string.IsNullOrEmpty(line)) continue;
                  
                  try 
