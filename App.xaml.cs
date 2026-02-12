@@ -14,6 +14,8 @@ namespace EliteWhisper
     {
         public static IHost? AppHost { get; private set; }
 
+        public IServiceProvider Services => AppHost!.Services;
+
         private WidgetWindow? _widgetWindow;
         private TrayIconService? _trayIcon;
 
@@ -95,6 +97,7 @@ namespace EliteWhisper
                         return new AiProvidersViewModel(configService, httpClientFactory, ollamaProvider, geminiProvider);
                     });
                     services.AddTransient<HistoryViewModel>();
+                    services.AddTransient<SoundViewModel>();
                     
                     // Widget
                     services.AddSingleton<WidgetWindow>();

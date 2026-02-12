@@ -46,13 +46,13 @@
                     
                     <!-- Level Meter -->
                     <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Height="24" Margin="0,0,0,16">
-                        <Border Background="{StaticResource AccentSuccess}" CornerRadius="{StaticResource RadiusSmall}" Width="180" HorizontalAlignment="Left"/>
+                        <ProgressBar Value="{Binding InputLevel, Mode=OneWay}" Maximum="100" Height="24" BorderThickness="0" Background="Transparent" Foreground="{Binding InputLevelColor}"/>
                     </Border>
                     
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Current level:" Style="{StaticResource BodyText}" Margin="0,0,8,0"/>
-                        <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="14" Height="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Good" Foreground="{StaticResource AccentSuccess}" FontWeight="SemiBold"/>
+                        <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{Binding InputLevelColor}" Stretch="Uniform" Width="14" Height="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding InputLevelStatus}" Foreground="{Binding InputLevelColor}" FontWeight="SemiBold"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

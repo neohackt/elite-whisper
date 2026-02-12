@@ -134,6 +134,56 @@ namespace EliteWhisper.Services
             }
         }
 
+        public void StartMonitoring()
+        {
+            lock (_lockObject)
+            {
+                if (_isRecording || _waveIn != null) return;
+
+                if (!IsMicrophoneAvailable()) return;
+
+                try
+                {
+                    _waveIn = new WaveInEvent
+                    {
+                        DeviceNumber = 0,
+                        WaveFormat = new WaveFormat(16000, 16, 1),
+                        BufferMilliseconds = 20
+                    };
+
+                    _waveIn.DataAvailable += OnDataAvailable;
+                    // No writer, no timer, just monitoring
+                    
+                    _waveIn.StartRecording();
+                    // We don't set _isRecording = true because that implies saving to file in other logic
+                    // But we might need a flag _isMonitoring to distinguish? 
+                    // For now, let's rely on _writer being null to know we are not saving.
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to start monitoring: {ex.Message}");
+                }
+            }
+        }
+
+        public void StopMonitoring()
+        {
+            lock (_lockObject)
+            {
+                if (_isRecording) return; // Don't interrupt actual recording
+                
+                if (_waveIn != null)
+                {
+                    try
+                    {
+                        _waveIn.StopRecording();
+                    }
+                    catch { }
+                    CleanupResources();
+                }
+            }
+        }
+
         private void OnMaxDurationReached(object? sender, ElapsedEventArgs e)
         {
             MaxDurationReached?.Invoke(this, EventArgs.Empty);
