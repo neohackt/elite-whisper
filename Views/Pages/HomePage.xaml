@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:models="clr-namespace:EliteWhisper.Models"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="700">
     
@@ -78,7 +79,7 @@
                         </Border>
                         <TextBlock Text="Configure AI Models" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Choose between speed and accuracy based on your needs." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
-                        <Button Content="View Models" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
+                        <Button Content="View Models" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static models:AppPage.Models}" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </Border>
                 
