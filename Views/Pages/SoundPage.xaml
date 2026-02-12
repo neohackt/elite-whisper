@@ -22,14 +22,11 @@
                     </StackPanel>
                     <TextBlock Text="Select which microphone to use for dictation." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
                     
-                    <ComboBox Width="350" HorizontalAlignment="Left" Padding="12,10">
-                        <ComboBoxItem Content="Default Microphone" IsSelected="True"/>
-                        <ComboBoxItem Content="Microphone Array (Realtek)"/>
-                        <ComboBoxItem Content="External USB Microphone"/>
-                        <ComboBoxItem Content="Headset Microphone"/>
-                    </ComboBox>
+                    <ComboBox Width="350" HorizontalAlignment="Left" Padding="12,10"
+                              ItemsSource="{Binding AvailableMicrophones}"
+                              SelectedIndex="{Binding SelectedMicrophoneIndex}"/>
                     
-                    <Button Style="{StaticResource SecondaryButton}" Margin="0,12,0,0" HorizontalAlignment="Left">
+                    <Button Command="{Binding RefreshDevicesCommand}" Style="{StaticResource SecondaryButton}" Margin="0,12,0,0" HorizontalAlignment="Left">
                         <TextBlock Text="Refresh Devices"/>
                     </Button>
                 </StackPanel>

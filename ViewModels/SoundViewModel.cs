@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EliteWhisper.Services;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -30,6 +31,13 @@ namespace EliteWhisper.ViewModels
         [ObservableProperty]
         private string _inputLevelColor = "#9CA3AF"; // Gray/TextSecondary
 
+        // Microphone Selection
+        [ObservableProperty]
+        private ObservableCollection<string> _availableMicrophones = new();
+
+        [ObservableProperty]
+        private int _selectedMicrophoneIndex = 0;
+
         // Test Recording Properties
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(TestButtonText))]
@@ -53,6 +61,8 @@ namespace EliteWhisper.ViewModels
             
             _audioCaptureService.AudioLevelUpdated += OnAudioLevelUpdated;
             _audioPlayerService.PlaybackStopped += OnPlaybackStopped;
+
+            RefreshDevices();
         }
 
         partial void OnIsMonitoringChanged(bool value)
@@ -132,6 +142,48 @@ namespace EliteWhisper.ViewModels
             }
         }
 
+        partial void OnSelectedMicrophoneIndexChanged(int value)
+        {
+            if (value >= 0)
+            {
+                // If monitoring, restart to apply change
+                bool wasMonitoring = IsMonitoring;
+                if (wasMonitoring) IsMonitoring = false;
+
+                _audioCaptureService.DeviceNumber = value;
+                
+                if (wasMonitoring) IsMonitoring = true;
+            }
+        }
+
+        [RelayCommand]
+        public void RefreshDevices()
+        {
+            AvailableMicrophones.Clear();
+            var mics = AudioCaptureService.GetAvailableMicrophones();
+            if (mics.Length == 0)
+            {
+                AvailableMicrophones.Add("No Microphone Found");
+                SelectedMicrophoneIndex = -1;
+            }
+            else
+            {
+                foreach (var mic in mics)
+                {
+                    AvailableMicrophones.Add(mic);
+                }
+                // Validate index
+                if (_audioCaptureService.DeviceNumber < mics.Length)
+                {
+                    SelectedMicrophoneIndex = _audioCaptureService.DeviceNumber;
+                }
+                else
+                {
+                    SelectedMicrophoneIndex = 0;
+                }
+            }
+        }
+
         [RelayCommand]
         public void ToggleMonitoring() => IsMonitoring = !IsMonitoring;
 
@@ -208,6 +260,7 @@ namespace EliteWhisper.ViewModels
             _audioCaptureService.AudioLevelUpdated -= OnAudioLevelUpdated;
             _audioPlayerService.PlaybackStopped -= OnPlaybackStopped;
 
+            // Cleanup potential temp file
             if (_tempTestFilePath != null && File.Exists(_tempTestFilePath))
             {
                 try { File.Delete(_tempTestFilePath); } catch { }

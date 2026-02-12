@@ -17,6 +17,7 @@ namespace EliteWhisper.Services
         // Configuration
         public int MaxRecordingDurationSeconds { get; set; } = 300; // 5 minutes max
         public int MinRecordingDurationMs { get; set; } = 500; // Minimum 0.5 seconds
+        public int DeviceNumber { get; set; } = 0; // Default to 0
 
         // Events
         public event EventHandler<float>? AudioLevelUpdated;
@@ -53,7 +54,7 @@ namespace EliteWhisper.Services
                 {
                     if (WaveIn.DeviceCount > 0)
                     {
-                        var caps = WaveIn.GetCapabilities(0);
+                        var caps = WaveIn.GetCapabilities(DeviceNumber);
                         return caps.ProductName;
                     }
                     return "No Microphone Found";
@@ -101,7 +102,7 @@ namespace EliteWhisper.Services
 
                     _waveIn = new WaveInEvent
                     {
-                        DeviceNumber = 0, // Default mic
+                        DeviceNumber = DeviceNumber,
                         WaveFormat = new WaveFormat(16000, 16, 1), // Whisper standard: 16kHz, 16-bit, Mono
                         BufferMilliseconds = 20
                     };
@@ -146,7 +147,7 @@ namespace EliteWhisper.Services
                 {
                     _waveIn = new WaveInEvent
                     {
-                        DeviceNumber = 0,
+                        DeviceNumber = DeviceNumber,
                         WaveFormat = new WaveFormat(16000, 16, 1),
                         BufferMilliseconds = 20
                     };
