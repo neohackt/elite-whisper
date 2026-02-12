@@ -99,6 +99,7 @@ namespace EliteWhisper
                     });
                     services.AddTransient<HistoryViewModel>();
                     services.AddTransient<SoundViewModel>();
+                    services.AddTransient<ConfigurationViewModel>();
                     
                     // Widget
                     services.AddSingleton<WidgetWindow>();

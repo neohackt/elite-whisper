@@ -63,9 +63,9 @@
                     
                     <StackPanel Orientation="Horizontal">
                         <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="20,12" Margin="0,0,12,0">
-                            <TextBlock Text="F2" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
+                            <TextBlock Text="{Binding CurrentHotkeyDisplay}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
                         </Border>
-                        <Button Content="Change" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center"/>
+                        <Button Content="Change" Command="{Binding ChangeHotkeyCommand}" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
