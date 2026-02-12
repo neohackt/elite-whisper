@@ -1,33 +1,27 @@
   Determining projects to restore...
   All projects are up-to-date for restore.
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\App.xaml.cs(120,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(164,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(189,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(213,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(162,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Views\Pages\SoundPage.xaml.cs(33,24): error CS1061: 'SoundViewModel' does not contain a definition for 'StopMonitoring' and no accessible extension method 'StopMonitoring' accepting a first argument of type 'SoundViewModel' could be found (are you missing a using directive or an assembly reference?) [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\App.xaml.cs(124,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
 
 Build FAILED.
 
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\App.xaml.cs(120,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Services\ModeService.cs(162,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(164,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(189,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-D:\Personal\voiceapp\Views\Pages\ModesPage.xaml(213,76): error CS0123: No overload for 'OnModelSelectionChanged' matches delegate 'EventHandler' [D:\Personal\voiceapp\EliteWhisper_jetx5qtl_wpftmp.csproj]
-    9 Warning(s)
-    3 Error(s)
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\App.xaml.cs(124,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+D:\Personal\voiceapp\Views\Pages\SoundPage.xaml.cs(33,24): error CS1061: 'SoundViewModel' does not contain a definition for 'StopMonitoring' and no accessible extension method 'StopMonitoring' accepting a first argument of type 'SoundViewModel' could be found (are you missing a using directive or an assembly reference?) [D:\Personal\voiceapp\EliteWhisper_nbsas0lr_wpftmp.csproj]
+    8 Warning(s)
+    1 Error(s)
 
-Time Elapsed 00:00:04.07
+Time Elapsed 00:00:04.24

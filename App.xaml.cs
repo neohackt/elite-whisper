@@ -32,6 +32,7 @@ namespace EliteWhisper
                     services.AddSingleton<HotkeyService>();
                     services.AddSingleton<TextInjectionService>();
                     services.AddSingleton<AudioCaptureService>();
+                    services.AddSingleton<AudioPlayerService>();
                     services.AddSingleton<WhisperConfigurationService>();
                     services.AddSingleton<AIEngineService>();
                     services.AddSingleton<TrayIconService>();

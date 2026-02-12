@@ -24,12 +24,18 @@ namespace EliteWhisper.Views.Pages
 
         private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            _viewModel?.StartMonitoring();
+            // Manual start only
+            // _viewModel?.StartMonitoring(); 
         }
 
         private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            _viewModel?.StopMonitoring();
+            if (_viewModel != null)
+            {
+                _viewModel.IsMonitoring = false;
+                _viewModel.IsTestingRecording = false;
+                _viewModel.IsTestingPlaying = false;
+            }
         }
     }
 }
