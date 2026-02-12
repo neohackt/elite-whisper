@@ -103,7 +103,7 @@
                         </Border>
                         <TextBlock Text="Test Microphone" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Make sure your microphone is working correctly." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
-                        <Button Content="Test Now" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
+                        <Button Content="Test Now" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static models:AppPage.Sound}" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </Border>
                 
