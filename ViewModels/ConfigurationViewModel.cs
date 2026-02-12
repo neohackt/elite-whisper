@@ -10,6 +10,7 @@ namespace EliteWhisper.ViewModels
     public partial class ConfigurationViewModel : ObservableObject
     {
         private readonly HotkeyService _hotkeyService;
+        private Action? _requestFocus;
 
         [ObservableProperty]
         private string _currentHotkeyDisplay = "F2";
@@ -23,11 +24,17 @@ namespace EliteWhisper.ViewModels
             UpdateHotkeyDisplay();
         }
 
+        public void SetFocusCallback(Action requestFocus)
+        {
+            _requestFocus = requestFocus;
+        }
+
         [RelayCommand]
         public void ChangeHotkey()
         {
             IsCapturing = true;
             CurrentHotkeyDisplay = "Press a key...";
+            _requestFocus?.Invoke();
         }
 
         public void CaptureKeyPress(Key key, ModifierKeys modifiers)

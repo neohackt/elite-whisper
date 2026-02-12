@@ -18,17 +18,20 @@ namespace EliteWhisper.Views.Pages
                     _viewModel = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ConfigurationViewModel>(App.AppHost.Services);
                     DataContext = _viewModel;
                     
+                    // Set focus callback
+                    _viewModel.SetFocusCallback(() => this.Focus());
+                    
                     // Load saved hotkey
                     _viewModel.LoadSavedHotkey();
                 }
             }
 
             // Add KeyDown handler to capture hotkey
-            this.KeyDown += OnKeyDown;
+            this.PreviewKeyDown += OnPreviewKeyDown;
             this.Focusable = true;
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (_viewModel?.IsCapturing == true)
             {
