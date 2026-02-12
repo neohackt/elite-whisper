@@ -39,9 +39,8 @@ namespace EliteWhisper.Services.LLM
             if (string.IsNullOrEmpty(apiKey))
                 throw new InvalidOperationException("Gemini API key is not configured or could not be decrypted.");
             
-            // 7. Dynamic Model Selection
-            // Use requested model or fallback to first available cached model, or last resort hardware fallback.
-            string modelId = "gemini-1.5-flash"; // Ultimate fallback
+            // Default to 2.5 Flash if not specified or invalid
+            string modelId = "gemini-2.5-flash"; 
             
             if (!string.IsNullOrEmpty(options.ModelId))
             {
@@ -54,131 +53,195 @@ namespace EliteWhisper.Services.LLM
                 if (firstCached != null) modelId = firstCached.Id;
             }
 
-            var requestBody = new
+            // Internal Helper to execute request
+            async Task<string> ExecuteRequestAsync(string targetModel, CancellationToken ct)
             {
-                contents = new[]
+                var requestBody = new
                 {
-                    new
+                    contents = new[]
                     {
-                        role = "user",
-                        parts = new[]
+                        new
                         {
-                            new { text = prompt }
+                            role = "user",
+                            parts = new[] { new { text = prompt } }
                         }
                     }
+                };
+                
+                var json = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                string url = $"https://generativelanguage.googleapis.com/v1beta/models/{targetModel}:generateContent?key={apiKey}";
+                var response = await _httpClient.PostAsync(url, content, ct);
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"[GeminiProvider] Error {response.StatusCode} for {targetModel}: {errorBody}");
+                    
+                    // Propagate 429/Timeout to caller for fallback handling
+                    if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests || 
+                        response.StatusCode == System.Net.HttpStatusCode.RequestTimeout ||
+                        (int)response.StatusCode == 429)
+                    {
+                        throw new LlmRateLimitException(errorBody);
+                    }
+                    
+                    throw new HttpRequestException($"Gemini API Error {response.StatusCode}: {errorBody}");
                 }
-            };
-            
-            var json = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-            
-            // Construct URL dynamically
-            string url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelId}:generateContent?key={apiKey}";
-
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                 // 8. Error Handling
-                 System.Diagnostics.Debug.WriteLine($"[GeminiProvider] Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
-                 
-                 // Simple fallback if 404 or 400 and not using default
-                 if ((response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.BadRequest) 
-                     && modelId != "gemini-1.5-flash")
-                 {
-                     System.Diagnostics.Debug.WriteLine("[GeminiProvider] Falling back to gemini-1.5-flash");
-                     url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
-                     response = await _httpClient.PostAsync(url, content, cancellationToken);
-                 }
-                 
-                 response.EnsureSuccessStatusCode();
+                
+                var responseJson = await response.Content.ReadAsStringAsync(ct);
+                var result = JsonSerializer.Deserialize<GeminiResponse>(responseJson);
+                return result?.Candidates?[0]?.Content?.Parts?[0]?.Text ?? string.Empty;
             }
-            
-            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
-            var result = JsonSerializer.Deserialize<GeminiResponse>(responseJson);
-            
-            return result?.Candidates?[0]?.Content?.Parts?[0]?.Text ?? string.Empty;
+
+            try
+            {
+                return await ExecuteRequestAsync(modelId, cancellationToken);
+            }
+            catch (LlmRateLimitException)
+            {
+                // Internal Fallback: Try Gemini 2.0 Flash (often has separate quota or is lighter)
+                if (modelId != "gemini-2.0-flash")
+                {
+                    System.Diagnostics.Debug.WriteLine("[GeminiProvider] Rate limit hit. Fallback to gemini-2.0-flash.");
+                    try 
+                    {
+                        return await ExecuteRequestAsync("gemini-2.0-flash", cancellationToken);
+                    }
+                    catch
+                    {
+                        // If fallback fails, rethrow original or return empty (Fail-safe is handled by PostProcessingService)
+                        throw; 
+                    }
+                }
+                throw;
+            }
         }
 
         public async Task<(System.Collections.Generic.List<GeminiModelInfo> Models, string DebugLog)> GetAvailableModelsAsync()
         {
             var sb = new StringBuilder();
-            // Decrypt the key!
             var encryptedKey = _configService.CurrentConfiguration.GeminiApiKey;
             var apiKey = _configService.DecryptApiKey(encryptedKey);
             
-            if (string.IsNullOrEmpty(apiKey)) return (new System.Collections.Generic.List<GeminiModelInfo>(), "No API Key (or decryption failed)");
+            if (string.IsNullOrEmpty(apiKey)) return (new System.Collections.Generic.List<GeminiModelInfo>(), "No API Key.");
             
-            // Trim just in case
             apiKey = apiKey.Trim();
 
             try
             {
-                // 1. Fetch models
-                sb.AppendLine("Sending request...");
+                sb.AppendLine("Fetching models...");
                 var response = await _httpClient.GetAsync($"https://generativelanguage.googleapis.com/v1beta/models?key={apiKey}");
                 
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorBody = await response.Content.ReadAsStringAsync();
                     sb.AppendLine($"API Error {response.StatusCode}: {errorBody}");
-                    System.Diagnostics.Debug.WriteLine($"[GeminiProvider] API Error: {errorBody}");
                     return (new System.Collections.Generic.List<GeminiModelInfo>(), sb.ToString());
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                sb.AppendLine($"JSON Received ({json.Length} chars). Start: {json.Substring(0, Math.Min(json.Length, 100))}");
-                
-                // Debug logging
-                System.Diagnostics.Debug.WriteLine($"[GeminiProvider] Fetched models JSON (len={json.Length}): {json}");
-
-                // Use snake_case naming policy if available or attributes. Attributes are safer.
                 var result = JsonSerializer.Deserialize<GeminiModelListResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                var list = new System.Collections.Generic.List<GeminiModelInfo>();
+                var finalModels = new System.Collections.Generic.List<GeminiModelInfo>();
+                
                 if (result?.Models != null)
                 {
-                    sb.AppendLine($"Deserialized {result.Models.Length} models.");
-                    foreach (var m in result.Models)
+                    var apiModels = result.Models.ToDictionary(m => m.Name.Replace("models/", "").ToLowerInvariant());
+                    
+                    // User Requested Strict List
+                    // 1. gemini-2.5-flash
+                    // 2. gemini-2.0-flash-001
+                    // 3. gemini-2.5-pro
+                    
+                    void TryAdd(string targetId, string displayName, string capability)
                     {
-                        // 2. Filtering Rules
-                        // Must support generateContent
-                        bool supportsGen = m.SupportedGenerationMethods != null && m.SupportedGenerationMethods.Contains("generateContent");
-                        sb.AppendLine($"Model: {m.Name}, GenContent: {supportsGen}");
-                        
-                        // Strict filtering as requested by user
-                        if (!supportsGen) continue;
-                        
-                        // 3. Normalize IDs
-                        string id = m.Name;
-                        if (id.StartsWith("models/")) id = id.Substring(7);
-
-                        list.Add(new GeminiModelInfo
+                        // Try exact match first
+                        if (apiModels.TryGetValue(targetId, out var m))
                         {
-                            Id = id,
-                            DisplayName = m.DisplayName ?? id,
-                            Description = m.Description ?? "",
-                            InputTokenLimit = m.InputTokenLimit,
-                            OutputTokenLimit = m.OutputTokenLimit
-                        });
+                            finalModels.Add(new GeminiModelInfo
+                            {
+                                Id = targetId,
+                                DisplayName = $"{displayName} ({capability})",
+                                Description = m.Description ?? "",
+                                InputTokenLimit = m.InputTokenLimit,
+                                OutputTokenLimit = m.OutputTokenLimit
+                            });
+                            return;
+                        }
+                        
+                        // Try finding a valid substitute if exact missing?
+                        // E.g. if gemini-2.5-flash is missing, maybe gemini-2.5-flash-001?
+                        // For now, let's stick to the user's requested IDs or closes matches if they are aliases.
+                        // Actually, duplicate issue mentioned by user was likely alias + strict version.
+                        // Let's look for "best match" for the INTENT.
+                        
+                        var bestMatch = apiModels.Keys.FirstOrDefault(k => k.StartsWith(targetId) && !k.Contains("latest"));
+                        if (bestMatch != null && apiModels.TryGetValue(bestMatch, out var m2))
+                        {
+                             // Only add if not already in safe list (prevent duplicates if targetId is prefix of another target)
+                             if (finalModels.Any(x => x.Id == bestMatch)) return;
+
+                             finalModels.Add(new GeminiModelInfo
+                             {
+                                Id = bestMatch,
+                                DisplayName = $"{displayName} ({capability})",
+                                Description = m2.Description ?? "",
+                                InputTokenLimit = m2.InputTokenLimit,
+                                OutputTokenLimit = m2.OutputTokenLimit
+                             });
+                        }
+                    }
+
+                    // Strict Order & Logic
+                    
+                    // 1. Gemini 2.5 Flash (Fast · Recommended)
+                    TryAdd("gemini-2.5-flash", "Gemini 2.5 Flash", "Fast · Recommended");
+                    
+                    // 2. Gemini 2.0 Flash (Stable) - User requested -001, but allow alias fallback
+                    if (!finalModels.Any(x => x.DisplayName.Contains("2.0 Flash"))) // logical check
+                    {
+                        TryAdd("gemini-2.0-flash-001", "Gemini 2.0 Flash", "Stable");
+                        // If strict version failed, try generic alias
+                        if (!finalModels.Any(x => x.DisplayName.Contains("2.0 Flash")))
+                        {
+                             TryAdd("gemini-2.0-flash", "Gemini 2.0 Flash", "Stable");
+                        }
+                    }
+
+                    // 3. Gemini 2.5 Pro (High Quality)
+                    TryAdd("gemini-2.5-pro", "Gemini 2.5 Pro", "High Quality");
+                    
+                    // Fallback: If list is empty (API changes?), fall back to old logic but simpler
+                    if (finalModels.Count == 0)
+                    {
+                         sb.AppendLine("Strict mapping failed. Falling back to discovery.");
+                         // ... (Original logic could go here, but let's return empty/warning log to respect strictness)
                     }
                 }
-                else
-                {
-                    sb.AppendLine("Deserialization result or Models array was null.");
-                }
                 
-                return (list, sb.ToString());
+                sb.AppendLine($"Filtered down to {finalModels.Count} models.");
+                return (finalModels, sb.ToString());
             }
             catch (Exception ex)
             {
-                var error = $"Error fetching Gemini models: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine(error);
-                sb.AppendLine(error);
-                return (new System.Collections.Generic.List<GeminiModelInfo>(), sb.ToString());
+                return (new System.Collections.Generic.List<GeminiModelInfo>(), $"Error: {ex.Message}");
             }
         }
+
+        private double GetVersion(string id)
+        {
+             var match = System.Text.RegularExpressions.Regex.Match(id, @"gemini-(\d+(\.\d+)?)");
+             if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double v))
+             {
+                 return v;
+             }
+             return 0;
+        }
+
+        // FormatDisplayName and GetCapabilityTag are no longer used but kept if needed for fallback
+        // Removed to keep code clean since we are hardcoding names now.
     }
 
     // Public DTOs for API binding

@@ -14,7 +14,7 @@
             <TextBlock Text="Your AI-powered dictation assistant is ready." Style="{StaticResource BodyText}" Margin="0,0,0,32"/>
             
             <!-- Status Card -->
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24" BorderBrush="{Binding CardBorderColor}" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -23,8 +23,8 @@
                     
                     <StackPanel Grid.Column="0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource AccentSuccess}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Ready to dictate" Style="{StaticResource HeadingSmall}"/>
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{Binding CardBorderColor}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding AppStatus}" Style="{StaticResource HeadingSmall}"/>
                         </StackPanel>
                         
                         <Grid Margin="0,8,0,0">
@@ -35,20 +35,30 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Microphone:" Style="{StaticResource CaptionText}" Margin="0,0,12,8"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Default Microphone" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMicName}" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
                             
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Model:" Style="{StaticResource CaptionText}" Margin="0,0,12,0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Balanced" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Mode:" Style="{StaticResource CaptionText}" Margin="0,0,12,8" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" 
+                                      ItemsSource="{Binding Modes}" 
+                                      SelectedItem="{Binding SelectedMode}"
+                                      DisplayMemberPath="Name"
+                                      Margin="0,0,0,8"
+                                      Width="180" HorizontalAlignment="Left"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Provider:" Style="{StaticResource CaptionText}" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentProviderName}" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
                         </Grid>
                     </StackPanel>
                     
-                    <Button Grid.Column="1" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center">
+                    <Button Grid.Column="1" Command="{Binding ToggleDictationCommand}" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" MinWidth="140">
                         <StackPanel Orientation="Horizontal">
+                            <!-- Icon could be dynamic too but sticking to Mic for now as it's the primary action -->
                             <Path Data="{StaticResource IconMicrophoneGeometry}" Fill="White" Stretch="Uniform" Width="16" Height="16" Margin="0,0,8,0"/>
-                            <TextBlock Text="Start Dictation" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding DictationButtonText}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </Grid>

@@ -206,14 +206,27 @@
                                                     </Style>
                                                 </StackPanel.Style>
                                                 <TextBlock Text="OpenRouter Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                                                <ComboBox ItemsSource="{Binding DataContext.AvailableOpenRouterModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                <ComboBox ItemsSource="{Binding DataContext.OpenRouterModelsView, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                           SelectedValue="{Binding PostProcess.PreferredOpenRouterModel}"
                                                           DisplayMemberPath="DisplayName"
                                                           SelectedValuePath="Id"
                                                           DropDownClosed="OnModelSelectionChanged"
                                                           Style="{StaticResource PremiumComboBox}"
-                                                          Width="250" HorizontalAlignment="Left"
+                                                          Width="320" HorizontalAlignment="Left"
                                                           Padding="8,6">
+                                                    <ComboBox.GroupStyle>
+                                                        <GroupStyle>
+                                                            <GroupStyle.HeaderTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Name}" 
+                                                                               FontWeight="Bold" 
+                                                                               Foreground="{StaticResource AccentPrimary}"
+                                                                               Margin="0,5,0,2"
+                                                                               Padding="4,0"/>
+                                                                </DataTemplate>
+                                                            </GroupStyle.HeaderTemplate>
+                                                        </GroupStyle>
+                                                    </ComboBox.GroupStyle>
                                                 </ComboBox>
                                             </StackPanel>
                                             

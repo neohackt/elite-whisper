@@ -195,7 +195,7 @@ namespace EliteWhisper.Views
                     break;
 
                 case WidgetState.Ready:
-                    _dictationService.StartListening();
+                    _dictationService.StartListening(RecordingSource.Widget);
                     break;
 
                 case WidgetState.Listening:

@@ -76,6 +76,9 @@ namespace EliteWhisper.Services
                 
                 var enhancedText = await provider.GenerateAsync(prompt, options, default);
                 
+                // Sanitization (Centralized)
+                enhancedText = ModelOutputSanitizer.Sanitize(enhancedText);
+
                 DebugHelper.Log($"[PostProcessing] Success. Original length: {rawText.Length}, Enhanced length: {enhancedText.Length}");
                 Debug.WriteLine($"[PostProcessing] Result (First 100 chars): {(enhancedText ?? "").Substring(0, Math.Min((enhancedText ?? "").Length, 100))}...");
                 
@@ -99,10 +102,11 @@ namespace EliteWhisper.Services
                     {
                         DebugHelper.Log("[PostProcessing] Fallback to Gemini...");
                         // Use Gemini with same prompt
-                         // Build prompt from template (re-use)
+                        // Build prompt from template (re-use)
                         var prompt = mode.PostProcess.PromptTemplate.Replace("{{text}}", rawText);
                         var options = new LlmOptions { Temperature = 0.2f, MaxTokens = 512 }; // Default options for fallback
-                        return await _llmService.GeminiProvider.GenerateAsync(prompt, options, default);
+                        var fallbackText = await _llmService.GeminiProvider.GenerateAsync(prompt, options, default);
+                        return ModelOutputSanitizer.Sanitize(fallbackText);
                     }
                     catch (Exception ex)
                     {
@@ -119,7 +123,8 @@ namespace EliteWhisper.Services
                          // Build prompt from template (re-use)
                         var prompt = mode.PostProcess.PromptTemplate.Replace("{{text}}", rawText);
                         var options = new LlmOptions { Temperature = 0.2f, MaxTokens = 512 };
-                        return await _llmService.OllamaProvider.GenerateAsync(prompt, options, default);
+                        var fallbackText = await _llmService.OllamaProvider.GenerateAsync(prompt, options, default);
+                        return ModelOutputSanitizer.Sanitize(fallbackText);
                     }
                     catch (Exception ex)
                     {
@@ -129,23 +134,17 @@ namespace EliteWhisper.Services
                 
                 // If all fail, return raw text
                 DebugHelper.Log("[PostProcessing] All fallbacks failed. Returning raw text.");
-                // User requested: "Cloud model busy — using local AI" toast. 
-                // Since we don't have a toast service readily injected here, we just silently return raw text for now or log it.
                 return rawText;
             }
             catch (TaskCanceledException)
             {
                 DebugHelper.Log($"[PostProcessing] TIMEOUT (Provider: {provider.Name}). Returning raw text.");
-                Debug.WriteLine("[PostProcessing] TIMEOUT. Returning raw text used.");
-                // Silent failure for timeout - likely local model taking too long or disconnected
                 return rawText;
             }
             catch (Exception ex)
             {
-                // CRITICAL: Never break dictation due to LLM errors
                 DebugHelper.Log($"[PostProcessing] FAILED: {ex.Message}");
                 DebugHelper.Log($"[PostProcessing] Stack: {ex.StackTrace}");
-                Debug.WriteLine($"[PostProcessing] Failed: {ex.Message}");
                 return rawText;
             }
         }

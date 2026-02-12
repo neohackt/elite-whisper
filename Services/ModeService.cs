@@ -159,7 +159,6 @@ Format the output like a modern chat message:
 Write numbers as numerals (e.g., ""five"" → ""5"", ""twenty dollars"" → ""$20"").
 
 Output only the chat message.",
-                        RunLocally = false, // Deprecated
                         PreferredProvider = PreferredProvider.Local
                     }
                 },
@@ -180,13 +179,19 @@ Output only the chat message.",
             };
         }
         
+        public event EventHandler<DictationMode>? ActiveModeChanged;
+
         /// <summary>
         /// Set the active dictation mode.
         /// </summary>
         public void SetActiveMode(DictationMode mode)
         {
-            ActiveMode = mode;
-            SaveModes();
+            if (_activeMode != mode)
+            {
+                ActiveMode = mode;
+                SaveModes();
+                ActiveModeChanged?.Invoke(this, mode);
+            }
         }
 
         /// <summary>

@@ -19,26 +19,76 @@ namespace EliteWhisper.ViewModels
         [ObservableProperty]
         private string _statusMessage = "Press F2 to dictate";
 
-        [ObservableProperty]
-        private string _selectedMicrophone = "Default Microphone";
+        // Dynamic Card Properties
+        public string CurrentMicName => _audioService.DefaultMicName;
+
+        public System.Collections.Generic.IReadOnlyList<DictationMode> Modes => _modeService.Modes;
+
+        public DictationMode SelectedMode
+        {
+            get => _modeService.ActiveMode;
+            set
+            {
+                if (_modeService.ActiveMode != value)
+                {
+                    _modeService.SetActiveMode(value);
+                    OnPropertyChanged();
+                    RefreshModeInfo();
+                }
+            }
+        }
 
         [ObservableProperty]
-        private string _selectedModel = "Balanced";
+        private string _currentProviderName = "Auto";
+
+        [ObservableProperty]
+        private string _dictationButtonText = "Start Dictation";
+
+        [ObservableProperty]
+        private string _cardBorderColor = "#10B981"; // Green
 
         private readonly AIEngineService _aiEngine;
+        private readonly AudioCaptureService _audioService;
+        private readonly ModeService _modeService;
+        private readonly LlmService _llmService;
+        private readonly DictationService _dictationService;
 
-        public DashboardViewModel(AIEngineService aiEngine)
+        public DashboardViewModel(
+            AIEngineService aiEngine,
+            AudioCaptureService audioService,
+            ModeService modeService,
+            LlmService llmService,
+            DictationService dictationService)
         {
             _aiEngine = aiEngine;
+            _audioService = audioService;
+            _modeService = modeService;
+            _llmService = llmService;
+            _dictationService = dictationService;
+
             _aiEngine.StateChanged += OnEngineStateChanged;
+            _modeService.ActiveModeChanged += OnModeChanged;
             
             // Initialize
             UpdateStatus(_aiEngine.State);
+            RefreshModeInfo();
         }
 
         private void OnEngineStateChanged(object? sender, EngineState state)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() => UpdateStatus(state));
+        }
+
+        private void OnModeChanged(object? sender, DictationMode mode)
+        {
+            OnPropertyChanged(nameof(SelectedMode));
+            RefreshModeInfo();
+        }
+
+        private void RefreshModeInfo()
+        {
+            var provider = _llmService.SelectProvider(_modeService.ActiveMode);
+            CurrentProviderName = provider?.Name ?? "Auto";
         }
 
         private void UpdateStatus(EngineState state)
@@ -49,32 +99,73 @@ namespace EliteWhisper.ViewModels
                     AppStatus = "Idle";
                     StatusColor = "#6B7280"; // Gray
                     StatusMessage = "Engine not configured";
+                    CardBorderColor = "#6B7280";
+                    DictationButtonText = "Start Dictation";
                     break;
                 case EngineState.Loading:
                     AppStatus = "Loading...";
                     StatusColor = "#F59E0B"; // Amber
                     StatusMessage = "Loading AI model";
+                    CardBorderColor = "#F59E0B";
+                    DictationButtonText = "Loading...";
                     break;
                 case EngineState.Ready:
                     AppStatus = "Ready";
                     StatusColor = "#10B981"; // Green
                     StatusMessage = "Press F2 to dictate";
+                    CardBorderColor = "#10B981";
+                    DictationButtonText = "Start Dictation";
                     break;
                 case EngineState.Recording:
                     AppStatus = "Listening";
                     StatusColor = "#EF4444"; // Red
                     StatusMessage = "Recording audio...";
+                    CardBorderColor = "#EF4444";
+                    
+                    // IF initiated by Widget, show "Recording (Widget)" and change button behavior
+                    if (_dictationService.CurrentSource == RecordingSource.Widget)
+                    {
+                        DictationButtonText = "Recording (Widget)";
+                    }
+                    else
+                    {
+                        DictationButtonText = "Stop Recording";
+                    }
                     break;
                 case EngineState.Processing:
                     AppStatus = "Thinking";
                     StatusColor = "#8B5CF6"; // Purple
                     StatusMessage = "Transcribing speech...";
+                    CardBorderColor = "#8B5CF6";
+                    DictationButtonText = "Processing...";
                     break;
                 case EngineState.Error:
                     AppStatus = "Error";
                     StatusColor = "#EF4444"; // Red
                     StatusMessage = "Check configuration";
+                    CardBorderColor = "#EF4444";
+                    DictationButtonText = "Retry";
                     break;
+            }
+        }
+
+        [RelayCommand]
+        private async Task ToggleDictation()
+        {
+            if (_aiEngine.State == EngineState.Recording)
+            {
+                // If it's a widget recording, we can still stop it (safety), 
+                // or we could block it. Let's allow stopping for now but maybe the user wants it blocked?
+                // The user said "app start dictate should only start recording when the user press the button".
+                // Logic: If button says "Stop Recording" (App Source), stop it.
+                // If button says "Recording (Widget)", providing a Stop is still useful.
+                // But let's respect the "Toggle" nature.
+                await _dictationService.StopListeningAndProcessAsync();
+            }
+            else if (_aiEngine.State == EngineState.Ready || _aiEngine.State == EngineState.Error)
+            {
+                // Start with App Source
+                _dictationService.StartListening(RecordingSource.App);
             }
         }
 

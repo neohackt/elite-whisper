@@ -37,7 +37,12 @@ namespace EliteWhisper.ViewModels
         /// <summary>
         /// Available OpenRouter models for dropdown.
         /// </summary>
-        public ObservableCollection<Services.LLM.OpenRouterModelInfo> AvailableOpenRouterModels { get; } = new();
+        public ObservableCollection<Services.LLM.OpenRouterModelOption> AvailableOpenRouterModels { get; } = new();
+
+        /// <summary>
+        /// Grouped view for the UI.
+        /// </summary>
+        public System.ComponentModel.ICollectionView OpenRouterModelsView { get; private set; }
 
         private readonly WhisperConfigurationService _configService;
 
@@ -56,6 +61,10 @@ namespace EliteWhisper.ViewModels
             _ollamaProvider = ollamaProvider;
             _openRouterProvider = openRouterProvider;
             _configService = configService;
+
+            // Initialize Grouped View
+            OpenRouterModelsView = System.Windows.Data.CollectionViewSource.GetDefaultView(AvailableOpenRouterModels);
+            OpenRouterModelsView.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("TierHeader"));
             
             LoadModes();
             LoadLocalModelsAsync();
@@ -135,8 +144,9 @@ namespace EliteWhisper.ViewModels
                 var models = await _openRouterProvider.GetAvailableModelsAsync();
                 
                 // Sync OpenRouter Models
-                var newModels = models.OrderBy(x => x.Name).ToList();
-                var currentIds = AvailableOpenRouterModels.Select(x => x.Id).ToList();
+                // Sort by Tier then Name (Assuming provider already sorts, but safe to match)
+                // var newModels = models.OrderBy(x => x.Tier).ThenBy(x => x.DisplayName).ToList();
+                var newModels = models;
                 
                 // Remove deleted
                 for (int i = AvailableOpenRouterModels.Count - 1; i >= 0; i--)
@@ -145,7 +155,7 @@ namespace EliteWhisper.ViewModels
                         AvailableOpenRouterModels.RemoveAt(i);
                 }
 
-                // Add new (simple check by ID)
+                // Add new
                 foreach (var m in newModels)
                 {
                     if (!AvailableOpenRouterModels.Any(x => x.Id == m.Id))

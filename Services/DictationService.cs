@@ -8,6 +8,13 @@ using EliteWhisper.ViewModels;
 
 namespace EliteWhisper.Services
 {
+    public enum RecordingSource
+    {
+        None,
+        Widget,
+        App
+    }
+
     public class DictationService
     {
         private readonly AudioCaptureService _audioService;
@@ -21,6 +28,8 @@ namespace EliteWhisper.Services
         private string? _currentAudioPath;
         private int _retryCount = 0;
         private const int MAX_RETRIES = 2;
+
+        public RecordingSource CurrentSource { get; private set; } = RecordingSource.None;
 
         public DictationService(
             AudioCaptureService audioService,
@@ -50,9 +59,10 @@ namespace EliteWhisper.Services
         /// Called when F2 is pressed in Ready state.
         /// Transitions: Ready -> Listening
         /// </summary>
-        public void StartListening()
+        public void StartListening(RecordingSource source)
         {
-            if (_widgetViewModel.State != WidgetState.Ready) return;
+            // Allow starting if Ready OR Hidden (first run)
+            if (_widgetViewModel.State != WidgetState.Ready && _widgetViewModel.State != WidgetState.Hidden) return;
 
             // Pre-flight checks
             if (!AudioCaptureService.IsMicrophoneAvailable())
@@ -79,6 +89,7 @@ namespace EliteWhisper.Services
                 return; 
             }
 
+            CurrentSource = source;
             _cts = new CancellationTokenSource();
             _currentAudioPath = Path.Combine(Path.GetTempPath(), $"elitewhisper_{DateTime.Now:yyyyMMdd_HHmmss}.wav");
             _retryCount = 0;
@@ -230,6 +241,14 @@ namespace EliteWhisper.Services
                     _widgetViewModel.State = WidgetState.Ready;
                     _widgetViewModel.StatusText = "Ready";
                 }
+                
+                // Always ensure Engine returns to Ready
+                if (_aiEngine.State == EngineState.Processing)
+                {
+                    _aiEngine.SetState(EngineState.Ready);
+                }
+                
+                CurrentSource = RecordingSource.None;
             }
         }
 

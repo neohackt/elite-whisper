@@ -43,6 +43,29 @@ namespace EliteWhisper.Services
         }
 
         /// <summary>
+        /// Get the name of the default microphone (Device 0)
+        /// </summary>
+        public string DefaultMicName 
+        {
+            get
+            {
+                try
+                {
+                    if (WaveIn.DeviceCount > 0)
+                    {
+                        var caps = WaveIn.GetCapabilities(0);
+                        return caps.ProductName;
+                    }
+                    return "No Microphone Found";
+                }
+                catch
+                {
+                    return "Default Microphone";
+                }
+            }
+        }
+
+        /// <summary>
         /// Get list of available microphones
         /// </summary>
         public static string[] GetAvailableMicrophones()
