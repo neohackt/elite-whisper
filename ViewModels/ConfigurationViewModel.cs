@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EliteWhisper.Services;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -10,6 +11,8 @@ namespace EliteWhisper.ViewModels
     public partial class ConfigurationViewModel : ObservableObject
     {
         private readonly HotkeyService _hotkeyService;
+        private readonly WhisperConfigurationService _configService;
+        private readonly HistoryService _historyService;
         private Action? _requestFocus;
 
         [ObservableProperty]
@@ -18,10 +21,20 @@ namespace EliteWhisper.ViewModels
         [ObservableProperty]
         private bool _isCapturing;
 
-        public ConfigurationViewModel(HotkeyService hotkeyService)
+        [ObservableProperty]
+        private string _historyPath = string.Empty;
+
+        public ConfigurationViewModel(HotkeyService hotkeyService, WhisperConfigurationService configService, HistoryService historyService)
         {
             _hotkeyService = hotkeyService;
+            _configService = configService;
+            _historyService = historyService;
+            
             UpdateHotkeyDisplay();
+            
+            // Load initial history path
+            HistoryPath = _configService.CurrentConfiguration.HistoryStoragePath 
+                           ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EliteWhisper");
         }
 
         public void SetFocusCallback(Action requestFocus)
@@ -120,6 +133,30 @@ namespace EliteWhisper.ViewModels
             display += key.ToString();
             
             CurrentHotkeyDisplay = display;
+        }
+
+        [RelayCommand]
+        private void BrowseHistoryFolder()
+        {
+            using var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.Description = "Select a folder to store dictation history";
+            dialog.UseDescriptionForTitle = true;
+            dialog.SelectedPath = HistoryPath;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    string path = dialog.SelectedPath;
+                    _configService.SetHistoryStoragePath(path);
+                    _historyService.RefreshLocation();
+                    HistoryPath = path;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error setting history path: {ex.Message}", "Error");
+                }
+            }
         }
     }
 }

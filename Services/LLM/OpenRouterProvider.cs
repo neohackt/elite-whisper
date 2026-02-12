@@ -163,11 +163,12 @@ namespace EliteWhisper.Services.LLM
                         new { SearchId = "stepfun/step-3.5-flash:free", Label = "Step 3.5 Flash (Fast)", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "liquid/lfm-2.5-1.2b-instruct:free", Label = "LFM 2.5 Instruct (Structured)", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "meta-llama/llama-3.2-3b-instruct:free", Label = "Llama 3.2 3B (Balanced)", Tier = OpenRouterModelTier.Free },
-                        new { SearchId = "google/gemini-2.0-flash-lite-preview-02-05:free", Label = "Gemini 2.0 Flash Lite (Preview)", Tier = OpenRouterModelTier.Free },
+                        new { SearchId = "meta-llama/llama-3.3-70b-instruct:free", Label = "Llama 3.3 70B (Powerful)", Tier = OpenRouterModelTier.Free },
                         
                         // Tier: Free Advanced (MUST have :free suffix)
                         new { SearchId = "openai/gpt-oss-20b:free", Label = "GPT-OSS 20B", Tier = OpenRouterModelTier.FreeAdvanced },
-                        new { SearchId = "mistralai/mistral-small-24b-instruct-2501:free", Label = "Mistral Small 24B", Tier = OpenRouterModelTier.FreeAdvanced }, 
+                        new { SearchId = "openai/gpt-oss-120b:free", Label = "GPT-OSS 120B (Advanced)", Tier = OpenRouterModelTier.FreeAdvanced },
+                        new { SearchId = "deepseek/deepseek-r1-0528:free", Label = "DeepSeek R1 (Reasoning)", Tier = OpenRouterModelTier.FreeAdvanced },
                         
                         // Tier: Paid Recommended
                         new { SearchId = "anthropic/claude-3-haiku", Label = "Claude 3 Haiku", Tier = OpenRouterModelTier.Recommended },
