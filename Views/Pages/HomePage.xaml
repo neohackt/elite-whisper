@@ -115,7 +115,7 @@
                         </Border>
                         <TextBlock Text="Dictation History" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Review and search through your past dictations." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
-                        <Button Content="View History" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
+                        <Button Content="View History" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static models:AppPage.History}" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </Border>
                 
