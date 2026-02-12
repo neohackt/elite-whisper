@@ -117,27 +117,44 @@ namespace EliteWhisper.ViewModels
                     DictationButtonText = "Start Dictation";
                     break;
                 case EngineState.Recording:
-                    AppStatus = "Listening";
-                    StatusColor = "#EF4444"; // Red
-                    StatusMessage = "Recording audio...";
-                    CardBorderColor = "#EF4444";
-                    
-                    // IF initiated by Widget, show "Recording (Widget)" and change button behavior
-                    if (_dictationService.CurrentSource == RecordingSource.Widget)
+                    // Only update visuals if the source is the App
+                    if (_dictationService.CurrentSource == RecordingSource.App)
                     {
-                        DictationButtonText = "Recording (Widget)";
+                        AppStatus = "Listening";
+                        StatusColor = "#EF4444"; // Red
+                        StatusMessage = "Recording audio...";
+                        CardBorderColor = "#EF4444";
+                        DictationButtonText = "Stop Recording";
                     }
                     else
                     {
-                        DictationButtonText = "Stop Recording";
+                        // If Widget is recording, keep the Dashboard properly "Ready" looking
+                        // so the button doesn't "activate" automatically.
+                        AppStatus = "Ready";
+                        StatusColor = "#10B981"; // Green
+                        StatusMessage = "Press F2 to dictate";
+                        CardBorderColor = "#10B981";
+                        DictationButtonText = "Start Dictation";
                     }
                     break;
                 case EngineState.Processing:
-                    AppStatus = "Thinking";
-                    StatusColor = "#8B5CF6"; // Purple
-                    StatusMessage = "Transcribing speech...";
-                    CardBorderColor = "#8B5CF6";
-                    DictationButtonText = "Processing...";
+                    if (_dictationService.CurrentSource == RecordingSource.App)
+                    {
+                        AppStatus = "Thinking";
+                        StatusColor = "#8B5CF6"; // Purple
+                        StatusMessage = "Transcribing speech...";
+                        CardBorderColor = "#8B5CF6";
+                        DictationButtonText = "Processing...";
+                    }
+                    else
+                    {
+                        // Mask Widget processing state
+                        AppStatus = "Ready";
+                        StatusColor = "#10B981";
+                        StatusMessage = "Press F2 to dictate";
+                        CardBorderColor = "#10B981";
+                        DictationButtonText = "Start Dictation";
+                    }
                     break;
                 case EngineState.Error:
                     AppStatus = "Error";

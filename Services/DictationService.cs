@@ -61,8 +61,12 @@ namespace EliteWhisper.Services
         /// </summary>
         public void StartListening(RecordingSource source)
         {
-            // Allow starting if Ready OR Hidden (first run)
-            if (_widgetViewModel.State != WidgetState.Ready && _widgetViewModel.State != WidgetState.Hidden) return;
+            // Start check:
+            // 1. If Widget is source (or intent): Widget must be Ready or Hidden
+            // 2. If App is source: Engine must be Ready/Idle
+            
+            // Simpler global check: Engine must NOT be Recording/Processing
+            if (_aiEngine.State == EngineState.Recording || _aiEngine.State == EngineState.Processing) return;
 
             // Pre-flight checks
             if (!AudioCaptureService.IsMicrophoneAvailable())
@@ -77,6 +81,9 @@ namespace EliteWhisper.Services
                 return;
             }
 
+            // Set Source BEFORE triggering state change so listeners know who started it
+            CurrentSource = source;
+
             // Sync with Engine State
             try 
             {
@@ -86,16 +93,19 @@ namespace EliteWhisper.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to set engine state: {ex.Message}");
                 // If we can't transition engine to recording (e.g. it's busy loading), we shouldn't start
+                CurrentSource = RecordingSource.None; // Reset source
                 return; 
             }
 
-            CurrentSource = source;
             _cts = new CancellationTokenSource();
             _currentAudioPath = Path.Combine(Path.GetTempPath(), $"elitewhisper_{DateTime.Now:yyyyMMdd_HHmmss}.wav");
             _retryCount = 0;
             
-            _widgetViewModel.State = WidgetState.Listening;
-            _widgetViewModel.StatusText = "Listening...";
+            if (CurrentSource == RecordingSource.Widget)
+            {
+                _widgetViewModel.State = WidgetState.Listening;
+                _widgetViewModel.StatusText = "Listening...";
+            }
             
             _audioService.StartRecording(_currentAudioPath);
         }
@@ -107,13 +117,29 @@ namespace EliteWhisper.Services
         public async Task StopListeningAndProcessAsync()
         {
             await Task.Yield(); // Ensure async execution context
-            if (_widgetViewModel.State != WidgetState.Listening) return;
+            
+            // Check based on source
+            if (CurrentSource == RecordingSource.Widget)
+            {
+                if (_widgetViewModel.State != WidgetState.Listening) return;
+            }
+            else if (CurrentSource == RecordingSource.App)
+            {
+                if (_aiEngine.State != EngineState.Recording) return;
+            }
+            else
+            {
+                return; // No valid source
+            }
 
             // Sync Engine State
             _aiEngine.SetState(EngineState.Processing);
             
-            _widgetViewModel.State = WidgetState.Processing;
-            _widgetViewModel.StatusText = "Processing...";
+            if (CurrentSource == RecordingSource.Widget)
+            {
+                _widgetViewModel.State = WidgetState.Processing;
+                _widgetViewModel.StatusText = "Processing...";
+            }
             
             _audioService.StopRecording();
             // Recording completion triggers OnRecordingComplete callback
@@ -126,8 +152,11 @@ namespace EliteWhisper.Services
         {
             _cts?.Cancel();
             _audioService.StopRecording();
-            _widgetViewModel.State = WidgetState.Ready;
-            _widgetViewModel.StatusText = "Cancelled";
+            if (CurrentSource == RecordingSource.Widget)
+            {
+                _widgetViewModel.State = WidgetState.Ready;
+                _widgetViewModel.StatusText = "Cancelled";
+            }
             // Restore engine state
             _aiEngine.SetState(EngineState.Ready);
         }
@@ -150,7 +179,10 @@ namespace EliteWhisper.Services
                 // Check if AI engine is configured
                 if (_aiEngine.IsConfigured())
                 {
-                    _widgetViewModel.StatusText = "Transcribing...";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = "Transcribing...";
+                    }
                     transcription = await _aiEngine.TranscribeAsync(
                         audioFilePath, 
                         TranscriptionModel.Balanced, 
@@ -169,7 +201,10 @@ namespace EliteWhisper.Services
                     var activeMode = _modeService.ActiveMode;
                     var finalText = await _postProcessingService.ProcessAsync(transcription, activeMode);
                     
-                    _widgetViewModel.StatusText = "Typing...";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = "Typing...";
+                    }
                     await _injectionService.InjectTextAsync(finalText, _cts?.Token ?? CancellationToken.None);
                     
                     // Save to History (save final text, not raw)
@@ -182,18 +217,27 @@ namespace EliteWhisper.Services
                         ApplicationName = "Active Window" // Placeholder, could get real window title if needed
                     });
 
-                    _widgetViewModel.StatusText = "Done!";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = "Done!";
+                    }
                 }
                 else
                 {
-                    _widgetViewModel.StatusText = "No speech detected";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = "No speech detected";
+                    }
                 }
                 
                 await Task.Delay(800);
             }
             catch (OperationCanceledException)
             {
-                _widgetViewModel.StatusText = "Cancelled";
+                if (CurrentSource == RecordingSource.Widget)
+                {
+                    _widgetViewModel.StatusText = "Cancelled";
+                }
                 await Task.Delay(500);
             }
             catch (FileNotFoundException ex)
@@ -204,7 +248,10 @@ namespace EliteWhisper.Services
             }
             catch (TimeoutException)
             {
-                _widgetViewModel.StatusText = "Timeout - try shorter audio";
+                if (CurrentSource == RecordingSource.Widget)
+                {
+                    _widgetViewModel.StatusText = "Timeout - try shorter audio";
+                }
                 await Task.Delay(1500);
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not configured"))
@@ -220,14 +267,20 @@ namespace EliteWhisper.Services
                 if (_retryCount < MAX_RETRIES && !_cts?.Token.IsCancellationRequested == true)
                 {
                     _retryCount++;
-                    _widgetViewModel.StatusText = $"Retrying... ({_retryCount}/{MAX_RETRIES})";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = $"Retrying... ({_retryCount}/{MAX_RETRIES})";
+                    }
                     await Task.Delay(1000);
                     // Retry transcription
                     OnRecordingComplete(sender, audioFilePath);
                     return;
                 }
                 
-                _widgetViewModel.StatusText = "Error - try again";
+                if (CurrentSource == RecordingSource.Widget)
+                {
+                    _widgetViewModel.StatusText = "Error - try again";
+                }
                 await Task.Delay(1500);
             }
             finally
@@ -238,8 +291,11 @@ namespace EliteWhisper.Services
                 // Return to Ready (not Hidden) - only if still processing
                 if (_widgetViewModel.State == WidgetState.Processing)
                 {
-                    _widgetViewModel.State = WidgetState.Ready;
-                    _widgetViewModel.StatusText = "Ready";
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.State = WidgetState.Ready;
+                        _widgetViewModel.StatusText = "Ready";
+                    }
                 }
                 
                 // Always ensure Engine returns to Ready
