@@ -1,0 +1,26 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\App.xaml.cs(125,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(373,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(285,72): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(293,37): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [D:\Personal\voiceapp\EliteWhisper_vs4qvxua_wpftmp.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(14,33): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(15,34): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(17,20): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Converters\EnumToBooleanConverter.cs(29,51): warning CS8604: Possible null reference argument for parameter 'value' in 'object Enum.Parse(Type enumType, string value)'. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\App.xaml.cs(125,37): warning CS8602: Dereference of a possibly null reference. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(79,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(109,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\Services\ModeService.cs(129,25): warning CS0618: 'PostProcessProfile.RunLocally' is obsolete: 'Use PreferredProvider = PreferredProvider.Local instead.' [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(373,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(285,72): warning CS8600: Converting null literal or possible null value to non-nullable type. [D:\Personal\voiceapp\EliteWhisper.csproj]
+D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(293,37): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread. [D:\Personal\voiceapp\EliteWhisper.csproj]
+  EliteWhisper -> D:\Personal\voiceapp\bin\Release\net8.0-windows\win-x64\EliteWhisper.dll
+  EliteWhisper -> D:\Personal\voiceapp\dist\

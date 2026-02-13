@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EliteWhisper.Models;
 using EliteWhisper.Services;
+using EliteWhisper.Messages;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace EliteWhisper.ViewModels
 {
@@ -52,22 +54,47 @@ namespace EliteWhisper.ViewModels
         private readonly ModeService _modeService;
         private readonly LlmService _llmService;
         private readonly DictationService _dictationService;
+        private readonly HistoryService _historyService;
+
+        // Metrics
+        public EliteWhisper.Controls.AnimatedCounter AverageWpmCounter { get; } = new();
+        public EliteWhisper.Controls.AnimatedCounter WordsThisWeekCounter { get; } = new();
+        public EliteWhisper.Controls.AnimatedCounter TotalWordsCounter { get; } = new();
+        public EliteWhisper.Controls.AnimatedCounter AppsUsedCounter { get; } = new();
+        public EliteWhisper.Controls.AnimatedCounter MinutesSavedCounter { get; } = new();
+
+        [ObservableProperty]
+        private double _wpmTrend;
+
+        [ObservableProperty]
+        private double _wordsTrend;
 
         public DashboardViewModel(
             AIEngineService aiEngine,
             AudioCaptureService audioService,
             ModeService modeService,
             LlmService llmService,
-            DictationService dictationService)
+            DictationService dictationService,
+            HistoryService historyService)
         {
             _aiEngine = aiEngine;
             _audioService = audioService;
             _modeService = modeService;
             _llmService = llmService;
             _dictationService = dictationService;
+            _historyService = historyService;
 
             _aiEngine.StateChanged += OnEngineStateChanged;
             _modeService.ActiveModeChanged += OnModeChanged;
+            
+            // Listen for new records
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Register<Messages.RecordAddedMessage>(this, (r, m) =>
+            {
+               _ = RecalculateAsync();
+            });
+
+            // Initial load
+            _ = RecalculateAsync();
             
             // Initialize
             UpdateStatus(_aiEngine.State);
@@ -251,6 +278,118 @@ namespace EliteWhisper.ViewModels
             OnPropertyChanged(nameof(IsSoundPage));
             OnPropertyChanged(nameof(IsHistoryPage));
             OnPropertyChanged(nameof(IsAboutPage));
+        }
+        public async Task RecalculateAsync()
+        {
+            // Snapshot on UI thread to avoid collection modification errors
+            System.Collections.Generic.List<DictationRecord> records = null;
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => 
+            {
+                records = _historyService.History.ToList();
+            });
+
+            if (records == null) return;
+
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    if (records.Count == 0) return;
+                    
+                    // 1. Total Words
+                    int totalWords = records.Sum(r => r.WordCount);
+                    
+                    // 2. Average WPM
+                    // Only consider records with valid duration > 0 and WordCount > 0
+                    var validRecords = records.Where(r => r.DurationSeconds > 0 && r.WordCount > 0).ToList();
+                    int avgWpm = 0;
+                    if (validRecords.Any())
+                    {
+                        double totalDurationMin = validRecords.Sum(r => r.DurationSeconds) / 60.0;
+                        if (totalDurationMin > 0.1)
+                        {
+                            avgWpm = (int)(validRecords.Sum(r => r.WordCount) / totalDurationMin);
+                        }
+                    }
+
+                    // 3. Words This Week
+                    var now = DateTime.Now;
+                    var oneWeekAgo = now.AddDays(-7);
+                    int wordsThisWeek = records.Where(r => r.Timestamp >= oneWeekAgo).Sum(r => r.WordCount);
+
+                    // 4. Previous Week for Trend
+                    var twoWeeksAgo = now.AddDays(-14);
+                    int wordsPrevWeek = records.Where(r => r.Timestamp >= twoWeeksAgo && r.Timestamp < oneWeekAgo).Sum(r => r.WordCount);
+
+                    // 5. Apps Used (Distinct)
+                    int appsUsed = records
+                        .Where(r => !string.IsNullOrEmpty(r.ApplicationName) && r.ApplicationName != "Unknown")
+                        .Select(r => r.ApplicationName)
+                        .Distinct()
+                        .Count();
+
+                    // 6. Minutes Saved
+                    // Typing speed assumption: 40 WPM
+                    // Dictation Time: Actual duration
+                    // Saved = (Words / 40) - (Duration / 60)
+                    double typingMinutes = totalWords / 40.0;
+                    double dictationMinutes = records.Sum(r => r.DurationSeconds) / 60.0;
+                    int minutesSaved = (int)Math.Max(0, typingMinutes - dictationMinutes);
+
+                    // Trends
+                    double wpmTrendVal = 0; 
+                    // WPM trend is tricky, let's do Words Trend as requested
+                    double wordsTrendVal = 0;
+                    if (wordsPrevWeek > 0)
+                    {
+                        wordsTrendVal = ((double)(wordsThisWeek - wordsPrevWeek) / wordsPrevWeek) * 100;
+                    }
+                    else if (wordsThisWeek > 0)
+                    {
+                        wordsTrendVal = 100; // infinite growth
+                    }
+
+                    // For WPM Trend, compare this week vs last week average
+                    double wpmThisWeek = 0;
+                    var thisWeekRecords = records.Where(r => r.Timestamp >= oneWeekAgo && r.DurationSeconds > 0).ToList();
+                    if (thisWeekRecords.Any())
+                    {
+                        wpmThisWeek = thisWeekRecords.Sum(r => r.WordCount) / (thisWeekRecords.Sum(r => r.DurationSeconds) / 60.0);
+                    }
+
+                    double wpmPrevWeek = 0;
+                    var prevWeekRecords = records.Where(r => r.Timestamp >= twoWeeksAgo && r.Timestamp < oneWeekAgo && r.DurationSeconds > 0).ToList();
+                    if (prevWeekRecords.Any())
+                    {
+                        wpmPrevWeek = prevWeekRecords.Sum(r => r.WordCount) / (prevWeekRecords.Sum(r => r.DurationSeconds) / 60.0);
+                    }
+
+                    if (wpmPrevWeek > 0)
+                    {
+                        wpmTrendVal = ((wpmThisWeek - wpmPrevWeek) / wpmPrevWeek) * 100;
+                    }
+
+                    // Update UI
+                    System.Windows.Application.Current.Dispatcher.Invoke(async () =>
+                    {
+                        WpmTrend = wpmTrendVal;
+                        WordsTrend = wordsTrendVal;
+
+                        // Animate
+                        var t1 = AverageWpmCounter.AnimateTo(avgWpm);
+                        var t2 = WordsThisWeekCounter.AnimateTo(wordsThisWeek);
+                        var t3 = TotalWordsCounter.AnimateTo(totalWords);
+                        var t4 = AppsUsedCounter.AnimateTo(appsUsed);
+                        var t5 = MinutesSavedCounter.AnimateTo(minutesSaved);
+                        
+                        await Task.WhenAll(t1, t2, t3, t4, t5);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Dashboard Recalculation Error: {ex}");
+                }
+            });
         }
     }
 }

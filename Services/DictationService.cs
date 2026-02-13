@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using EliteWhisper.Models;
 using EliteWhisper.ViewModels;
+using EliteWhisper.Messages;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace EliteWhisper.Services
 {
@@ -28,6 +30,8 @@ namespace EliteWhisper.Services
         private string? _currentAudioPath;
         private int _retryCount = 0;
         private const int MAX_RETRIES = 2;
+        private TimeSpan _recordingDuration = TimeSpan.Zero;
+        private DateTime _recordingStartTime;
 
         public RecordingSource CurrentSource { get; private set; } = RecordingSource.None;
 
@@ -107,6 +111,7 @@ namespace EliteWhisper.Services
                 _widgetViewModel.StatusText = "Listening...";
             }
             
+            _recordingStartTime = DateTime.Now;
             _audioService.StartRecording(_currentAudioPath);
         }
 
@@ -141,6 +146,7 @@ namespace EliteWhisper.Services
                 _widgetViewModel.StatusText = "Processing...";
             }
             
+            _recordingDuration = DateTime.Now - _recordingStartTime;
             _audioService.StopRecording();
             // Recording completion triggers OnRecordingComplete callback
         }
@@ -207,15 +213,44 @@ namespace EliteWhisper.Services
                     }
                     await _injectionService.InjectTextAsync(finalText, _cts?.Token ?? CancellationToken.None);
                     
+                    // Capture metrics
+                    int wordCount = finalText.Split(new[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
+                    
+                    // Duration from audio file or approximated. 
+                    
+                    int durationSec = (int)_recordingDuration.TotalSeconds;
+                    if (durationSec < 1) durationSec = 1;
+
+                    // Capture Active Window
+                    string activeWindow = "Unknown";
+                    try
+                    {
+                        var handle = EliteWhisper.Native.Win32.GetForegroundWindow();
+                        if (handle != IntPtr.Zero)
+                        {
+                            var sb = new System.Text.StringBuilder(256);
+                            if (EliteWhisper.Native.Win32.GetWindowText(handle, sb, 256) > 0)
+                            {
+                                activeWindow = sb.ToString();
+                            }
+                        }
+                    }
+                    catch { }
+
                     // Save to History (save final text, not raw)
                     _historyService.AddRecord(new Models.DictationRecord
                     {
                         Content = finalText,
                         Timestamp = DateTime.Now,
-                        // Duration is not directly available here, could be calculated from audio file if needed
+                        Duration = _recordingDuration,
+                        DurationSeconds = durationSec,
+                        WordCount = wordCount,
                         ModelUsed = _aiEngine.GetConfiguration()?.DefaultModelPath ?? "Unknown",
-                        ApplicationName = "Active Window" // Placeholder, could get real window title if needed
+                        ApplicationName = activeWindow
                     });
+                    
+                    // Notify Dashboard to update (could effectively be done via HistoryService event or Messenger)
+                    CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new Messages.RecordAddedMessage());
 
                     if (CurrentSource == RecordingSource.Widget)
                     {

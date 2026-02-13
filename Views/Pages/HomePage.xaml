@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:models="clr-namespace:EliteWhisper.Models"
+             xmlns:converters="clr-namespace:EliteWhisper.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="700">
+    
+    <UserControl.Resources>
+        <converters:TrendToColorConverter x:Key="TrendToColorConverter"/>
+        <converters:TrendToTextConverter x:Key="TrendToTextConverter"/>
+    </UserControl.Resources>
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="32">
@@ -62,6 +68,74 @@
                             <TextBlock Text="{Binding DictationButtonText}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
+                </Grid>
+            </Border>
+            
+            <!-- Dashboard Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24" Padding="24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Vertical Separators -->
+                    <Rectangle Grid.Column="1" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
+                    <Rectangle Grid.Column="3" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
+                    <Rectangle Grid.Column="5" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
+                    <Rectangle Grid.Column="7" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
+
+                    <!-- 1. AVG WPM -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,4">
+                            <TextBlock Text="{Binding AverageWpmCounter.Value}" FontWeight="Bold" FontSize="26" Foreground="{StaticResource TextPrimary}"/>
+                            <TextBlock Text=" WPM" FontSize="14" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Bottom" Margin="4,0,0,4"/>
+                        </StackPanel>
+                        <TextBlock Text="Average Speed" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Text="{Binding WpmTrend, Converter={StaticResource TrendToTextConverter}}" 
+                                   Foreground="{Binding WpmTrend, Converter={StaticResource TrendToColorConverter}}" 
+                                   FontSize="12" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- 2. Words This Week -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="12,0">
+                        <TextBlock Text="{Binding WordsThisWeekCounter.Value}" FontWeight="Bold" FontSize="26" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Words This Week" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Text="{Binding WordsTrend, Converter={StaticResource TrendToTextConverter}}" 
+                                   Foreground="{Binding WordsTrend, Converter={StaticResource TrendToColorConverter}}" 
+                                   FontSize="12" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- 3. Total Words -->
+                    <StackPanel Grid.Column="4" VerticalAlignment="Center" Margin="12,0">
+                        <TextBlock Text="{Binding TotalWordsCounter.Value}" FontWeight="Bold" FontSize="26" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Total Words" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Text="Lifetime" Foreground="{StaticResource TextTertiary}" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- 4. Apps Used -->
+                    <StackPanel Grid.Column="6" VerticalAlignment="Center" Margin="12,0">
+                        <TextBlock Text="{Binding AppsUsedCounter.Value}" FontWeight="Bold" FontSize="26" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Apps Used" Style="{StaticResource CaptionText}"/>
+                         <TextBlock Text="Unique" Foreground="{StaticResource TextTertiary}" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- 5. Minutes Saved -->
+                    <StackPanel Grid.Column="8" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,4">
+                            <TextBlock Text="{Binding MinutesSavedCounter.Value}" FontWeight="Bold" FontSize="26" Foreground="{StaticResource TextPrimary}"/>
+                            <TextBlock Text=" min" FontSize="14" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Bottom" Margin="4,0,0,4"/>
+                        </StackPanel>
+                        <TextBlock Text="Time Saved" Style="{StaticResource CaptionText}"/>
+                        <TextBlock Text="This Week" Foreground="{StaticResource TextTertiary}" FontSize="12" Margin="0,4,0,0"/>
+                    </StackPanel>
                 </Grid>
             </Border>
             
