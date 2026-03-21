@@ -164,7 +164,7 @@ namespace EliteWhisper.Services.LLM
                         new { SearchId = "meta-llama/llama-3.2-3b-instruct:free", Label = "Llama 3.2 3B (Balanced)", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "openai/gpt-oss-20b:free", Label = "GPT-OSS 20B", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "openai/gpt-oss-120b:free", Label = "GPT-OSS 120B (Advanced)", Tier = OpenRouterModelTier.Free },
-                        new { SearchId = "google/gemma-3-27b-it:free", Label = "Gemma 3 27B IT (Free)", Tier = OpenRouterModelTier.Free }
+                        new { SearchId = "google/gemma-3n-e2b-it:free", Label = "Gemma 3N E2B IT (Free)", Tier = OpenRouterModelTier.Free }
                     };
 
                     foreach (var item in strictList)

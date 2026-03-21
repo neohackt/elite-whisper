@@ -78,6 +78,7 @@ namespace EliteWhisper.ViewModels
             LoadLocalModelsAsync();
             LoadBuiltInModels();
             LoadGeminiModels();
+            LoadOpenRouterModelsAsync();
         }
 
         [RelayCommand]

@@ -829,3 +829,16 @@ OUTPUT: logits = [-1, -1, 1025]
 [13:19:12.796] [STT] ONNX inference duration: 291ms for engine Parakeet (Sherpa)
 [13:19:12.796] [STT] Decoded transcript length: 49
 [13:19:12.797] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[13:39:26.719] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[13:39:26.723] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[13:39:26.726] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[13:39:31.363] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[13:39:31.364] [STT] Sherpa Parakeet engine initialized successfully.
+[13:39:31.365] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[13:39:31.365] [STT] Selected engine (Manual): Whisper
+[13:39:39.457] [STT] Input audio length: 119489 samples, RMS: 0.0125
+[13:39:39.457] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[13:39:39.457] [STT] Selected engine (Manual): Whisper
+[13:39:42.334] [STT] ONNX inference duration: 2877ms for engine Whisper
+[13:39:42.335] [STT] Decoded transcript length: 72
+[13:39:42.335] [STT] Final transcript: 'Hi there, how are you? Can you tell me the waiting time is for tomorrow?'
