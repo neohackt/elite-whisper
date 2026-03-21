@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Net.Http;
@@ -251,6 +251,18 @@ namespace EliteWhisper
                 }
                 
                 Log("Startup Complete");
+                
+                // Prime hardware profile in background to eliminate first-use WMI delay
+                _ = Task.Run(() => {
+                    try {
+                        var hardware = AppHost.Services.GetRequiredService<EliteWhisper.Services.Speech.HardwareDetectionService>();
+                        hardware.GetProfile();
+                        Log("Hardware profile primed in background");
+                    } catch (Exception ex) {
+                        Log($"Hardware priming failed: {ex.Message}");
+                    }
+                });
+
                 base.OnStartup(e);
             }
             catch (Exception ex)

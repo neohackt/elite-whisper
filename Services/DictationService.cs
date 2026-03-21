@@ -65,12 +65,21 @@ namespace EliteWhisper.Services
         /// </summary>
         public void StartListening(RecordingSource source)
         {
+            // Immediate UI Feedback for responsiveness
+            CurrentSource = source;
+            if (CurrentSource == RecordingSource.Widget)
+            {
+                _widgetViewModel.State = WidgetState.Listening;
+                _widgetViewModel.StatusText = "Listening...";
+            }
+
             // Start check:
-            // 1. If Widget is source (or intent): Widget must be Ready or Hidden
-            // 2. If App is source: Engine must be Ready/Idle
-            
             // Simpler global check: Engine must NOT be Recording/Processing
-            if (_aiEngine.State == EngineState.Recording || _aiEngine.State == EngineState.Processing) return;
+            if (_aiEngine.State == EngineState.Recording || _aiEngine.State == EngineState.Processing)
+            {
+                if (CurrentSource == RecordingSource.Widget) _widgetViewModel.State = WidgetState.Ready;
+                return;
+            }
 
             // Pre-flight checks
             if (!AudioCaptureService.IsMicrophoneAvailable())
@@ -99,9 +108,6 @@ namespace EliteWhisper.Services
                 return;
             }
 
-            // Set Source BEFORE triggering state change so listeners know who started it
-            CurrentSource = source;
-
             // Sync with Engine State
             try 
             {
@@ -111,19 +117,13 @@ namespace EliteWhisper.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to set engine state: {ex.Message}");
                 // If we can't transition engine to recording (e.g. it's busy loading), we shouldn't start
-                CurrentSource = RecordingSource.None; // Reset source
+                ShowErrorAndReset("Engine Busy");
                 return; 
             }
 
             _cts = new CancellationTokenSource();
             _currentAudioPath = Path.Combine(Path.GetTempPath(), $"elitewhisper_{DateTime.Now:yyyyMMdd_HHmmss}.wav");
             _retryCount = 0;
-            
-            if (CurrentSource == RecordingSource.Widget)
-            {
-                _widgetViewModel.State = WidgetState.Listening;
-                _widgetViewModel.StatusText = "Listening...";
-            }
             
             _recordingStartTime = DateTime.Now;
             _audioService.StartRecording(_currentAudioPath);

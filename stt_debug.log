@@ -735,3 +735,21 @@ OUTPUT: logits = [-1, -1, 1025]
 [12:23:20.583] [STT] ONNX inference duration: 3060ms for engine Whisper
 [12:23:20.583] [STT] Decoded transcript length: 49
 [12:23:20.583] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:27:32.270] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:27:32.270] [STT] Selected engine (Manual): Whisper
+[12:27:40.879] [STT] Input audio length: 128609 samples, RMS: 0.0075
+[12:27:40.879] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:27:40.879] [STT] Selected engine (Manual): Whisper
+[12:27:43.786] [STT] ONNX inference duration: 2907ms for engine Whisper
+[12:27:43.787] [STT] Decoded transcript length: 0
+[12:27:43.787] [STT] Final transcript: ''
+[12:27:43.787] [STT] audioRMS < 0.01 and empty transcript, confirming 'No speech detected'.
+[12:27:45.651] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:27:45.652] [STT] Selected engine (Manual): Whisper
+[12:27:46.391] [STT] Input audio length: 9569 samples, RMS: 0.0043
+[12:27:46.392] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:27:46.392] [STT] Selected engine (Manual): Whisper
+[12:27:49.388] [STT] ONNX inference duration: 2996ms for engine Whisper
+[12:27:49.388] [STT] Decoded transcript length: 0
+[12:27:49.389] [STT] Final transcript: ''
+[12:27:49.389] [STT] audioRMS < 0.01 and empty transcript, confirming 'No speech detected'.

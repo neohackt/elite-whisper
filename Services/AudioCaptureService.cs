@@ -28,18 +28,32 @@ namespace EliteWhisper.Services
         public bool IsRecording => _isRecording;
         public DateTime? RecordingStartTime { get; private set; }
 
+        private static DateTime _lastMicCheck = DateTime.MinValue;
+        private static bool _lastMicResult = false;
+        private static readonly object _micLock = new object();
+
         /// <summary>
-        /// Check if any microphone is available
+        /// Check if any microphone is available (Cached for 1s to avoid redundant driver calls)
         /// </summary>
         public static bool IsMicrophoneAvailable()
         {
-            try
+            lock (_micLock)
             {
-                return WaveIn.DeviceCount > 0;
-            }
-            catch
-            {
-                return false;
+                if ((DateTime.Now - _lastMicCheck).TotalSeconds < 1.0)
+                {
+                    return _lastMicResult;
+                }
+
+                try
+                {
+                    _lastMicResult = WaveIn.DeviceCount > 0;
+                    _lastMicCheck = DateTime.Now;
+                    return _lastMicResult;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
