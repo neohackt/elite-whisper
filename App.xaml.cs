@@ -124,6 +124,7 @@ namespace EliteWhisper
                             services.AddTransient<HistoryViewModel>();
                             services.AddTransient<SoundViewModel>();
                             services.AddTransient<ConfigurationViewModel>();
+                            services.AddTransient<AboutViewModel>();
                             
                             // Widget
                             services.AddSingleton<WidgetWindow>();

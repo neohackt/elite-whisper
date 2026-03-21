@@ -7,6 +7,7 @@ namespace EliteWhisper.Views.Pages
         public AboutPage()
         {
             InitializeComponent();
+            DataContext = (System.Windows.Application.Current as App)?.Services.GetService(typeof(ViewModels.AboutViewModel));
         }
     }
 }

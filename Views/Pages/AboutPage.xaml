@@ -31,7 +31,7 @@
                 
                 <!-- Version -->
                 <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="12,6" HorizontalAlignment="Center">
-                    <TextBlock Text="Version 1.0.1" Style="{StaticResource CaptionText}"/>
+                    <TextBlock Text="{Binding AppVersion}" Style="{StaticResource CaptionText}"/>
                 </Border>
                 
             </StackPanel>
@@ -77,10 +77,13 @@
             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                 <StackPanel>
                     <TextBlock Text="License" Style="{StaticResource HeadingSmall}" Margin="0,0,0,12"/>
-                    <TextBlock Style="{StaticResource BodyText}">
-                        <Run Text="This software is provided 'as-is' without any warranty. Elite Whisper uses open-source components including whisper.cpp (MIT License) and NAudio (Ms-PL)."/>
+                    <TextBlock Style="{StaticResource BodyText}" Margin="0,0,0,8">
+                        <Run Text="{Binding LicenseType, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource AccentPrimary}"/>
                     </TextBlock>
-                    <Button Content="View Full License" Style="{StaticResource SecondaryButton}" Margin="0,16,0,0" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap">
+                        <Run Text="{Binding LicenseDescription, Mode=OneWay}"/>
+                    </TextBlock>
+                    <Button Content="View Full EULA" Style="{StaticResource SecondaryButton}" Margin="0,16,0,0" HorizontalAlignment="Left"/>
                 </StackPanel>
             </Border>
             
@@ -120,7 +123,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Windows" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text="Windows 11 Pro" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding OsVersion}" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                     
                     <Grid Margin="0,0,0,8">
@@ -129,7 +132,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text=".NET Runtime" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text=".NET 8.0.0" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DotNetVersion}" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                     
                     <Grid>
@@ -138,7 +141,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Architecture" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text="x64" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Architecture}" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                 </StackPanel>
             </Border>
