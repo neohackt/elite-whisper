@@ -22,7 +22,8 @@
                     </StackPanel>
                     <TextBlock Text="Select which microphone to use for dictation." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
                     
-                    <ComboBox Width="350" HorizontalAlignment="Left" Padding="12,10"
+                    <ComboBox Width="350" HorizontalAlignment="Left" 
+                              Style="{StaticResource PremiumComboBox}"
                               ItemsSource="{Binding AvailableMicrophones}"
                               SelectedIndex="{Binding SelectedMicrophoneIndex}"/>
                     

@@ -49,12 +49,13 @@
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMicName}" Foreground="{StaticResource TextPrimary}" FontSize="14"/>
                             
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Mode:" Style="{StaticResource CaptionText}" Margin="0,0,12,8" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Row="1" Grid.Column="1" 
-                                      ItemsSource="{Binding Modes}" 
-                                      SelectedItem="{Binding SelectedMode}"
-                                      DisplayMemberPath="Name"
-                                      Margin="0,0,0,8"
-                                      Width="180" HorizontalAlignment="Left"/>
+                             <ComboBox Grid.Row="1" Grid.Column="1" 
+                                       Style="{StaticResource PremiumComboBox}"
+                                       ItemsSource="{Binding Modes}" 
+                                       SelectedItem="{Binding SelectedMode}"
+                                       DisplayMemberPath="Name"
+                                       Margin="0,0,0,8"
+                                       Width="220" HorizontalAlignment="Left"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Provider:" Style="{StaticResource CaptionText}" Margin="0,0,12,0"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentProviderName}" Foreground="{StaticResource TextPrimary}" FontSize="14"/>

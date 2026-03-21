@@ -159,25 +159,12 @@ namespace EliteWhisper.Services.LLM
                     // We will prioritize exact match, then StartsWith.
                     var strictList = new[] 
                     {
-                        // Tier: Free (MUST have :free suffix in OpenRouter to be actually free)
                         new { SearchId = "stepfun/step-3.5-flash:free", Label = "Step 3.5 Flash (Fast)", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "liquid/lfm-2.5-1.2b-instruct:free", Label = "LFM 2.5 Instruct (Structured)", Tier = OpenRouterModelTier.Free },
                         new { SearchId = "meta-llama/llama-3.2-3b-instruct:free", Label = "Llama 3.2 3B (Balanced)", Tier = OpenRouterModelTier.Free },
-                        new { SearchId = "meta-llama/llama-3.3-70b-instruct:free", Label = "Llama 3.3 70B (Powerful)", Tier = OpenRouterModelTier.Free },
-                        
-                        // Tier: Free Advanced (MUST have :free suffix)
-                        new { SearchId = "openai/gpt-oss-20b:free", Label = "GPT-OSS 20B", Tier = OpenRouterModelTier.FreeAdvanced },
-                        new { SearchId = "openai/gpt-oss-120b:free", Label = "GPT-OSS 120B (Advanced)", Tier = OpenRouterModelTier.FreeAdvanced },
-                        new { SearchId = "deepseek/deepseek-r1-0528:free", Label = "DeepSeek R1 (Reasoning)", Tier = OpenRouterModelTier.FreeAdvanced },
-                        
-                        // Tier: Paid Recommended
-                        new { SearchId = "anthropic/claude-3-haiku", Label = "Claude 3 Haiku", Tier = OpenRouterModelTier.Recommended },
-                        new { SearchId = "openai/gpt-4o-mini", Label = "GPT-4o Mini", Tier = OpenRouterModelTier.Recommended },
-                        new { SearchId = "mistralai/mistral-small", Label = "Mistral Small", Tier = OpenRouterModelTier.Recommended },
-                        
-                        // Tier: Paid Advanced
-                        new { SearchId = "anthropic/claude-3-sonnet", Label = "Claude 3 Sonnet", Tier = OpenRouterModelTier.Advanced },
-                        new { SearchId = "openai/gpt-4-turbo", Label = "GPT-4 Turbo", Tier = OpenRouterModelTier.Advanced }
+                        new { SearchId = "openai/gpt-oss-20b:free", Label = "GPT-OSS 20B", Tier = OpenRouterModelTier.Free },
+                        new { SearchId = "openai/gpt-oss-120b:free", Label = "GPT-OSS 120B (Advanced)", Tier = OpenRouterModelTier.Free },
+                        new { SearchId = "google/gemma-3-27b-it:free", Label = "Gemma 3 27B IT (Free)", Tier = OpenRouterModelTier.Free }
                     };
 
                     foreach (var item in strictList)
@@ -285,10 +272,7 @@ namespace EliteWhisper.Services.LLM
     
     public enum OpenRouterModelTier
     {
-        Free = 0,
-        Recommended = 1,
-        FreeAdvanced = 2,
-        Advanced = 3
+        Free = 0
     }
 
     public class OpenRouterModelOption
@@ -300,13 +284,6 @@ namespace EliteWhisper.Services.LLM
         public OpenRouterModelTier Tier { get; set; }
         
         // Helper for UI grouping
-        public string TierHeader => Tier switch
-        {
-            OpenRouterModelTier.Free => "🆓 Free Models (Recommended)",
-            OpenRouterModelTier.FreeAdvanced => "🆓 Free Models (Advanced)",
-            OpenRouterModelTier.Recommended => "⭐ Recommended (Credits Required)",
-            OpenRouterModelTier.Advanced => "⚙ Advanced",
-            _ => "Other"
-        };
+        public string TierHeader => "🆓 Free OpenRouter Models";
     }
 }

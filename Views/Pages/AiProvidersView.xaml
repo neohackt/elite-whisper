@@ -39,6 +39,7 @@
                                 <TextBlock Text="Engine:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
                                 <ComboBox SelectedValue="{Binding LocalEngine}" 
                                           SelectedValuePath="Tag"
+                                          Style="{StaticResource PremiumComboBox}"
                                           Width="140">
                                     <ComboBoxItem Content="Ollama" Tag="Ollama"/>
                                     <ComboBoxItem Content="Built-in" Tag="BuiltIn"/>

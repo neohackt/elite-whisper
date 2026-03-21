@@ -198,7 +198,8 @@
 
                                 <TextBlock Text="Context Size (Tokens)" Margin="0,0,0,4"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                                    <ComboBox SelectedValue="{Binding ContextSize}" SelectedValuePath="Tag" Width="100" HorizontalAlignment="Left">
+                                    <ComboBox SelectedValue="{Binding ContextSize}" SelectedValuePath="Tag" Width="120" HorizontalAlignment="Left"
+                                              Style="{StaticResource PremiumComboBox}">
                                         <ComboBoxItem Content="2048" Tag="2048"/>
                                         <ComboBoxItem Content="4096" Tag="4096"/>
                                         <ComboBoxItem Content="8192" Tag="8192"/>
