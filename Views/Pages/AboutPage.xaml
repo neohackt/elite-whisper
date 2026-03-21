@@ -31,7 +31,7 @@
                 
                 <!-- Version -->
                 <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusSmall}" Padding="12,6" HorizontalAlignment="Center">
-                    <TextBlock Text="Version 1.0.0" Style="{StaticResource CaptionText}"/>
+                    <TextBlock Text="Version 1.0.1" Style="{StaticResource CaptionText}"/>
                 </Border>
                 
             </StackPanel>
@@ -50,7 +50,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Developer" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text="Your Name" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text="neohackt" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                     
                     <Grid Margin="0,0,0,12">
@@ -59,7 +59,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Powered by" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text="OpenAI Whisper" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text="OpenAI Whisper &amp; NVIDIA Parakeet" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                     
                     <Grid>
@@ -68,7 +68,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Built with" Style="{StaticResource CaptionText}"/>
-                        <TextBlock Grid.Column="1" Text=".NET 8, WPF, whisper.cpp" Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Grid.Column="1" Text=".NET 8, WPF, whisper.cpp, Sherpa-ONNX" Foreground="{StaticResource TextPrimary}"/>
                     </Grid>
                 </StackPanel>
             </Border>
