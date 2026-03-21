@@ -115,6 +115,21 @@
                     </Grid>
                 </StackPanel>
             </Border>
+
+            <!-- Updates Card -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Updates" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
+                    <TextBlock Text="Check for the latest version of Elite Whisper." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Check for Updates" 
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Style="{StaticResource PrimaryButton}" 
+                                HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             
         </StackPanel>
     </ScrollViewer>

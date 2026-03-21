@@ -23,7 +23,7 @@ namespace EliteWhisper.Models
         /// <summary>
         /// Prefer local LLM (Ollama) over cloud providers.
         /// </summary>
-        [System.Obsolete("Use PreferredProvider = PreferredProvider.Local instead.")]
+        [System.Obsolete("Use PreferredProvider = PreferredProvider.Ollama instead.")]
         public bool RunLocally { get; set; }
         
         /// <summary>
@@ -38,7 +38,8 @@ namespace EliteWhisper.Models
         public string? PreferredModel { get; set; }
         
         // Per-Provider Persistence
-        public string? PreferredLocalModel { get; set; }
+        public string? PreferredLocalModel { get; set; } // Ollama
+        public string? PreferredBuiltInModel { get; set; } // BuiltIn (Llama)
         public string? PreferredGeminiModel { get; set; }
         public string? PreferredOpenRouterModel { get; set; }
     }

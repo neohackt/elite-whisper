@@ -1,13 +1,25 @@
   Determining projects to restore...
   All projects are up-to-date for restore.
-D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(39,59): error CS0104: 'EngineState' is an ambiguous reference between 'EliteWhisper.Models.EngineState' and 'EliteWhisper.Services.EngineState' [D:\Personal\voiceapp\EliteWhisper_5y33qao5_wpftmp.csproj]
-D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(44,35): error CS0104: 'EngineState' is an ambiguous reference between 'EliteWhisper.Models.EngineState' and 'EliteWhisper.Services.EngineState' [D:\Personal\voiceapp\EliteWhisper_5y33qao5_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs(4,12): error CS0579: Duplicate 'global::System.Runtime.Versioning.TargetFrameworkAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(13,12): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(14,12): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(15,12): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(16,12): error CS0579: Duplicate 'System.Reflection.AssemblyInformationalVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(17,12): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(18,12): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(19,12): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
 
 Build FAILED.
 
-D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(39,59): error CS0104: 'EngineState' is an ambiguous reference between 'EliteWhisper.Models.EngineState' and 'EliteWhisper.Services.EngineState' [D:\Personal\voiceapp\EliteWhisper_5y33qao5_wpftmp.csproj]
-D:\Personal\voiceapp\ViewModels\DashboardViewModel.cs(44,35): error CS0104: 'EngineState' is an ambiguous reference between 'EliteWhisper.Models.EngineState' and 'EliteWhisper.Services.EngineState' [D:\Personal\voiceapp\EliteWhisper_5y33qao5_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs(4,12): error CS0579: Duplicate 'global::System.Runtime.Versioning.TargetFrameworkAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(13,12): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(14,12): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(15,12): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(16,12): error CS0579: Duplicate 'System.Reflection.AssemblyInformationalVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(17,12): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(18,12): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
+d:\Personal\voiceapp\obj\Debug\net8.0-windows\win-x64\EliteWhisper_qdl1nqwk_wpftmp.AssemblyInfo.cs(19,12): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute [d:\Personal\voiceapp\EliteWhisper_qdl1nqwk_wpftmp.csproj]
     0 Warning(s)
-    2 Error(s)
+    8 Error(s)
 
-Time Elapsed 00:00:02.42
+Time Elapsed 00:00:02.50

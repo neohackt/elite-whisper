@@ -38,6 +38,24 @@ namespace EliteWhisper.Services
             if (config.Modes != null && config.Modes.Count > 0)
             {
                 _modes.AddRange(config.Modes);
+
+                // Migrate legacy "Local" to "Ollama"
+                bool needsSave = false;
+                foreach (var mode in _modes)
+                {
+                    #pragma warning disable CS0612 // Type or member is obsolete
+                    if (mode.PostProcess?.PreferredProvider == PreferredProvider.Local)
+                    {
+                        mode.PostProcess.PreferredProvider = PreferredProvider.Ollama;
+                        needsSave = true;
+                    }
+                    #pragma warning restore CS0612
+                }
+
+                if (needsSave)
+                {
+                    SaveModes();
+                }
             }
             else
             {
@@ -76,7 +94,6 @@ namespace EliteWhisper.Services
                     PostProcess = new PostProcessProfile
                     {
                         PromptTemplate = "Clean up the {{text}} text for clarity and natural flow while preserving meaning and the original tone. Use informal, plain language unless the {{text}} clearly uses a professional tone; in that case, match it. Fix obvious grammar, remove fillers and stutters, collapse repetitions, and keep names and numbers. Format any lists as proper bullet points or numbered lists. Write numbers as numerals (e.g., 'five' → '5', 'twenty dollars' → '$20'). Keep the original intent and nuance. Organize into short paragraphs of 2–4 sentences for readability. Do not add explanations, labels, metadata, or instructions. Output only the cleaned text.",
-                        RunLocally = false,
                         PreferredProvider = PreferredProvider.Auto
                     }
                 },
@@ -106,7 +123,6 @@ Only include a greeting or closing if they are implied by the {{text}}. Do not i
 Write numbers as numerals where appropriate (e.g., ""five"" → ""5"", ""twenty dollars"" → ""$20"").
 
 Output only the email body text.",
-                        RunLocally = false,
                         PreferredProvider = PreferredProvider.Auto
                     }
                 },
@@ -126,7 +142,6 @@ Output only the email body text.",
                     PostProcess = new PostProcessProfile
                     {
                         PromptTemplate = "Summarize into bullet points and action items.\n\n{{text}}",
-                        RunLocally = false,
                         PreferredProvider = PreferredProvider.Auto
                     }
                 },
@@ -159,7 +174,7 @@ Format the output like a modern chat message:
 Write numbers as numerals (e.g., ""five"" → ""5"", ""twenty dollars"" → ""$20"").
 
 Output only the chat message.",
-                        PreferredProvider = PreferredProvider.Local
+                        PreferredProvider = PreferredProvider.Ollama
                     }
                 },
                 

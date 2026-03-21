@@ -7,11 +7,15 @@ namespace EliteWhisper.Converters
 {
     public class CountToVisibilityConverter : IValueConverter
     {
+        public bool Invert { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is int count)
             {
                 bool isVisible = count > 0;
+                
+                if (Invert) isVisible = !isVisible;
                 
                 if (parameter is string paramStr && paramStr.Equals("Invert", StringComparison.OrdinalIgnoreCase))
                 {

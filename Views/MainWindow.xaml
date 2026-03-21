@@ -51,6 +51,15 @@
                             <TextBlock Text="Home" VerticalAlignment="Center"/>
                         </StackPanel>
                     </RadioButton>
+
+                    <RadioButton x:Name="NavLocalModels" Style="{StaticResource NavButton}" 
+                                 IsChecked="{Binding IsLocalModelsPage, Mode=TwoWay}" GroupName="Nav">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2M4,4V20H20V4H4M11,17.5L5.5,12L6.91,10.59L11,14.67L17.09,8.59L18.5,10L11,17.5Z" 
+                                  Fill="{StaticResource TextSecondary}" Stretch="Uniform" Width="20" Height="20" Margin="0,0,12,0"/>
+                            <TextBlock Text="Local Models" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </RadioButton>
                     
                     <RadioButton x:Name="NavModels" Style="{StaticResource NavButton}" 
                                  IsChecked="{Binding IsModelsPage, Mode=TwoWay}" GroupName="Nav">
@@ -141,6 +150,13 @@
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <pages:ModelsPage/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CurrentPage}" Value="{x:Static models:AppPage.LocalModels}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <pages:LocalModelsPage/>
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger>

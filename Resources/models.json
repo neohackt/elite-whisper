@@ -34,5 +34,18 @@
     "recommended": false,
     "speedRating": 1,
     "accuracyRating": 3
+  },
+  {
+    "id": "parakeet-sherpa",
+    "name": "Parakeet TDT (Sherpa)",
+    "description": "NVIDIA Parakeet via Sherpa-ONNX. Fast, accurate, CPU-optimized. No GPU required.",
+    "tier": "Parakeet (Sherpa)",
+    "downloadUrl": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8.tar.bz2",
+    "filename": "sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8",
+    "sizeMB": 680,
+    "recommended": false,
+    "speedRating": 5,
+    "accuracyRating": 5,
+    "engineType": "sherpa"
   }
 ]

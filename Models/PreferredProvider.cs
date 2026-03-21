@@ -14,7 +14,18 @@ namespace EliteWhisper.Models
         /// <summary>
         /// Use local Ollama instance.
         /// </summary>
+        Ollama,
+
+        /// <summary>
+        /// Legacy compatibility for Ollama.
+        /// </summary>
+        [System.Obsolete("Use Ollama instead.")]
         Local,
+        
+        /// <summary>
+        /// Use built-in llama.cpp (Local)
+        /// </summary>
+        BuiltIn,
         
         /// <summary>
         /// Use Google Gemini API (free tier).

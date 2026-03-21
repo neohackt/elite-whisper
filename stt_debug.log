@@ -1,0 +1,737 @@
+[20:42:49.567] [STT] Input audio length: 67969 samples, RMS: 0.0116
+[20:42:49.617] [STT] ONNX inference duration: 49ms for engine Whisper
+[20:42:49.617] [STT] Decoded transcript length: 0
+[20:42:49.617] [STT] Final transcript: ''
+[20:45:54.819] [STT] Input audio length: 42689 samples, RMS: 0.0088
+[20:45:54.868] [STT] ONNX inference duration: 48ms for engine Whisper
+[20:45:54.868] [STT] Decoded transcript length: 0
+[20:45:54.869] [STT] Final transcript: ''
+[20:45:54.869] [STT] audioRMS < 0.01 and empty transcript, confirming 'No speech detected'.
+[20:46:02.560] [STT] Input audio length: 34049 samples, RMS: 0.0127
+[20:46:02.595] [STT] ONNX inference duration: 35ms for engine Whisper
+[20:46:02.597] [STT] Decoded transcript length: 0
+[20:46:02.597] [STT] Final transcript: ''
+[20:51:47.595] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[20:51:47.596] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:51:47.598] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:51:48.774] [STT] Enabling GPU/DirectML for Parakeet V3
+[20:51:49.918] [STT] CRITICAL THREAD ERROR: Failed to initialize ONNX session for Parakeet V3. Reason: [ErrorCode:RuntimeException] Exception during initialization: file_size: The system cannot find the file specified.: "E:\Elite Whisper Resources\model_fp16.onnx_data" 
+    at Microsoft.ML.OnnxRuntime.InferenceSession.Init(String modelPath, SessionOptions options, PrePackedWeightsContainer prepackedWeightsContainer)
+   at Microsoft.ML.OnnxRuntime.InferenceSession..ctor(String modelPath, SessionOptions options)
+   at EliteWhisper.Services.Speech.ParakeetEngine.InitializeSession() in d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs:line 69
+[20:51:49.918] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:51:49.918] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:51:49.918] [STT] Enabling GPU/DirectML for Parakeet V2
+[20:51:50.611] [STT] CRITICAL THREAD ERROR: Failed to initialize ONNX session for Parakeet V2. Reason: [ErrorCode:RuntimeException] Exception during initialization: file_size: The system cannot find the file specified.: "E:\Elite Whisper Resources\model_q4f16.onnx_data" 
+    at Microsoft.ML.OnnxRuntime.InferenceSession.Init(String modelPath, SessionOptions options, PrePackedWeightsContainer prepackedWeightsContainer)
+   at Microsoft.ML.OnnxRuntime.InferenceSession..ctor(String modelPath, SessionOptions options)
+   at EliteWhisper.Services.Speech.ParakeetEngine.InitializeSession() in d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs:line 69
+[20:51:50.639] [STT] Input audio length: 34529 samples, RMS: 0.0155
+[20:51:50.640] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[20:51:50.640] [STT] Selected engine (Fallback): Whisper
+[20:51:50.687] [STT] ONNX inference duration: 46ms for engine Whisper
+[20:51:50.687] [STT] Decoded transcript length: 0
+[20:51:50.687] [STT] Final transcript: ''
+[20:54:57.157] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[20:54:57.157] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:54:57.159] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:54:58.320] [STT] Renaming parakeet-v3.onnx_data to model_fp16.onnx_data to appease ONNX compiler.
+[20:54:58.321] [STT] Enabling GPU/DirectML for Parakeet V3
+[20:55:01.689] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[20:55:01.705] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[20:55:01.706] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:55:01.706] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:55:01.707] [STT] Renaming parakeet-v2.onnx_data to model_q4f16.onnx_data to appease ONNX compiler.
+[20:55:01.708] [STT] Enabling GPU/DirectML for Parakeet V2
+[20:55:03.615] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[20:55:03.615] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[20:55:03.644] [STT] Input audio length: 35649 samples, RMS: 0.0184
+[20:55:03.644] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[20:55:03.645] [STT] Selected engine (Auto): Parakeet v3
+[20:55:04.180] [STT] Parakeet V3 Inference error: [ErrorCode:InvalidArgument] Got invalid dimensions for input: input_features for the following indices
+ index: 2 Got: 221 Expected: 80
+ Please fix either the inputs/outputs or the model.
+[20:55:04.182] [STT] Primary engine Parakeet V3 failed: [ErrorCode:InvalidArgument] Got invalid dimensions for input: input_features for the following indices
+ index: 2 Got: 221 Expected: 80
+ Please fix either the inputs/outputs or the model.
+[20:55:04.182] [STT] Error occurred. Falling back to Whisper
+[20:58:46.531] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[20:58:46.532] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:58:46.539] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[20:58:48.019] [STT] Enabling GPU/DirectML for Parakeet V3
+[20:58:50.628] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[20:58:50.630] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[20:58:50.630] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:58:50.631] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[20:58:50.631] [STT] Enabling GPU/DirectML for Parakeet V2
+[20:58:52.984] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[20:58:52.984] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[20:58:53.021] [STT] Input audio length: 31969 samples, RMS: 0.0177
+[20:58:53.022] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[20:58:53.022] [STT] Selected engine (Auto): Parakeet v3
+[20:59:00.242] [STT] Parakeet V3 Logits shape: [1, 25, 1025]
+[20:59:00.316] [STT] Parakeet V3 raw decoder output text: ''
+[20:59:00.316] [STT] Parakeet V3 Transcription time: 7289ms
+[20:59:00.318] [STT] ONNX inference duration: 7295ms for engine Parakeet V3
+[20:59:00.319] [STT] Decoded transcript length: 0
+[20:59:00.319] [STT] Final transcript: ''
+[20:59:00.320] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[16:40:07.269] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[16:40:07.270] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[16:40:07.459] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[16:40:10.539] [STT] Enabling CUDA Execution Provider for Parakeet V3
+[16:40:10.556] [STT] Failed to enable CUDA: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_CUDA' in DLL 'onnxruntime'.. Falling back to CPU.
+[16:40:20.278] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[16:40:20.290] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[16:40:20.290] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[16:40:20.290] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[16:40:20.291] [STT] Enabling CUDA Execution Provider for Parakeet V2
+[16:40:20.291] [STT] Failed to enable CUDA: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_CUDA' in DLL 'onnxruntime'.. Falling back to CPU.
+[16:40:26.237] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[16:40:26.237] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[16:40:26.490] [STT] Input audio length: 52129 samples, RMS: 0.0112
+[16:40:26.491] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[16:40:26.491] [STT] Selected engine (Auto): Parakeet v3
+[16:40:26.818] [STT] Parakeet V3 frame count: 324
+[16:40:26.818] [STT] Parakeet V3 feature tensor shape: [1, 324, 80]
+[16:40:26.819] [STT] Parakeet V3 attention mask shape: [1, 324]
+[16:40:27.304] [STT] Parakeet V3 Logits shape: [1, 41, 1025]
+[16:40:27.310] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[16:40:27.340] [STT] Parakeet V3 decoded tokens transcript: ''
+[16:40:27.340] [STT] Parakeet V3 Transcription time: 847ms
+[16:40:27.341] [STT] ONNX inference duration: 849ms for engine Parakeet V3
+[16:40:27.341] [STT] Decoded transcript length: 0
+[16:40:27.341] [STT] Final transcript: ''
+[16:40:27.342] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[18:00:33.741] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[18:00:33.741] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[18:00:33.743] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[18:00:34.821] [STT] Enabling CUDA Execution Provider for Parakeet V3
+[18:00:34.899] [STT] Failed to enable CUDA: [ErrorCode:Fail] OrtSessionOptionsAppendExecutionProvider_Cuda: Failed to load shared library. Falling back to CPU.
+[18:00:38.652] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[18:00:38.692] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[18:00:38.692] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[18:00:38.692] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[18:00:38.692] [STT] Enabling CUDA Execution Provider for Parakeet V2
+[18:00:38.702] [STT] Failed to enable CUDA: [ErrorCode:Fail] OrtSessionOptionsAppendExecutionProvider_Cuda: Failed to load shared library. Falling back to CPU.
+[18:00:40.294] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[18:00:40.294] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[18:00:40.319] [STT] Input audio length: 71649 samples, RMS: 0.0108
+[18:00:40.319] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[18:00:40.320] [STT] Selected engine (Auto): Parakeet v3
+[18:00:40.395] [STT] Parakeet V3 frame count: 446
+[18:00:40.395] [STT] Parakeet V3 feature tensor shape: [1, 446, 80]
+[18:00:40.398] [STT] Parakeet V3 Mel feature range: [-2.4538777, 2.1328683]
+[18:00:40.399] [STT] Parakeet V3 attention mask shape: [1, 446]
+[18:00:40.787] [STT] Parakeet V3 Logits shape: [1, 56, 1025]
+[18:00:40.791] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[18:00:40.812] [STT] Parakeet V3 decoded tokens transcript: ''
+[18:00:40.812] [STT] Parakeet V3 Transcription time: 490ms
+[18:00:40.813] [STT] ONNX inference duration: 493ms for engine Parakeet V3
+[18:00:40.813] [STT] Decoded transcript length: 0
+[18:00:40.814] [STT] Final transcript: ''
+[18:00:40.814] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[18:23:41.951] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[18:23:41.952] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[18:23:41.953] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[18:23:42.993] [STT] Enabling CUDA Execution Provider for Parakeet V3
+[18:23:43.004] [STT] Failed to enable CUDA: [ErrorCode:Fail] OrtSessionOptionsAppendExecutionProvider_Cuda: Failed to load shared library. Falling back to CPU.
+[18:23:46.978] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[18:23:46.980] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[18:23:46.980] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[18:23:46.980] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[18:23:46.980] [STT] Enabling CUDA Execution Provider for Parakeet V2
+[18:23:46.992] [STT] Failed to enable CUDA: [ErrorCode:Fail] OrtSessionOptionsAppendExecutionProvider_Cuda: Failed to load shared library. Falling back to CPU.
+[18:23:48.601] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[18:23:48.602] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[18:23:48.627] [STT] Input audio length: 66880 samples, RMS: 0.0161
+[18:23:48.627] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[18:23:48.628] [STT] Selected engine (Auto): Parakeet v3
+[18:23:48.700] [STT] Feature pipeline diagnostics:
+[18:23:48.701] [STT]   Mel range:        0.0000 → 123.7373
+[18:23:48.702] [STT]   LogMel range:     -23.0259 → 4.8182
+[18:23:48.702] [STT]   Normalized range: -4.4267 → 2.9756  (expected: -5 → +5)
+[18:23:48.702] [STT]   Tensor shape:     [1, 416, 80]
+[18:23:48.702] [STT] Parakeet V3 frame count: 416
+[18:23:48.702] [STT] Parakeet V3 feature tensor shape: [1, 416, 80]
+[18:23:48.704] [STT] Parakeet V3 Mel feature range: [-4.426724, 2.9756143]
+[18:23:48.705] [STT] Parakeet V3 attention mask shape: [1, 416]
+[18:23:49.082] [STT] Parakeet V3 Logits shape: [1, 52, 1025]
+[18:23:49.085] [STT] Parakeet V3 WARNING: 53300 NaN values in logits! Feature preprocessing mismatch.
+[18:23:49.086] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[18:23:49.097] [STT] Parakeet V3 decoded tokens transcript: ''
+[18:23:49.098] [STT] Parakeet V3 Transcription time: 467ms
+[18:23:49.099] [STT] ONNX inference duration: 471ms for engine Parakeet V3
+[18:23:49.099] [STT] Decoded transcript length: 0
+[18:23:49.099] [STT] Final transcript: ''
+[18:23:49.099] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[18:24:03.976] [STT] Input audio length: 39329 samples, RMS: 0.0127
+[18:24:03.976] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[18:24:03.977] [STT] Selected engine (Auto): Parakeet v3
+[18:24:04.002] [STT] Feature pipeline diagnostics:
+[18:24:04.003] [STT]   Mel range:        0.0000 → 91.1560
+[18:24:04.003] [STT]   LogMel range:     -23.0259 → 4.5126
+[18:24:04.003] [STT]   Normalized range: -3.7597 → 2.7284  (expected: -5 → +5)
+[18:24:04.003] [STT]   Tensor shape:     [1, 244, 80]
+[18:24:04.003] [STT] Parakeet V3 frame count: 244
+[18:24:04.003] [STT] Parakeet V3 feature tensor shape: [1, 244, 80]
+[18:24:04.004] [STT] Parakeet V3 Mel feature range: [-3.7596583, 2.7284486]
+[18:24:04.004] [STT] Parakeet V3 attention mask shape: [1, 244]
+[18:24:04.252] [STT] Parakeet V3 Logits shape: [1, 31, 1025]
+[18:24:04.253] [STT] Parakeet V3 WARNING: 31775 NaN values in logits! Feature preprocessing mismatch.
+[18:24:04.254] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[18:24:04.257] [STT] Parakeet V3 decoded tokens transcript: ''
+[18:24:04.258] [STT] Parakeet V3 Transcription time: 280ms
+[18:24:04.258] [STT] ONNX inference duration: 281ms for engine Parakeet V3
+[18:24:04.258] [STT] Decoded transcript length: 0
+[18:24:04.258] [STT] Final transcript: ''
+[18:24:04.259] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:08:10.145] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:08:10.145] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:08:10.343] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:08:13.208] [STT] Enabling DirectML Execution Provider for Parakeet V3 (device 0)
+[12:08:15.757] [STT] Parakeet V3 GPU provider (DML) active: True
+[12:08:15.758] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[12:08:15.759] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[12:08:15.759] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:08:15.759] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:08:15.759] [STT] Enabling DirectML Execution Provider for Parakeet V2 (device 0)
+[12:08:17.182] [STT] Parakeet V2 GPU provider (DML) active: True
+[12:08:17.182] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[12:08:17.182] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[12:08:17.341] [STT] Input audio length: 36129 samples, RMS: 0.0222
+[12:08:17.341] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:08:17.342] [STT] Selected engine (Auto): Parakeet v3
+[12:08:17.523] [STT] Feature pipeline diagnostics:
+[12:08:17.524] [STT]   Mel range:        0.0000 → 22.5419
+[12:08:17.524] [STT]   LogMel range:     -23.0259 → 3.1154
+[12:08:17.524] [STT]   Normalized range: -3.5990 → 2.7223  (expected: -5 → +5)
+[12:08:17.525] [STT]   Tensor shape:     [1, 224, 80]
+[12:08:17.525] [STT] Parakeet V3 frame count: 224
+[12:08:17.525] [STT] Parakeet V3 feature tensor shape: [1, 224, 80]
+[12:08:17.526] [STT] Parakeet V3 Mel feature range: [-3.5989745, 2.7223198]
+[12:08:17.527] [STT] Parakeet V3 attention mask shape: [1, 224]
+[12:08:20.626] [STT] Parakeet V3 Logits shape: [1, 28, 1025]
+[12:08:20.629] [STT] Parakeet V3 WARNING: 28700 NaN values in logits! Feature preprocessing mismatch.
+[12:08:20.629] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:08:20.658] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:08:20.658] [STT] Parakeet V3 Transcription time: 3314ms
+[12:08:20.659] [STT] ONNX inference duration: 3317ms for engine Parakeet V3
+[12:08:20.659] [STT] Decoded transcript length: 0
+[12:08:20.659] [STT] Final transcript: ''
+[12:08:20.659] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:08:38.366] [STT] Input audio length: 34049 samples, RMS: 0.0156
+[12:08:38.366] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:08:38.367] [STT] Selected engine (Auto): Parakeet v3
+[12:08:38.391] [STT] Feature pipeline diagnostics:
+[12:08:38.392] [STT]   Mel range:        0.0000 → 52.5823
+[12:08:38.392] [STT]   LogMel range:     -23.0259 → 3.9624
+[12:08:38.392] [STT]   Normalized range: -3.8613 → 2.4416  (expected: -5 → +5)
+[12:08:38.392] [STT]   Tensor shape:     [1, 211, 80]
+[12:08:38.392] [STT] Parakeet V3 frame count: 211
+[12:08:38.392] [STT] Parakeet V3 feature tensor shape: [1, 211, 80]
+[12:08:38.393] [STT] Parakeet V3 Mel feature range: [-3.8613195, 2.4415698]
+[12:08:38.393] [STT] Parakeet V3 attention mask shape: [1, 211]
+[12:08:41.052] [STT] Parakeet V3 Logits shape: [1, 27, 1025]
+[12:08:41.054] [STT] Parakeet V3 WARNING: 27675 NaN values in logits! Feature preprocessing mismatch.
+[12:08:41.054] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:08:41.056] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:08:41.057] [STT] Parakeet V3 Transcription time: 2689ms
+[12:08:41.057] [STT] ONNX inference duration: 2690ms for engine Parakeet V3
+[12:08:41.057] [STT] Decoded transcript length: 0
+[12:08:41.057] [STT] Final transcript: ''
+[12:08:41.058] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:11:25.403] [STT] Input audio length: 29889 samples, RMS: 0.0150
+[12:11:25.403] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:11:25.403] [STT] Selected engine (Auto): Parakeet v3
+[12:11:25.418] [STT] Feature pipeline diagnostics:
+[12:11:25.418] [STT]   Mel range:        0.0000 → 49.9569
+[12:11:25.418] [STT]   LogMel range:     -23.0259 → 3.9112
+[12:11:25.418] [STT]   Normalized range: -3.6620 → 2.2971  (expected: -5 → +5)
+[12:11:25.418] [STT]   Tensor shape:     [1, 185, 80]
+[12:11:25.418] [STT] Parakeet V3 frame count: 185
+[12:11:25.418] [STT] Parakeet V3 feature tensor shape: [1, 185, 80]
+[12:11:25.419] [STT] Parakeet V3 Mel feature range: [-3.66197, 2.2970955]
+[12:11:25.419] [STT] Parakeet V3 attention mask shape: [1, 185]
+[12:11:28.217] [STT] Parakeet V3 Logits shape: [1, 24, 1025]
+[12:11:28.218] [STT] Parakeet V3 WARNING: 24600 NaN values in logits! Feature preprocessing mismatch.
+[12:11:28.219] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:11:28.221] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:11:28.221] [STT] Parakeet V3 Transcription time: 2818ms
+[12:11:28.221] [STT] ONNX inference duration: 2818ms for engine Parakeet V3
+[12:11:28.222] [STT] Decoded transcript length: 0
+[12:11:28.222] [STT] Final transcript: ''
+[12:11:28.222] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:22:35.145] [STT] Input audio length: 38849 samples, RMS: 0.0139
+[12:22:35.145] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:22:35.145] [STT] Selected engine (Auto): Parakeet v3
+[12:22:35.172] [STT] Feature pipeline diagnostics:
+[12:22:35.172] [STT]   Mel range:        0.0000 → 74.3216
+[12:22:35.172] [STT]   LogMel range:     -23.0259 → 4.3084
+[12:22:35.172] [STT]   Normalized range: -4.0242 → 2.5359  (expected: -5 → +5)
+[12:22:35.173] [STT]   Tensor shape:     [1, 241, 80]
+[12:22:35.173] [STT] Parakeet V3 frame count: 241
+[12:22:35.173] [STT] Parakeet V3 feature tensor shape: [1, 241, 80]
+[12:22:35.174] [STT] Parakeet V3 Mel feature range: [-4.0241528, 2.5359337]
+[12:22:35.174] [STT] Parakeet V3 attention mask shape: [1, 241]
+[12:22:38.094] [STT] Parakeet V3 Logits shape: [1, 31, 1025]
+[12:22:38.103] [STT] Parakeet V3 WARNING: 31775 NaN values in logits! Feature preprocessing mismatch.
+[12:22:38.103] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:22:38.119] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:22:38.119] [STT] Parakeet V3 Transcription time: 2973ms
+[12:22:38.120] [STT] ONNX inference duration: 2974ms for engine Parakeet V3
+[12:22:38.120] [STT] Decoded transcript length: 0
+[12:22:38.120] [STT] Final transcript: ''
+[12:22:38.121] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:22:44.029] [STT] Input audio length: 36289 samples, RMS: 0.0157
+[12:22:44.029] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:22:44.030] [STT] Selected engine (Auto): Parakeet v3
+[12:22:44.056] [STT] Feature pipeline diagnostics:
+[12:22:44.056] [STT]   Mel range:        0.0000 → 74.8579
+[12:22:44.057] [STT]   LogMel range:     -23.0259 → 4.3156
+[12:22:44.057] [STT]   Normalized range: -3.7074 → 2.4314  (expected: -5 → +5)
+[12:22:44.057] [STT]   Tensor shape:     [1, 225, 80]
+[12:22:44.057] [STT] Parakeet V3 frame count: 225
+[12:22:44.058] [STT] Parakeet V3 feature tensor shape: [1, 225, 80]
+[12:22:44.059] [STT] Parakeet V3 Mel feature range: [-3.7074072, 2.4314058]
+[12:22:44.059] [STT] Parakeet V3 attention mask shape: [1, 225]
+[12:22:47.061] [STT] Parakeet V3 Logits shape: [1, 29, 1025]
+[12:22:47.064] [STT] Parakeet V3 WARNING: 29725 NaN values in logits! Feature preprocessing mismatch.
+[12:22:47.064] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:22:47.068] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:22:47.069] [STT] Parakeet V3 Transcription time: 3038ms
+[12:22:47.069] [STT] ONNX inference duration: 3039ms for engine Parakeet V3
+[12:22:47.069] [STT] Decoded transcript length: 0
+[12:22:47.069] [STT] Final transcript: ''
+[12:22:47.070] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:23:26.931] [STT] Input audio length: 59809 samples, RMS: 0.0113
+[12:23:26.931] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:23:26.931] [STT] Selected engine (Auto): Parakeet v3
+[12:23:26.973] [STT] Feature pipeline diagnostics:
+[12:23:28.729] [STT]   Mel range:        0.0000 → 86.1585
+[12:23:28.730] [STT]   LogMel range:     -23.0259 → 4.4562
+[12:23:28.731] [STT]   Normalized range: -3.3346 → 2.8637  (expected: -5 → +5)
+[12:23:28.732] [STT]   Tensor shape:     [1, 372, 80]
+[12:23:28.732] [STT] Parakeet V3 frame count: 372
+[12:23:28.733] [STT] Parakeet V3 feature tensor shape: [1, 372, 80]
+[12:23:28.739] [STT] Parakeet V3 Mel feature range: [-3.334568, 2.8636634]
+[12:23:28.740] [STT] Parakeet V3 attention mask shape: [1, 372]
+[12:23:31.943] [STT] Parakeet V3 Logits shape: [1, 47, 1025]
+[12:23:31.955] [STT] Parakeet V3 WARNING: 48175 NaN values in logits! Feature preprocessing mismatch.
+[12:23:31.956] [STT] Parakeet V3 Logits range: [3.4028235E+38, -3.4028235E+38]
+[12:23:31.971] [STT] Parakeet V3 decoded tokens transcript: ''
+[12:23:31.971] [STT] Parakeet V3 Transcription time: 5039ms
+[12:23:31.971] [STT] ONNX inference duration: 5039ms for engine Parakeet V3
+[12:23:31.971] [STT] Decoded transcript length: 0
+[12:23:31.972] [STT] Final transcript: ''
+[12:23:31.972] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:39:41.440] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:39:41.441] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:39:41.447] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:39:42.742] [STT] Enabling DirectML Execution Provider for Parakeet V3 (device 0)
+[12:39:45.415] [STT] Parakeet V3 GPU provider (DML) active: True
+[12:39:45.416] [STT] Parakeet V3 initialized successfully with ONNX Runtime.
+[12:39:45.418] --- Parakeet V3 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[12:39:45.419] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:39:45.419] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:39:45.419] [STT] Enabling DirectML Execution Provider for Parakeet V2 (device 0)
+[12:39:47.208] [STT] Parakeet V2 GPU provider (DML) active: True
+[12:39:47.209] [STT] Parakeet V2 initialized successfully with ONNX Runtime.
+[12:39:47.209] --- Parakeet V2 Metadata ---
+INPUT: input_features = [-1, -1, 80]
+INPUT: attention_mask = [-1, -1]
+OUTPUT: logits = [-1, -1, 1025]
+
+[12:39:47.210] [STT] Discovered Parakeet CPU (fp32) at: E:\Elite Whisper Resources\parakeet-cpu.onnx
+[12:39:47.210] [STT] Parakeet CPU loading model from E:\Elite Whisper Resources\parakeet-cpu.onnx
+[12:39:47.210] [STT] Enabling DirectML Execution Provider for Parakeet CPU (device 0)
+[12:39:48.453] [STT] CRITICAL THREAD ERROR: Failed to initialize ONNX session for Parakeet CPU. Reason: [ErrorCode:RuntimeException] Exception during initialization: file_size: The system cannot find the file specified.: "E:\Elite Whisper Resources\model.onnx_data" 
+    at Microsoft.ML.OnnxRuntime.InferenceSession.Init(String modelPath, SessionOptions options, PrePackedWeightsContainer prepackedWeightsContainer)
+   at Microsoft.ML.OnnxRuntime.InferenceSession..ctor(String modelPath, SessionOptions options)
+   at EliteWhisper.Services.Speech.ParakeetEngine.InitializeSession() in D:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs:line 93
+[12:39:48.495] [STT] Input audio length: 42369 samples, RMS: 0.0151
+[12:39:48.496] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:39:48.496] [STT] Selected engine (Auto): Parakeet v3
+[12:39:48.571] [STT] Feature pipeline diagnostics:
+[12:39:48.572] [STT]   Mel range:        0.0000 → 126.3050
+[12:39:48.573] [STT]   LogMel range:     -23.0259 → 4.8387
+[12:39:48.573] [STT]   Normalized range: -3.5374 → 3.1516  (expected: -5 → +5)
+[12:39:48.573] [STT]   Tensor shape:     [1, 263, 80]
+[12:39:48.573] [STT] Parakeet V3 frame count: 263
+[12:39:48.574] [STT] Parakeet V3 feature tensor shape: [1, 263, 80]
+[12:39:48.576] [STT] Parakeet V3 Mel feature range: [-3.5374002, 3.151553]
+[12:39:48.577] [STT] Parakeet V3 attention mask shape: [1, 263]
+[12:39:52.219] [STT] Parakeet V3 Logits shape: [1, 33, 1025]
+[12:39:52.231] [STT] Parakeet V3 WARNING: 33825 NaN values in logits!
+[12:39:52.231] [STT] Parakeet V3 permanently disabled — execution provider cannot handle this model's kernels. Download 'Parakeet CPU (fp32)' for CPU inference or install CUDA for GPU.
+[12:39:52.235] [STT] ONNX inference duration: 3738ms for engine Parakeet V3
+[12:39:52.235] [STT] Decoded transcript length: 0
+[12:39:52.236] [STT] Final transcript: ''
+[12:39:52.237] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:40:03.248] [STT] Input audio length: 36929 samples, RMS: 0.0144
+[12:40:03.249] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:40:03.249] [STT] Selected engine (Auto): Parakeet v2
+[12:40:03.329] [STT] Feature pipeline diagnostics:
+[12:40:03.330] [STT]   Mel range:        0.0000 → 132.1216
+[12:40:03.330] [STT]   LogMel range:     -23.0259 → 4.8837
+[12:40:03.330] [STT]   Normalized range: -3.6991 → 3.0013  (expected: -5 → +5)
+[12:40:03.330] [STT]   Tensor shape:     [1, 229, 80]
+[12:40:03.331] [STT] Parakeet V2 frame count: 229
+[12:40:03.331] [STT] Parakeet V2 feature tensor shape: [1, 229, 80]
+[12:40:03.332] [STT] Parakeet V2 Mel feature range: [-3.6990852, 3.0013]
+[12:40:03.332] [STT] Parakeet V2 attention mask shape: [1, 229]
+[12:40:07.024] [STT] Parakeet V2 Logits shape: [1, 29, 1025]
+[12:40:07.032] [STT] Parakeet V2 WARNING: 29725 NaN values in logits!
+[12:40:07.032] [STT] Parakeet V2 permanently disabled — execution provider cannot handle this model's kernels. Download 'Parakeet CPU (fp32)' for CPU inference or install CUDA for GPU.
+[12:40:07.034] [STT] ONNX inference duration: 3783ms for engine Parakeet V2
+[12:40:07.034] [STT] Decoded transcript length: 0
+[12:40:07.034] [STT] Final transcript: ''
+[12:40:07.035] [STT] Engine returned empty but audio is loud. Falling back to Whisper
+[12:41:05.546] [STT] Input audio length: 51809 samples, RMS: 0.0028
+[12:41:05.547] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: True, Preferred: Auto
+[12:41:05.547] [STT] Selected engine (Fallback): Whisper
+[12:41:05.622] [STT] ONNX inference duration: 74ms for engine Whisper
+[12:41:05.622] [STT] Decoded transcript length: 0
+[12:41:05.622] [STT] Final transcript: ''
+[12:41:05.623] [STT] audioRMS < 0.01 and empty transcript, confirming 'No speech detected'.
+[12:57:24.827] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:57:24.828] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:57:24.917] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[12:57:31.195] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:57:31.195] [STT] Sherpa Parakeet engine initialized successfully.
+[12:57:31.195] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:57:31.394] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[12:57:32.773] [STT] Enabling DirectML Execution Provider for Parakeet V3 (device 0)
+[12:57:32.821] [STT] DirectML failed to configure for Parakeet V3: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[12:57:48.882] [STT] Parakeet V3 GPU provider (DML) active: False
+[12:57:48.893] [STT] Parakeet V3 requires a GPU execution provider (DML/CUDA) — CPU EP cannot handle its custom fused kernels. Skipping.
+[12:57:49.389] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:57:49.389] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[12:57:49.389] [STT] Enabling DirectML Execution Provider for Parakeet V2 (device 0)
+[12:57:49.390] [STT] DirectML failed to configure for Parakeet V2: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[12:57:56.031] [STT] Parakeet V2 GPU provider (DML) active: False
+[12:57:56.032] [STT] Parakeet V2 requires a GPU execution provider (DML/CUDA) — CPU EP cannot handle its custom fused kernels. Skipping.
+[12:57:56.122] [STT] Discovered Parakeet CPU (fp32) at: E:\Elite Whisper Resources\parakeet-cpu.onnx
+[12:57:56.146] [STT] Parakeet CPU loading model from E:\Elite Whisper Resources\parakeet-cpu.onnx
+[12:57:56.146] [STT] Enabling DirectML Execution Provider for Parakeet CPU (device 0)
+[12:57:56.147] [STT] DirectML failed to configure for Parakeet CPU: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[12:57:56.888] [STT] CRITICAL THREAD ERROR: Failed to initialize ONNX session for Parakeet CPU. Reason: [ErrorCode:RuntimeException] Exception during initialization: file_size: The system cannot find the file specified.: "E:\Elite Whisper Resources\model.onnx_data" 
+    at Microsoft.ML.OnnxRuntime.InferenceSession.Init(String modelPath, SessionOptions options, PrePackedWeightsContainer prepackedWeightsContainer)
+   at Microsoft.ML.OnnxRuntime.InferenceSession..ctor(String modelPath, SessionOptions options)
+   at EliteWhisper.Services.Speech.ParakeetEngine.InitializeSession() in d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs:line 93
+[12:57:57.048] [STT] Input audio length: 36449 samples, RMS: 0.0140
+[12:57:57.049] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:57:57.049] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:57:57.050] [STT] Using Sherpa Parakeet
+[12:57:57.051] [STT] Audio length: 36449 samples (2.28s)
+[12:57:57.476] [STT] Transcription time: 425ms
+[12:57:57.477] [STT] Sherpa result: 'Hi there, how are you?'
+[12:57:57.478] [STT] ONNX inference duration: 428ms for engine Parakeet (Sherpa)
+[12:57:57.478] [STT] Decoded transcript length: 22
+[12:57:57.478] [STT] Final transcript: 'Hi there, how are you?'
+[12:58:07.028] [STT] Input audio length: 33089 samples, RMS: 0.0119
+[12:58:07.028] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:58:07.028] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:58:07.029] [STT] Using Sherpa Parakeet
+[12:58:07.029] [STT] Audio length: 33089 samples (2.07s)
+[12:58:07.296] [STT] Transcription time: 266ms
+[12:58:07.296] [STT] Sherpa result: 'Hi there, how are you?'
+[12:58:07.296] [STT] ONNX inference duration: 267ms for engine Parakeet (Sherpa)
+[12:58:07.297] [STT] Decoded transcript length: 22
+[12:58:07.297] [STT] Final transcript: 'Hi there, how are you?'
+[12:58:14.145] [STT] Input audio length: 36769 samples, RMS: 0.0086
+[12:58:14.146] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:58:14.146] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:58:14.146] [STT] Using Sherpa Parakeet
+[12:58:14.146] [STT] Audio length: 36769 samples (2.30s)
+[12:58:14.442] [STT] Transcription time: 295ms
+[12:58:14.442] [STT] Sherpa result: 'Hi there, how are you?'
+[12:58:14.443] [STT] ONNX inference duration: 296ms for engine Parakeet (Sherpa)
+[12:58:14.443] [STT] Decoded transcript length: 22
+[12:58:14.443] [STT] Final transcript: 'Hi there, how are you?'
+[12:58:22.812] [STT] Input audio length: 49249 samples, RMS: 0.0085
+[12:58:22.812] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:58:22.812] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:58:22.812] [STT] Using Sherpa Parakeet
+[12:58:22.812] [STT] Audio length: 49249 samples (3.08s)
+[12:58:23.207] [STT] Transcription time: 394ms
+[12:58:23.208] [STT] Sherpa result: 'What are you doing? Are you okay?'
+[12:58:23.208] [STT] ONNX inference duration: 395ms for engine Parakeet (Sherpa)
+[12:58:23.208] [STT] Decoded transcript length: 33
+[12:58:23.208] [STT] Final transcript: 'What are you doing? Are you okay?'
+[12:58:57.967] [STT] Input audio length: 28769 samples, RMS: 0.0097
+[12:58:57.967] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:58:57.967] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:58:57.967] [STT] Using Sherpa Parakeet
+[12:58:57.968] [STT] Audio length: 28769 samples (1.80s)
+[12:58:58.258] [STT] Transcription time: 290ms
+[12:58:58.258] [STT] Sherpa result: 'Hi there, how are you?'
+[12:58:58.259] [STT] ONNX inference duration: 291ms for engine Parakeet (Sherpa)
+[12:58:58.259] [STT] Decoded transcript length: 22
+[12:58:58.259] [STT] Final transcript: 'Hi there, how are you?'
+[13:09:59.450] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[13:09:59.452] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[13:09:59.454] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[13:10:05.734] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[13:10:05.734] [STT] Sherpa Parakeet engine initialized successfully.
+[13:10:05.735] [STT] Discovered Parakeet V3 at: E:\Elite Whisper Resources\parakeet-v3.onnx
+[13:10:05.738] [STT] Parakeet V3 loading model from E:\Elite Whisper Resources\parakeet-v3.onnx
+[13:10:06.789] [STT] Enabling DirectML Execution Provider for Parakeet V3 (device 0)
+[13:10:06.790] [STT] DirectML failed to configure for Parakeet V3: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[13:10:13.798] [STT] Parakeet V3 GPU provider (DML) active: False
+[13:10:13.799] [STT] Parakeet V3 requires a GPU execution provider (DML/CUDA) — CPU EP cannot handle its custom fused kernels. Skipping.
+[13:10:14.127] [STT] Discovered Parakeet V2 at: E:\Elite Whisper Resources\parakeet-v2.onnx
+[13:10:14.127] [STT] Parakeet V2 loading model from E:\Elite Whisper Resources\parakeet-v2.onnx
+[13:10:14.128] [STT] Enabling DirectML Execution Provider for Parakeet V2 (device 0)
+[13:10:14.128] [STT] DirectML failed to configure for Parakeet V2: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[13:10:16.407] [STT] Parakeet V2 GPU provider (DML) active: False
+[13:10:16.407] [STT] Parakeet V2 requires a GPU execution provider (DML/CUDA) — CPU EP cannot handle its custom fused kernels. Skipping.
+[13:10:16.498] [STT] Discovered Parakeet CPU (fp32) at: E:\Elite Whisper Resources\parakeet-cpu.onnx
+[13:10:16.498] [STT] Parakeet CPU loading model from E:\Elite Whisper Resources\parakeet-cpu.onnx
+[13:10:16.499] [STT] Enabling DirectML Execution Provider for Parakeet CPU (device 0)
+[13:10:16.499] [STT] DirectML failed to configure for Parakeet CPU: Unable to find an entry point named 'OrtSessionOptionsAppendExecutionProvider_DML' in DLL 'onnxruntime'..
+[13:10:16.932] [STT] CRITICAL THREAD ERROR: Failed to initialize ONNX session for Parakeet CPU. Reason: [ErrorCode:RuntimeException] Exception during initialization: file_size: The system cannot find the file specified.: "E:\Elite Whisper Resources\model.onnx_data" 
+    at Microsoft.ML.OnnxRuntime.InferenceSession.Init(String modelPath, SessionOptions options, PrePackedWeightsContainer prepackedWeightsContainer)
+   at Microsoft.ML.OnnxRuntime.InferenceSession..ctor(String modelPath, SessionOptions options)
+   at EliteWhisper.Services.Speech.ParakeetEngine.InitializeSession() in d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs:line 93
+[13:10:16.932] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[13:10:16.932] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:02:48.127] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:02:48.131] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:02:48.202] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[12:02:58.000] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:02:58.000] [STT] Sherpa Parakeet engine initialized successfully.
+[12:02:59.125] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:02:59.125] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:04.484] [STT] Input audio length: 71969 samples, RMS: 0.0128
+[12:03:04.484] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:04.484] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:04.486] [STT] Using Sherpa Parakeet
+[12:03:04.486] [STT] Audio length: 71969 samples (4.50s)
+[12:03:04.948] [STT] Transcription time: 461ms
+[12:03:04.948] [STT] Sherpa result: 'Hello there.'
+[12:03:04.948] [STT] ONNX inference duration: 463ms for engine Parakeet (Sherpa)
+[12:03:04.948] [STT] Decoded transcript length: 12
+[12:03:04.948] [STT] Final transcript: 'Hello there.'
+[12:03:27.624] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:27.624] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:30.270] [STT] Input audio length: 33889 samples, RMS: 0.0126
+[12:03:30.270] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:30.271] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:30.271] [STT] Using Sherpa Parakeet
+[12:03:30.271] [STT] Audio length: 33889 samples (2.12s)
+[12:03:30.470] [STT] Transcription time: 199ms
+[12:03:30.471] [STT] Sherpa result: 'Hi there, how are you?'
+[12:03:30.471] [STT] ONNX inference duration: 200ms for engine Parakeet (Sherpa)
+[12:03:30.471] [STT] Decoded transcript length: 22
+[12:03:30.471] [STT] Final transcript: 'Hi there, how are you?'
+[12:03:35.939] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:35.941] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:38.321] [STT] Input audio length: 36449 samples, RMS: 0.0119
+[12:03:38.322] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:38.322] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:38.322] [STT] Using Sherpa Parakeet
+[12:03:38.322] [STT] Audio length: 36449 samples (2.28s)
+[12:03:38.506] [STT] Transcription time: 183ms
+[12:03:38.506] [STT] Sherpa result: 'Hey, how are you?'
+[12:03:38.506] [STT] ONNX inference duration: 184ms for engine Parakeet (Sherpa)
+[12:03:38.507] [STT] Decoded transcript length: 17
+[12:03:38.507] [STT] Final transcript: 'Hey, how are you?'
+[12:03:45.086] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:45.086] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:49.236] [STT] Input audio length: 58049 samples, RMS: 0.0127
+[12:03:49.237] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:03:49.237] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:03:49.237] [STT] Using Sherpa Parakeet
+[12:03:49.237] [STT] Audio length: 58049 samples (3.63s)
+[12:03:49.573] [STT] Transcription time: 335ms
+[12:03:49.573] [STT] Sherpa result: 'Can you tell me the timings for tomorrow's meeting?'
+[12:03:49.573] [STT] ONNX inference duration: 336ms for engine Parakeet (Sherpa)
+[12:03:49.573] [STT] Decoded transcript length: 51
+[12:03:49.574] [STT] Final transcript: 'Can you tell me the timings for tomorrow's meeting?'
+[12:04:25.746] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:04:25.746] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:04:30.723] [STT] Input audio length: 70369 samples, RMS: 0.0075
+[12:04:30.723] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:04:30.723] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:04:30.723] [STT] Using Sherpa Parakeet
+[12:04:30.724] [STT] Audio length: 70369 samples (4.40s)
+[12:04:31.086] [STT] Transcription time: 361ms
+[12:04:31.086] [STT] Sherpa result: 'Hi, how are you?'
+[12:04:31.101] [STT] ONNX inference duration: 377ms for engine Parakeet (Sherpa)
+[12:04:31.101] [STT] Decoded transcript length: 16
+[12:04:31.101] [STT] Final transcript: 'Hi, how are you?'
+[12:16:42.788] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:16:42.792] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:16:42.795] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[12:16:47.808] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:16:47.808] [STT] Sherpa Parakeet engine initialized successfully.
+[12:16:48.834] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:16:48.834] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:16:52.306] [STT] Input audio length: 45729 samples, RMS: 0.0093
+[12:16:52.306] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:16:52.306] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:16:52.307] [STT] Using Sherpa Parakeet
+[12:16:52.307] [STT] Audio length: 45729 samples (2.86s)
+[12:16:52.564] [STT] Transcription time: 256ms
+[12:16:52.564] [STT] Sherpa result: 'Hi there, how are you?'
+[12:16:52.564] [STT] ONNX inference duration: 258ms for engine Parakeet (Sherpa)
+[12:16:52.565] [STT] Decoded transcript length: 22
+[12:16:52.565] [STT] Final transcript: 'Hi there, how are you?'
+[12:16:58.398] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:16:58.399] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:02.382] [STT] Input audio length: 61569 samples, RMS: 0.0147
+[12:17:02.382] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:17:02.382] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:02.382] [STT] Using Sherpa Parakeet
+[12:17:02.382] [STT] Audio length: 61569 samples (3.85s)
+[12:17:02.829] [STT] Transcription time: 446ms
+[12:17:02.829] [STT] Sherpa result: 'Can you tell me the meeting timings for tomorrow?'
+[12:17:02.830] [STT] ONNX inference duration: 447ms for engine Parakeet (Sherpa)
+[12:17:02.830] [STT] Decoded transcript length: 49
+[12:17:02.830] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:17:18.578] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:17:18.579] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:22.515] [STT] Input audio length: 60769 samples, RMS: 0.0125
+[12:17:22.515] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:17:22.516] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:22.516] [STT] Using Sherpa Parakeet
+[12:17:22.516] [STT] Audio length: 60769 samples (3.80s)
+[12:17:22.851] [STT] Transcription time: 334ms
+[12:17:22.851] [STT] Sherpa result: 'Can you tell me the meeting timings for tomorrow?'
+[12:17:22.851] [STT] ONNX inference duration: 335ms for engine Parakeet (Sherpa)
+[12:17:22.851] [STT] Decoded transcript length: 49
+[12:17:22.851] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:17:29.631] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:17:29.632] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:32.899] [STT] Input audio length: 43649 samples, RMS: 0.0138
+[12:17:32.899] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:17:32.899] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:17:32.899] [STT] Using Sherpa Parakeet
+[12:17:32.899] [STT] Audio length: 43649 samples (2.73s)
+[12:17:33.255] [STT] Transcription time: 355ms
+[12:17:33.255] [STT] Sherpa result: 'Can you tell me the meeting time is for tomorrow?'
+[12:17:33.255] [STT] ONNX inference duration: 355ms for engine Parakeet (Sherpa)
+[12:17:33.255] [STT] Decoded transcript length: 49
+[12:17:33.255] [STT] Final transcript: 'Can you tell me the meeting time is for tomorrow?'
+[12:21:20.390] [STT] Selector analyzing ModelsDirectory: E:\Elite Whisper Resources
+[12:21:20.392] [STT] Discovered Sherpa Parakeet TDT model at: E:\Elite Whisper Resources\sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:21:20.393] [STT] Sherpa initializing with encoder=encoder.int8.onnx, decoder=decoder.int8.onnx, joiner=joiner.int8.onnx, threads=4
+[12:21:25.285] [STT] Sherpa Parakeet engine initialized successfully. Model: sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8
+[12:21:25.285] [STT] Sherpa Parakeet engine initialized successfully.
+[12:21:26.315] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:21:26.315] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:21:28.843] [STT] Input audio length: 31169 samples, RMS: 0.0100
+[12:21:28.843] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:21:28.843] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:21:28.844] [STT] Using Sherpa Parakeet
+[12:21:28.844] [STT] Audio length: 31169 samples (1.95s)
+[12:21:29.067] [STT] Transcription time: 222ms
+[12:21:29.067] [STT] Sherpa result: 'Hi there, how are you?'
+[12:21:29.067] [STT] ONNX inference duration: 224ms for engine Parakeet (Sherpa)
+[12:21:29.067] [STT] Decoded transcript length: 22
+[12:21:29.067] [STT] Final transcript: 'Hi there, how are you?'
+[12:21:42.329] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:21:42.331] [STT] Selected engine (Manual): Whisper
+[12:21:44.819] [STT] Input audio length: 30689 samples, RMS: 0.0118
+[12:21:44.819] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:21:44.819] [STT] Selected engine (Manual): Whisper
+[12:21:47.103] [STT] ONNX inference duration: 2283ms for engine Whisper
+[12:21:47.104] [STT] Decoded transcript length: 20
+[12:21:47.104] [STT] Final transcript: 'I dare, how are you?'
+[12:22:03.137] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:03.138] [STT] Selected engine (Manual): Whisper
+[12:22:06.086] [STT] Input audio length: 38049 samples, RMS: 0.0137
+[12:22:06.087] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:06.087] [STT] Selected engine (Manual): Whisper
+[12:22:07.421] [STT] ONNX inference duration: 1334ms for engine Whisper
+[12:22:07.422] [STT] Decoded transcript length: 19
+[12:22:07.422] [STT] Final transcript: 'I dare how are you?'
+[12:22:16.894] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:16.894] [STT] Selected engine (Manual): Whisper
+[12:22:20.620] [STT] Input audio length: 50049 samples, RMS: 0.0113
+[12:22:20.620] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:20.620] [STT] Selected engine (Manual): Whisper
+[12:22:24.222] [STT] ONNX inference duration: 3601ms for engine Whisper
+[12:22:24.223] [STT] Decoded transcript length: 49
+[12:22:24.223] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:22:31.962] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:31.963] [STT] Selected engine (Manual): Whisper
+[12:22:35.490] [STT] Input audio length: 47329 samples, RMS: 0.0133
+[12:22:35.491] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:22:35.492] [STT] Selected engine (Manual): Whisper
+[12:22:47.240] [STT] ONNX inference duration: 11748ms for engine Whisper
+[12:22:47.241] [STT] Decoded transcript length: 49
+[12:22:47.241] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:23:00.060] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:23:00.060] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:23:03.088] [STT] Input audio length: 46849 samples, RMS: 0.0112
+[12:23:03.088] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Sherpa, SherpaAvailable: True
+[12:23:03.089] [STT] Selected engine (Manual): Sherpa Parakeet
+[12:23:03.089] [STT] Using Sherpa Parakeet
+[12:23:03.089] [STT] Audio length: 46849 samples (2.93s)
+[12:23:03.398] [STT] Transcription time: 309ms
+[12:23:03.398] [STT] Sherpa result: 'Can you tell me the meeting timings for tomorrow?'
+[12:23:03.399] [STT] ONNX inference duration: 309ms for engine Parakeet (Sherpa)
+[12:23:03.399] [STT] Decoded transcript length: 49
+[12:23:03.399] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'
+[12:23:13.812] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:23:13.812] [STT] Selected engine (Manual): Whisper
+[12:23:17.522] [STT] Input audio length: 51009 samples, RMS: 0.0163
+[12:23:17.522] [STT] Selector running. HasNvidiaGpu: True, CpuCores: 8, AutoSelect: False, Preferred: Whisper, SherpaAvailable: True
+[12:23:17.522] [STT] Selected engine (Manual): Whisper
+[12:23:20.583] [STT] ONNX inference duration: 3060ms for engine Whisper
+[12:23:20.583] [STT] Decoded transcript length: 49
+[12:23:20.583] [STT] Final transcript: 'Can you tell me the meeting timings for tomorrow?'

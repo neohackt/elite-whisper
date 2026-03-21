@@ -19,8 +19,14 @@ namespace EliteWhisper.Models
         [JsonPropertyName("downloadUrl")]
         public string DownloadUrl { get; set; } = string.Empty;
         
+        [JsonPropertyName("dataDownloadUrl")]
+        public string? DataDownloadUrl { get; set; }
+        
         [JsonPropertyName("filename")]
         public string Filename { get; set; } = string.Empty;
+        
+        [JsonPropertyName("dataFilename")]
+        public string? DataFilename { get; set; }
 
         [JsonPropertyName("sizeMB")]
         public int SizeMB { get; set; }
@@ -36,5 +42,12 @@ namespace EliteWhisper.Models
 
         [JsonPropertyName("sha256")]
         public string? Sha256 { get; set; }
+
+        /// <summary>
+        /// Engine type: "whisper", "sherpa", or null (legacy parakeet).
+        /// Used by SpeechEngineSelector to determine which engine to use.
+        /// </summary>
+        [JsonPropertyName("engineType")]
+        public string? EngineType { get; set; }
     }
 }

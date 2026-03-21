@@ -162,11 +162,16 @@ namespace EliteWhisper.Services
                 // Restore persistent user settings
                 HasCompletedFirstRun = existingConfig.HasCompletedFirstRun,
                 HistoryStoragePath = existingConfig.HistoryStoragePath,
-                Modes = existingConfig.Modes ?? new List<DictationMode>(),
+                Modes = existingConfig.Modes ?? new System.Collections.Generic.List<DictationMode>(),
                 ActiveModeId = existingConfig.ActiveModeId,
                 GeminiApiKey = existingConfig.GeminiApiKey,
                 OpenRouterApiKey = existingConfig.OpenRouterApiKey,
-                DefaultProviderPreference = existingConfig.DefaultProviderPreference
+                DefaultProviderPreference = existingConfig.DefaultProviderPreference,
+                
+                // STT Engine Preferences
+                PreferredSTTEngine = existingConfig.PreferredSTTEngine,
+                AutoSelectSTT = existingConfig.AutoSelectSTT,
+                EnableGPUAcceleration = existingConfig.EnableGPUAcceleration
             };
 
             // If we have a custom models directory set in the wizard (that might differ from auto-discovery),

@@ -1,0 +1,8 @@
+d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs(113,115): error CS1503: Argument 1: cannot convert from 'string' to 'char' [d:\Personal\voiceapp\EliteWhisper_ds1bo2x2_wpftmp.csproj]
+d:\Personal\voiceapp\Services\Speech\ParakeetEngine.cs(113,121): error CS1503: Argument 2: cannot convert from 'System.ReadOnlySpan<int>' to 'object' [d:\Personal\voiceapp\EliteWhisper_ds1bo2x2_wpftmp.csproj]
+
+Build FAILED.
+    4 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:04.25

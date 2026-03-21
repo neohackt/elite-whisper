@@ -123,10 +123,10 @@ namespace EliteWhisper.ViewModels
             switch (state)
             {
                 case EngineState.Idle:
-                    AppStatus = "Idle";
-                    StatusColor = "#6B7280"; // Gray
-                    StatusMessage = "Engine not configured";
-                    CardBorderColor = "#6B7280";
+                    AppStatus = "Ready"; // Don't scare user with "Idle"
+                    StatusColor = "#10B981"; // Green
+                    StatusMessage = "Ready to transcribe";
+                    CardBorderColor = "#10B981";
                     DictationButtonText = "Start Dictation";
                     break;
                 case EngineState.Loading:
@@ -206,7 +206,7 @@ namespace EliteWhisper.ViewModels
                 // But let's respect the "Toggle" nature.
                 await _dictationService.StopListeningAndProcessAsync();
             }
-            else if (_aiEngine.State == EngineState.Ready || _aiEngine.State == EngineState.Error)
+            else if (_aiEngine.State == EngineState.Ready || _aiEngine.State == EngineState.Error || _aiEngine.State == EngineState.Idle)
             {
                 // Start with App Source
                 _dictationService.StartListening(RecordingSource.App);
@@ -230,6 +230,12 @@ namespace EliteWhisper.ViewModels
         {
             get => CurrentPage == AppPage.Models;
             set { if (value) CurrentPage = AppPage.Models; }
+        }
+
+        public bool IsLocalModelsPage
+        {
+            get => CurrentPage == AppPage.LocalModels;
+            set { if (value) CurrentPage = AppPage.LocalModels; }
         }
 
         public bool IsModesPage
@@ -271,6 +277,7 @@ namespace EliteWhisper.ViewModels
         partial void OnCurrentPageChanged(AppPage value)
         {
             OnPropertyChanged(nameof(IsHomePage));
+            OnPropertyChanged(nameof(IsLocalModelsPage));
             OnPropertyChanged(nameof(IsModelsPage));
             OnPropertyChanged(nameof(IsModesPage));
             OnPropertyChanged(nameof(IsAiProvidersPage));
@@ -282,7 +289,7 @@ namespace EliteWhisper.ViewModels
         public async Task RecalculateAsync()
         {
             // Snapshot on UI thread to avoid collection modification errors
-            System.Collections.Generic.List<DictationRecord> records = null;
+            System.Collections.Generic.List<DictationRecord>? records = null;
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => 
             {
                 records = _historyService.History.ToList();
@@ -290,7 +297,7 @@ namespace EliteWhisper.ViewModels
 
             if (records == null) return;
 
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
                 try
                 {
@@ -370,7 +377,7 @@ namespace EliteWhisper.ViewModels
                     }
 
                     // Update UI
-                    System.Windows.Application.Current.Dispatcher.Invoke(async () =>
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
                     {
                         WpmTrend = wpmTrendVal;
                         WordsTrend = wordsTrendVal;

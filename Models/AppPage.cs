@@ -6,6 +6,7 @@ namespace EliteWhisper.Models
     public enum AppPage
     {
         Home,
+        LocalModels,
         Models,
         Modes,
         AiProviders,

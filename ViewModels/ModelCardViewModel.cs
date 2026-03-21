@@ -32,8 +32,11 @@ namespace EliteWhisper.ViewModels
         public int SizeMB => _registryEntry.SizeMB;
         public string Tier => _registryEntry.Tier;
         public string DownloadUrl => _registryEntry.DownloadUrl;
+        public string? DataDownloadUrl => _registryEntry.DataDownloadUrl;
         public bool Recommended => _registryEntry.Recommended;
         public string? Sha256 => _registryEntry.Sha256;
+        public string? DataFilename => _registryEntry.DataFilename;
+        public string? EngineType => _registryEntry.EngineType;
         
         // Visual Helpers
         public int SpeedRating => _registryEntry.SpeedRating;

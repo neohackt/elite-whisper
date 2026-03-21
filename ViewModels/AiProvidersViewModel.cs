@@ -90,6 +90,7 @@ namespace EliteWhisper.ViewModels
             IsOpenRouterConfigured = !string.IsNullOrEmpty(config.OpenRouterApiKey);
             
             DefaultProviderPreference = config.DefaultProviderPreference;
+            LocalEngine = config.LocalEngine;
         }
 
         partial void OnDefaultProviderPreferenceChanged(PreferredProvider value)
@@ -98,6 +99,19 @@ namespace EliteWhisper.ViewModels
             if (config.DefaultProviderPreference != value)
             {
                 config.DefaultProviderPreference = value;
+                _configService.SaveConfiguration(config);
+            }
+        }
+
+        [ObservableProperty]
+        private LocalAiEngine _localEngine;
+
+        partial void OnLocalEngineChanged(LocalAiEngine value)
+        {
+            var config = _configService.CurrentConfiguration;
+            if (config.LocalEngine != value)
+            {
+                config.LocalEngine = value;
                 _configService.SaveConfiguration(config);
             }
         }

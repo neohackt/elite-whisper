@@ -25,7 +25,12 @@ namespace EliteWhisper.ViewModels
         private string? _activeModeId;
 
         /// <summary>
-        /// Available local models for dropdown.
+        /// Available built-in models for dropdown.
+        /// </summary>
+        public ObservableCollection<string> AvailableBuiltInModels { get; } = new();
+
+        /// <summary>
+        /// Available local models for dropdown (Ollama).
         /// </summary>
         public ObservableCollection<string> AvailableLocalModels { get; } = new();
 
@@ -45,6 +50,7 @@ namespace EliteWhisper.ViewModels
         public System.ComponentModel.ICollectionView OpenRouterModelsView { get; private set; }
 
         private readonly WhisperConfigurationService _configService;
+        private readonly LocalModelService _localModelService;
 
         /// <summary>
         /// Available dictation modes.
@@ -55,12 +61,14 @@ namespace EliteWhisper.ViewModels
             ModeService modeService, 
             Services.LLM.OllamaProvider ollamaProvider,
             Services.LLM.OpenRouterProvider openRouterProvider,
-            WhisperConfigurationService configService)
+            WhisperConfigurationService configService,
+            LocalModelService localModelService)
         {
             _modeService = modeService;
             _ollamaProvider = ollamaProvider;
             _openRouterProvider = openRouterProvider;
             _configService = configService;
+            _localModelService = localModelService;
 
             // Initialize Grouped View
             OpenRouterModelsView = System.Windows.Data.CollectionViewSource.GetDefaultView(AvailableOpenRouterModels);
@@ -68,6 +76,7 @@ namespace EliteWhisper.ViewModels
             
             LoadModes();
             LoadLocalModelsAsync();
+            LoadBuiltInModels();
             LoadGeminiModels();
         }
 
@@ -79,6 +88,7 @@ namespace EliteWhisper.ViewModels
             // Requirement: Refresh models when user interacts (e.g. selects Local/Gemini)
             // This covers "Ollama becomes available" scenario
             LoadLocalModelsAsync();
+            LoadBuiltInModels();
             // Refresh Gemini too in case they just added key
             LoadGeminiModels();
             LoadOpenRouterModelsAsync();
@@ -131,6 +141,43 @@ namespace EliteWhisper.ViewModels
             catch (System.Exception ex)
             { 
                  System.Diagnostics.Debug.WriteLine($"[ModesViewModel] Failed to load local models: {ex.Message}");
+            }
+        }
+
+        public void LoadBuiltInModels()
+        {
+            try
+            {
+                var models = _localModelService.GetInstalledModels();
+                var currentNames = AvailableBuiltInModels.ToList();
+                var newNames = models.Select(m => m.Name).ToList(); // Using Name (filename without extension)
+
+                foreach (var name in currentNames)
+                {
+                    if (!newNames.Contains(name))
+                        AvailableBuiltInModels.Remove(name);
+                }
+
+                foreach (var name in newNames)
+                {
+                    if (!AvailableBuiltInModels.Contains(name))
+                        AvailableBuiltInModels.Add(name);
+                }
+
+                // Auto-select first if none selected
+                foreach (var mode in Modes)
+                {
+                    if (mode.PostProcess.PreferredProvider == Models.PreferredProvider.BuiltIn && 
+                        string.IsNullOrEmpty(mode.PostProcess.PreferredBuiltInModel) && 
+                        AvailableBuiltInModels.Any())
+                    {
+                        mode.PostProcess.PreferredBuiltInModel = AvailableBuiltInModels.First();
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ModesViewModel] Failed to load built-in models: {ex.Message}");
             }
         }
         

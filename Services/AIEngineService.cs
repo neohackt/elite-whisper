@@ -91,7 +91,12 @@ namespace EliteWhisper.Services
         public async Task<bool> ActivateModelAsync(string modelPath)
         {
             // 1. Quick pre-checks
-            if (!IsConfigured()) return false;
+            if (string.IsNullOrEmpty(_configService.CurrentConfiguration.ExecutablePath) || 
+                !File.Exists(_configService.CurrentConfiguration.ExecutablePath)) 
+            {
+                System.Diagnostics.Debug.WriteLine("[AIEngine] Activation rejected: Executable not configured.");
+                return false;
+            }
             
             // Reject if busy
             if (State == EngineState.Recording || State == EngineState.Processing)
@@ -134,7 +139,11 @@ namespace EliteWhisper.Services
                 
                 // 6. Commit Change (Transactional Phase 3)
                 // Only now do we update the persistence
-                _configService.SetDefaultModel(modelPath);
+                var config = _configService.CurrentConfiguration;
+                config.DefaultModelPath = modelPath;
+                config.PreferredSTTEngine = "Whisper"; // Force to whisper if manually selecting whisper model
+                config.AutoSelectSTT = false;
+                _configService.SaveConfiguration(config);
                 
                 // 7. Transition to Ready
                 State = EngineState.Ready;

@@ -21,6 +21,9 @@
             <converters:StringEqualsMultiConverter x:Key="StringEqualsMultiConverter"/>
             <converters:StringEqualsToVisibilityMultiConverter x:Key="StringEqualsToVisibilityMultiConverter"/>
             <converters:EnumToBooleanConverter x:Key="EnumToBool"/>
+            <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
+            <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+            <converters:CountToVisibilityConverter x:Key="InvertedCountToVisibilityConverter" Invert="True"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

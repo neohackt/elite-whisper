@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Elite Whisper Updates</title>
+    <description>Most recent updates for Elite Whisper</description>
+    <language>en</language>
+    <item>
+      <title>Version 1.0.1</title>
+      <sparkle:releaseNotesLink>
+        https://github.com/neohackt/elite-whisper/releases/tag/v1.0.1
+      </sparkle:releaseNotesLink>
+      <pubDate>Fri, 13 Feb 2026 12:00:00 +0000</pubDate>
+      <enclosure url="https://github.com/neohackt/elite-whisper/releases/download/v1.0.1/EliteWhisper_Setup.exe"
+                 sparkle:version="1.0.1"
+                 sparkle:shortVersionString="1.0.1"
+                 sparkle:os="windows"
+                 length="12345678"
+                 type="application/octet-stream" />
+    </item>
+  </channel>
+</rss>

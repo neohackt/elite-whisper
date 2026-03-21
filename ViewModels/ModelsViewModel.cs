@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using SharpCompress.Readers;
 
 namespace EliteWhisper.ViewModels
 {
@@ -85,11 +86,11 @@ namespace EliteWhisper.ViewModels
             {
                 var card = new ModelCardViewModel(entry);
                 
-                // Check if installed by looking for the actual file on disk
+                // Check if installed by looking for the actual file or directory on disk
                 if (!string.IsNullOrEmpty(modelsDir))
                 {
                     string modelPath = Path.Combine(modelsDir, entry.Filename);
-                    if (File.Exists(modelPath))
+                    if (File.Exists(modelPath) || Directory.Exists(modelPath))
                     {
                         card.IsInstalled = true;
                     }
@@ -184,9 +185,16 @@ namespace EliteWhisper.ViewModels
 
                     string fullPath = Path.Combine(modelsDir, card.Filename);
 
-                    if (File.Exists(fullPath))
+                    if (Directory.Exists(fullPath))
+                    {
+                        Directory.Delete(fullPath, true);
+                    }
+                    else if (File.Exists(fullPath))
                     {
                         File.Delete(fullPath);
+                        // Also delete companion .onnx_data file if exists
+                        string dataFile = fullPath + "_data";
+                        if (File.Exists(dataFile)) File.Delete(dataFile);
                     }
 
                     // Refresh
@@ -211,91 +219,19 @@ namespace EliteWhisper.ViewModels
                 card.IsDownloading = true;
                 card.DownloadProgress = 0;
 
-                // Use current configured path
                 string modelsDir = CurrentStoragePath; 
                 Directory.CreateDirectory(modelsDir);
 
-                string targetPath = Path.Combine(modelsDir, card.Filename);
-                string tempPath = targetPath + ".tmp";
+                bool isSherpaArchive = card.DownloadUrl.EndsWith(".tar.bz2", StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(card.EngineType, "sherpa", StringComparison.OrdinalIgnoreCase);
 
-                // Download logic with progress
-                using (var response = await _httpClient.GetAsync(card.DownloadUrl, HttpCompletionOption.ResponseHeadersRead))
+                if (isSherpaArchive)
                 {
-                    response.EnsureSuccessStatusCode();
-                    
-                    var totalBytes = response.Content.Headers.ContentLength ?? 1L;
-                    
-                    using (var contentStream = await response.Content.ReadAsStreamAsync())
-                    using (var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
-                    {
-                        var buffer = new byte[8192];
-                        var isMoreToRead = true;
-                        var totalRead = 0L;
-
-                        do
-                        {
-                            var read = await contentStream.ReadAsync(buffer, 0, buffer.Length);
-                            if (read == 0)
-                            {
-                                isMoreToRead = false;
-                            }
-                            else
-                            {
-                                await fileStream.WriteAsync(buffer, 0, read);
-                                totalRead += read;
-                                card.DownloadProgress = (double)totalRead / totalBytes * 100;
-                            }
-                        }
-                        while (isMoreToRead);
-                    }
+                    await DownloadAndExtractSherpaModelAsync(card, modelsDir);
                 }
-
-                // Move temp file to final destination
-                if (File.Exists(targetPath))
+                else
                 {
-                    File.Delete(targetPath);
-                }
-                File.Move(tempPath, targetPath);
-
-                // Validation Phase
-                try 
-                {
-                    if (!string.IsNullOrEmpty(card.Sha256))
-                    {
-                        // Checksum validation
-                        string calculatedHash = await ComputeSha256HashAsync(targetPath);
-                        if (!string.Equals(calculatedHash, card.Sha256, StringComparison.OrdinalIgnoreCase))
-                        {
-                            throw new Exception($"Checksum mismatch.\nExpected: {card.Sha256}\nActual: {calculatedHash}");
-                        }
-                    }
-                    else
-                    {
-                        // Fallback to size validation 
-                        var fileInfo = new FileInfo(targetPath);
-                        long sizeMB = fileInfo.Length / (1024 * 1024);
-                        
-                        // Stricter check: if defined size is > 0
-                        if (card.SizeMB > 0)
-                        {
-                             // Logic: Fails if difference > 50MB AND file is < 10MB (too small)
-                             // Or simplified: it must be reasonably close.
-                             // Let's stick to the established generous check but throw if failed
-                             if (Math.Abs(sizeMB - card.SizeMB) > 50 && sizeMB < 10)
-                             {
-                                 throw new Exception($"File size validation failed. Expected ~{card.SizeMB} MB, Got {sizeMB} MB.");
-                             }
-                        }
-                    }
-                }
-                catch (Exception validationEx)
-                {
-                    // Cleanup invalid file
-                    if (File.Exists(targetPath))
-                    {
-                        File.Delete(targetPath);
-                    }
-                    throw new Exception($"Validation failed: {validationEx.Message}");
+                    await DownloadStandardModelAsync(card, modelsDir);
                 }
 
                 // Refresh config to pick up new model
@@ -303,22 +239,205 @@ namespace EliteWhisper.ViewModels
                 
                 card.IsInstalled = true;
                 card.IsDownloading = false;
-                
-                // Auto-activate if it's the only one or user requested? 
-                // For now just mark installed.
             }
             catch (Exception ex)
             {
                 card.IsDownloading = false;
                 card.DownloadProgress = 0;
                 
-                // Ensure temp file is cleaned up on error
-                string modelsDir = CurrentStoragePath; 
-                string targetPath = Path.Combine(modelsDir, card.Filename);
-                string tempPath = targetPath + ".tmp";
-                if (File.Exists(tempPath)) File.Delete(tempPath);
+                // Cleanup temp files
+                try
+                {
+                    string modelsDir = CurrentStoragePath;
+                    string tempPath = Path.Combine(modelsDir, card.Filename + ".tar.bz2.tmp");
+                    if (File.Exists(tempPath)) File.Delete(tempPath);
+
+                    string archivePath = Path.Combine(modelsDir, card.Filename + ".tar.bz2");
+                    if (File.Exists(archivePath)) File.Delete(archivePath);
+                }
+                catch { }
 
                 MessageBox.Show($"Download failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Downloads and extracts a Sherpa-ONNX model archive (.tar.bz2) into the models directory.
+        /// </summary>
+        private async Task DownloadAndExtractSherpaModelAsync(ModelCardViewModel card, string modelsDir)
+        {
+            long totalBytesExpected = (long)card.SizeMB * 1024 * 1024;
+            if (totalBytesExpected <= 0) totalBytesExpected = 1;
+
+            // Download archive
+            string archiveTempPath = Path.Combine(modelsDir, card.Filename + ".tar.bz2.tmp");
+            string archivePath = Path.Combine(modelsDir, card.Filename + ".tar.bz2");
+
+            using (var response = await _httpClient.GetAsync(card.DownloadUrl, HttpCompletionOption.ResponseHeadersRead))
+            {
+                response.EnsureSuccessStatusCode();
+                long totalRead = 0;
+
+                using (var contentStream = await response.Content.ReadAsStreamAsync())
+                using (var fileStream = new FileStream(archiveTempPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true))
+                {
+                    var buffer = new byte[81920];
+                    int read;
+
+                    while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    {
+                        await fileStream.WriteAsync(buffer, 0, read);
+                        totalRead += read;
+                        // Download is ~80% of the work, extraction is ~20%
+                        card.DownloadProgress = (double)totalRead / totalBytesExpected * 80;
+                    }
+                }
+            }
+
+            // Move temp to final archive name
+            if (File.Exists(archivePath)) File.Delete(archivePath);
+            File.Move(archiveTempPath, archivePath);
+
+            // Extract archive
+            card.DownloadProgress = 85;
+            string targetDir = Path.Combine(modelsDir, card.Filename);
+            
+            await Task.Run(() =>
+            {
+                using (var stream = File.OpenRead(archivePath))
+                using (var reader = SharpCompress.Readers.ReaderFactory.Open(stream))
+                {
+                    while (reader.MoveToNextEntry())
+                    {
+                        if (!reader.Entry.IsDirectory)
+                        {
+                            reader.WriteEntryToDirectory(modelsDir, new SharpCompress.Common.ExtractionOptions
+                            {
+                                ExtractFullPath = true,
+                                Overwrite = true
+                            });
+                        }
+                    }
+                }
+            });
+
+            card.DownloadProgress = 95;
+
+            // Validate extracted files
+            if (!Directory.Exists(targetDir))
+            {
+                // Cleanup archive
+                if (File.Exists(archivePath)) File.Delete(archivePath);
+                throw new Exception($"Extraction failed: directory '{card.Filename}' not found after extracting archive.");
+            }
+
+            // Verify required model files exist
+            bool hasEncoder = Directory.GetFiles(targetDir, "encoder*.onnx").Length > 0;
+            bool hasDecoder = Directory.GetFiles(targetDir, "decoder*.onnx").Length > 0;
+            bool hasJoiner = Directory.GetFiles(targetDir, "joiner*.onnx").Length > 0;
+            bool hasTokens = File.Exists(Path.Combine(targetDir, "tokens.txt"));
+
+            if (!hasEncoder || !hasDecoder || !hasJoiner || !hasTokens)
+            {
+                // Cleanup
+                try { Directory.Delete(targetDir, true); } catch { }
+                if (File.Exists(archivePath)) File.Delete(archivePath);
+                throw new Exception("Incomplete model: extracted files are missing encoder, decoder, joiner, or tokens.txt.");
+            }
+
+            // Cleanup archive to save disk space
+            try { File.Delete(archivePath); } catch { }
+
+            card.DownloadProgress = 100;
+        }
+
+        /// <summary>
+        /// Downloads standard ONNX model files (Whisper .bin or Parakeet .onnx + .onnx_data).
+        /// </summary>
+        private async Task DownloadStandardModelAsync(ModelCardViewModel card, string modelsDir)
+        {
+            var filesToDownload = new System.Collections.Generic.List<(string Url, string Filename)>
+            {
+                (card.DownloadUrl, card.Filename)
+            };
+
+            if (!string.IsNullOrEmpty(card.DataDownloadUrl) && !string.IsNullOrEmpty(card.DataFilename))
+            {
+                filesToDownload.Add((card.DataDownloadUrl, card.DataFilename));
+            }
+
+            long totalBytesAllFiles = (long)card.SizeMB * 1024 * 1024;
+            if (totalBytesAllFiles <= 0) totalBytesAllFiles = 1;
+
+            long totalReadSoFar = 0;
+
+            foreach (var file in filesToDownload)
+            {
+                string targetPath = Path.Combine(modelsDir, file.Filename);
+                string tempPath = targetPath + ".tmp";
+
+                using (var response = await _httpClient.GetAsync(file.Url, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    using (var contentStream = await response.Content.ReadAsStreamAsync())
+                    using (var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    {
+                        var buffer = new byte[8192];
+                        int read;
+
+                        while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await fileStream.WriteAsync(buffer, 0, read);
+                            totalReadSoFar += read;
+                            card.DownloadProgress = (double)totalReadSoFar / totalBytesAllFiles * 100;
+                        }
+                    }
+                }
+
+                if (File.Exists(targetPath)) File.Delete(targetPath);
+                File.Move(tempPath, targetPath);
+            }
+
+            // Validation
+            try 
+            {
+                string mainTargetPath = Path.Combine(modelsDir, card.Filename);
+
+                if (!string.IsNullOrEmpty(card.Sha256))
+                {
+                    string calculatedHash = await ComputeSha256HashAsync(mainTargetPath);
+                    if (!string.Equals(calculatedHash, card.Sha256, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new Exception($"Checksum mismatch.\nExpected: {card.Sha256}\nActual: {calculatedHash}");
+                    }
+                }
+                else
+                {
+                    long actualSizeMB = 0;
+                    foreach (var f in filesToDownload)
+                    {
+                        actualSizeMB += new FileInfo(Path.Combine(modelsDir, f.Filename)).Length;
+                    }
+                    actualSizeMB /= (1024 * 1024);
+                    
+                    if (card.SizeMB > 0)
+                    {
+                         if (Math.Abs(actualSizeMB - card.SizeMB) > 50 && actualSizeMB < 10)
+                         {
+                             throw new Exception($"File size validation failed. Expected ~{card.SizeMB} MB, Got {actualSizeMB} MB.");
+                         }
+                    }
+                }
+            }
+            catch (Exception validationEx)
+            {
+                foreach (var file in filesToDownload)
+                {
+                    string p = Path.Combine(modelsDir, file.Filename);
+                    if (File.Exists(p)) File.Delete(p);
+                }
+                throw new Exception($"Validation failed: {validationEx.Message}");
             }
         }
 
@@ -378,17 +497,33 @@ namespace EliteWhisper.ViewModels
             
             try 
             {
-                // Activate the model via engine service
-                bool success = await _aiEngine.ActivateModelAsync(fullPath);
-                
-                if (success)
+                // Sherpa models are activated differently — they don't go through the Whisper engine.
+                // Instead, we set the STT engine preference and the SpeechEngineSelector picks them up.
+                if (string.Equals(card.EngineType, "sherpa", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Update single source of truth
+                    var config = _configService.CurrentConfiguration;
+                    config.PreferredSTTEngine = "Sherpa";
+                    config.AutoSelectSTT = false;
+                    config.DefaultModelPath = fullPath; // Crucial for UI resolving ActiveModelId
+                    _configService.SaveConfiguration(config);
+
                     ActiveModelId = card.Id;
+                    MessageBox.Show("Parakeet (Sherpa) is now the active speech engine.\nIt will be used for your next transcription.", 
+                        "Engine Activated", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Unable to activate model. Please try again.", "Activation Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    // Legacy Whisper / Parakeet ONNX models — activate via engine service
+                    bool success = await _aiEngine.ActivateModelAsync(fullPath);
+                    
+                    if (success)
+                    {
+                        ActiveModelId = card.Id;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unable to activate model. Please try again.", "Activation Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
             }
             catch (Exception ex)

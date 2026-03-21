@@ -79,9 +79,23 @@ namespace EliteWhisper.Services
                 return;
             }
 
-            if (!_aiEngine.IsConfigured())
+            // Check if any speech engine is configured
+            var engineSelector = (Application.Current as App)?.Services.GetService(typeof(Speech.SpeechEngineSelector)) as Speech.SpeechEngineSelector;
+            bool engineConfigured = false;
+            
+            if (engineSelector != null)
             {
-                ShowErrorAndReset("Whisper not configured. Press S for Settings.");
+                var bestEngine = engineSelector.GetBestEngine();
+                engineConfigured = bestEngine != null && bestEngine.IsAvailable;
+            }
+            else
+            {
+                engineConfigured = _aiEngine.IsConfigured();
+            }
+
+            if (!engineConfigured)
+            {
+                ShowErrorAndReset("Speech engine not configured. Press S for Settings.");
                 return;
             }
 
@@ -182,8 +196,17 @@ namespace EliteWhisper.Services
             {
                 string transcription;
                 
-                // Check if AI engine is configured
-                if (_aiEngine.IsConfigured())
+                // Try SpeechRecognitionService first (supports Parakeet + Whisper)
+                var speechService = (Application.Current as App)?.Services.GetService(typeof(Speech.SpeechRecognitionService)) as Speech.SpeechRecognitionService;
+                if (speechService != null)
+                {
+                    if (CurrentSource == RecordingSource.Widget)
+                    {
+                        _widgetViewModel.StatusText = "Transcribing...";
+                    }
+                    transcription = await speechService.TranscribeAsync(audioFilePath, _cts?.Token ?? CancellationToken.None);
+                }
+                else if (_aiEngine.IsConfigured())
                 {
                     if (CurrentSource == RecordingSource.Widget)
                     {
@@ -196,7 +219,7 @@ namespace EliteWhisper.Services
                 }
                 else
                 {
-                    ShowErrorAndReset("Whisper not configured");
+                    ShowErrorAndReset("No speech engine configured");
                     return;
                 }
                 

@@ -12,7 +12,9 @@ namespace EliteWhisper.ViewModels
     {
         private readonly HotkeyService _hotkeyService;
         private readonly WhisperConfigurationService _configService;
+
         private readonly HistoryService _historyService;
+        private readonly IUpdateService _updateService;
         private Action? _requestFocus;
 
         [ObservableProperty]
@@ -24,11 +26,12 @@ namespace EliteWhisper.ViewModels
         [ObservableProperty]
         private string _historyPath = string.Empty;
 
-        public ConfigurationViewModel(HotkeyService hotkeyService, WhisperConfigurationService configService, HistoryService historyService)
+        public ConfigurationViewModel(HotkeyService hotkeyService, WhisperConfigurationService configService, HistoryService historyService, IUpdateService updateService)
         {
             _hotkeyService = hotkeyService;
             _configService = configService;
             _historyService = historyService;
+            _updateService = updateService;
             
             UpdateHotkeyDisplay();
             
@@ -157,6 +160,11 @@ namespace EliteWhisper.ViewModels
                     MessageBox.Show($"Error setting history path: {ex.Message}", "Error");
                 }
             }
+        }
+        [RelayCommand]
+        private async Task CheckForUpdates()
+        {
+            await _updateService.CheckForUpdatesAsync();
         }
     }
 }

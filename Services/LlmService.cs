@@ -15,19 +15,27 @@ namespace EliteWhisper.Services
         public ILlmProvider? OllamaProvider { get; private set; }
         public ILlmProvider? GeminiProvider { get; private set; }
         public ILlmProvider? OpenRouterProvider { get; private set; }
+        public ILlmProvider? LocalLlmProvider { get; private set; }
         
+        private readonly WhisperConfigurationService _configService;
+
         public LlmService(
             OllamaProvider ollama,
             GeminiProvider gemini,
-            OpenRouterProvider openRouter)
+            OpenRouterProvider openRouter,
+            LocalLlmProvider localLlm,
+            WhisperConfigurationService configService)
         {
             OllamaProvider = ollama;
             GeminiProvider = gemini;
             OpenRouterProvider = openRouter;
+            LocalLlmProvider = localLlm;
+            _configService = configService;
             
             _providers.Add(ollama);
             _providers.Add(gemini);
             _providers.Add(openRouter);
+            _providers.Add(localLlm);
         }
         
         /// <summary>
@@ -45,9 +53,23 @@ namespace EliteWhisper.Services
             // Try preferred provider first
             switch (preferredProvider)
             {
+                case PreferredProvider.BuiltIn:
+                    if (LocalLlmProvider?.IsAvailable == true) 
+                    {
+                        // Ensure provider knows which model to use
+                        if (LocalLlmProvider is Services.LLM.LocalLlmProvider localProvider)
+                        {
+                            localProvider.SetPreferredModel(mode.PostProcess.PreferredBuiltInModel);
+                        }
+                        return LocalLlmProvider;
+                    }
+                    break;
+
+                case PreferredProvider.Ollama:
+                #pragma warning disable CS0612 // Type or member is obsolete
                 case PreferredProvider.Local:
-                    if (OllamaProvider?.IsAvailable == true)
-                        return OllamaProvider;
+                #pragma warning restore CS0612
+                    if (OllamaProvider?.IsAvailable == true) return OllamaProvider;
                     break;
                     
                 case PreferredProvider.Gemini:
@@ -65,8 +87,15 @@ namespace EliteWhisper.Services
             // Priority: Local (if available) → Gemini → OpenRouter
             
             // Check Local first (Free, Privacy-first)
-            if (OllamaProvider?.IsAvailable == true)
-                return OllamaProvider;
+            // Start check based on preference
+            if (_configService.CurrentConfiguration.LocalEngine == LocalAiEngine.BuiltIn)
+            {
+                 if (LocalLlmProvider?.IsAvailable == true) return LocalLlmProvider;
+            }
+            else
+            {
+                if (OllamaProvider?.IsAvailable == true) return OllamaProvider;
+            }
             
             // Then Gemini (Fast, Free Tier)
             if (GeminiProvider?.IsAvailable == true)

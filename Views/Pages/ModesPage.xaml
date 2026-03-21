@@ -130,7 +130,12 @@
                                                              Margin="0,0,16,0"/>
                                                 
                                                 <RadioButton Content="Local" GroupName="{Binding Id, StringFormat='Provider_{0}'}" 
-                                                             IsChecked="{Binding PostProcess.PreferredProvider, Converter={StaticResource EnumToBool}, ConverterParameter=Local}"
+                                                             IsChecked="{Binding PostProcess.PreferredProvider, Converter={StaticResource EnumToBool}, ConverterParameter=BuiltIn}"
+                                                             Command="{Binding DataContext.SaveModeSettingsCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                             Margin="0,0,16,0"/>
+
+                                                <RadioButton Content="Ollama" GroupName="{Binding Id, StringFormat='Provider_{0}'}" 
+                                                             IsChecked="{Binding PostProcess.PreferredProvider, Converter={StaticResource EnumToBool}, ConverterParameter=Ollama}"
                                                              Command="{Binding DataContext.SaveModeSettingsCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                              Margin="0,0,16,0"/>
                                                 
@@ -145,28 +150,50 @@
                                                              Margin="0,0,0,0"/>
                                             </WrapPanel>
 
-                                            <!-- Local Model Selector -->
-                                            <StackPanel Margin="0,0,0,8">
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Local">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                                
-                                                <TextBlock Text="Local Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                                                <ComboBox ItemsSource="{Binding DataContext.AvailableLocalModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                          SelectedValue="{Binding PostProcess.PreferredLocalModel}"
-                                                          DropDownClosed="OnModelSelectionChanged"
-                                                          Style="{StaticResource PremiumComboBox}"
-                                                          Width="200" HorizontalAlignment="Left"
-                                                          Padding="8,6">
-                                                </ComboBox>
-                                            </StackPanel>
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="BuiltIn">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                    
+                                                    <TextBlock Text="Local Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                    <ComboBox ItemsSource="{Binding DataContext.AvailableBuiltInModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              SelectedValue="{Binding PostProcess.PreferredBuiltInModel}"
+                                                              DropDownClosed="OnModelSelectionChanged"
+                                                              Style="{StaticResource PremiumComboBox}"
+                                                              Width="200" HorizontalAlignment="Left"
+                                                              Padding="8,6">
+                                                    </ComboBox>
+                                                </StackPanel>
+
+                                                <!-- Ollama Model Selector -->
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Ollama">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                    
+                                                    <TextBlock Text="Ollama Model" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                    <ComboBox ItemsSource="{Binding DataContext.AvailableLocalModels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              SelectedValue="{Binding PostProcess.PreferredLocalModel}"
+                                                              DropDownClosed="OnModelSelectionChanged"
+                                                              Style="{StaticResource PremiumComboBox}"
+                                                              Width="200" HorizontalAlignment="Left"
+                                                              Padding="8,6">
+                                                    </ComboBox>
+                                                </StackPanel>
 
                                             <!-- Gemini Model Selector -->
                                             <StackPanel Margin="0,0,0,8">
@@ -236,8 +263,14 @@
                                                     <Style TargetType="TextBlock" BasedOn="{StaticResource CaptionText}">
                                                         <Setter Property="Text" Value="Auto selects the best available AI."/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Local">
+                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="BuiltIn">
+                                                                <Setter Property="Text" Value="Uses built-in AI engine. Runs completely offline."/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Ollama">
                                                                 <Setter Property="Text" Value="Uses local Ollama instance. Ensure models are downloaded in AI Providers tab."/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Local">
+                                                                <Setter Property="Text" Value="Legacy setting. Please save to update to Ollama."/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding PostProcess.PreferredProvider}" Value="Gemini">
                                                                 <Setter Property="Text" Value="Uses Google Gemini 1.5 Flash (Fast &amp; Free)."/>

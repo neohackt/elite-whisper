@@ -15,6 +15,11 @@ namespace EliteWhisper.Models
         public string? ModelsDirectory { get; set; }
 
         /// <summary>
+        /// Custom path for storing Local LLM models (GGUF)
+        /// </summary>
+        public string? LocalModelsPath { get; set; }
+
+        /// <summary>
         /// Currently selected model file (ggml-*.bin)
         /// </summary>
         public string? DefaultModelPath { get; set; }
@@ -42,7 +47,7 @@ namespace EliteWhisper.Models
             !string.IsNullOrEmpty(ExecutablePath) && 
             !string.IsNullOrEmpty(DefaultModelPath) &&
             System.IO.File.Exists(ExecutablePath) &&
-            System.IO.File.Exists(DefaultModelPath);
+            (System.IO.File.Exists(DefaultModelPath) || System.IO.Directory.Exists(DefaultModelPath));
 
         /// <summary>
         /// Flag to indicate if the First-Run Wizard has been completed
@@ -77,6 +82,33 @@ namespace EliteWhisper.Models
         /// Default preference for LLM provider.
         /// </summary>
         public PreferredProvider DefaultProviderPreference { get; set; } = PreferredProvider.Auto;
+
+        // STT Engine Preferences
+        
+        /// <summary>
+        /// Preferred STT Engine (Auto, Whisper, ParakeetV2, ParakeetV3)
+        /// </summary>
+        public string PreferredSTTEngine { get; set; } = "Auto";
+
+        /// <summary>
+        /// Automatically select best STT engine based on hardware
+        /// </summary>
+        public bool AutoSelectSTT { get; set; } = true;
+
+        /// <summary>
+        /// Allow GPU acceleration (DirectML/CUDA) for STT if available
+        /// </summary>
+        public bool EnableGPUAcceleration { get; set; } = true;
+
+        /// <summary>
+        /// Preference for Local AI Engine (Ollama or Built-in).
+        /// </summary>
+        public LocalAiEngine LocalEngine { get; set; } = LocalAiEngine.Ollama;
+
+        /// <summary>
+        /// Settings for the built-in llama.cpp runtime.
+        /// </summary>
+        public LlamaRuntimeSettings LlamaSettings { get; set; } = new();
 
         /// <summary>
         /// Cached list of discovered Gemini models.
