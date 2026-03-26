@@ -74,6 +74,19 @@
         <GradientStop Color="#F3F4F6" Offset="0.5"/>
         <GradientStop Color="#E5E7EB" Offset="1"/>
     </LinearGradientBrush>
+
+    <!-- Destructive Button Gradient -->
+    <LinearGradientBrush x:Key="DestructiveButtonGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#F87171" Offset="0"/>
+        <GradientStop Color="#EF4444" Offset="0.4"/>
+        <GradientStop Color="#DC2626" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="DestructiveButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#EF4444" Offset="0"/>
+        <GradientStop Color="#DC2626" Offset="0.4"/>
+        <GradientStop Color="#B91C1C" Offset="1"/>
+    </LinearGradientBrush>
     
     <!-- Sidebar Gradient -->
     <LinearGradientBrush x:Key="SidebarGradient" StartPoint="0,0" EndPoint="1,0">
@@ -200,6 +213,76 @@
     
     <!-- Alias for compatibility -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButton}"/>
+
+    <Style x:Key="DestructiveButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource DestructiveButtonGradient}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="20,12"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid SnapsToDevicePixels="True" UseLayoutRounding="True">
+                        <!-- Shadow Layer -->
+                        <Border x:Name="shadowBorder" 
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Margin="0,2,0,-2"
+                                SnapsToDevicePixels="True">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.25" Color="#EF4444" Direction="270"/>
+                            </Border.Effect>
+                        </Border>
+                        
+                        <!-- Main Button -->
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{TemplateBinding Padding}"
+                                BorderThickness="0"
+                                BorderBrush="Transparent"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="True">
+                            <ContentPresenter 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="True"/>
+                        </Border>
+                    </Grid>
+                    
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource DestructiveButtonHoverGradient}"/>
+                            <Setter TargetName="shadowBorder" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="12" ShadowDepth="4" Opacity="0.35" Color="#EF4444" Direction="270"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Margin" Value="0,1,0,-1"/>
+                            <Setter TargetName="shadowBorder" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.2" Color="#EF4444" Direction="270"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     
     <Style x:Key="SecondaryButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource SecondaryButtonGradient}"/>
