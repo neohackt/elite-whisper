@@ -1,9 +1,10 @@
 using System.Windows.Controls;
 using EliteWhisper.ViewModels;
+using WinForms = System.Windows.Forms;
 
 namespace EliteWhisper.Views.Pages
 {
-    public partial class SoundPage : UserControl
+    public partial class SoundPage : System.Windows.Controls.UserControl
     {
         private SoundViewModel? _viewModel;
 

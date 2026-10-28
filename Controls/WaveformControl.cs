@@ -73,10 +73,10 @@ namespace EliteWhisper.Controls
         public static readonly DependencyProperty BarFillProperty =
             DependencyProperty.Register(
                 nameof(BarFill),
-                typeof(Brush),
+                typeof(System.Windows.Media.Brush),
                 typeof(WaveformControl),
                 new FrameworkPropertyMetadata(
-                    new SolidColorBrush(Color.FromRgb(78, 161, 255)), // #4EA1FF
+                    new SolidColorBrush(Color.FromRgb(0x28, 0x5B, 0x49)), // #285B49 (Forest Green)
                     OnBarFillChanged));
 
         // ==================== PROPERTIES ====================
@@ -133,17 +133,17 @@ namespace EliteWhisper.Controls
             set => SetValue(CenterGapProperty, value);
         }
 
-        public Brush BarFill
+        public System.Windows.Media.Brush BarFill
         {
-            get => (Brush)GetValue(BarFillProperty);
+            get => (System.Windows.Media.Brush)GetValue(BarFillProperty);
             set => SetValue(BarFillProperty, value);
         }
 
         // ==================== PRIVATE FIELDS ====================
         
         // Each bar position has TWO rectangles: top stroke and bottom stroke
-        private Rectangle[] _topStrokes = Array.Empty<Rectangle>();
-        private Rectangle[] _bottomStrokes = Array.Empty<Rectangle>();
+        private System.Windows.Shapes.Rectangle[] _topStrokes = Array.Empty<System.Windows.Shapes.Rectangle>();
+        private System.Windows.Shapes.Rectangle[] _bottomStrokes = Array.Empty<System.Windows.Shapes.Rectangle>();
         private bool _barsCreated = false;
 
         // ==================== CONSTRUCTOR ====================

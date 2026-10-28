@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -16,6 +17,22 @@ namespace EliteWhisper.Views
         private readonly HotkeyService _hotkeyService;
         private readonly DictationService _dictationService;
         private IntPtr _handle;
+        private bool _isShuttingDown;
+        private bool _isDisposed;
+        private System.Windows.Point _lastKnownPosition;
+
+        // P/Invoke for screen positioning without Windows Forms
+        private struct POINT { public int X; public int Y; }
+        private struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
+        private struct MONITORINFO { public int cbSize; public RECT rcMonitor; public RECT rcWork; public int dwFlags; }
+
+        [DllImport("user32.dll")] private static extern bool GetCursorPos(out POINT lpPoint);
+        [DllImport("user32.dll")] private static extern IntPtr MonitorFromPoint(POINT pt, int dwFlags);
+        [DllImport("user32.dll")] private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+        [DllImport("shcore.dll")] private static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+
+        private const int MONITOR_DEFAULTTONEAREST = 2;
+        private const int MDT_EFFECTIVE_DPI = 0;
 
         public WidgetWindow(
             WidgetViewModel viewModel, 
@@ -41,14 +58,14 @@ namespace EliteWhisper.Views
             _hotkeyService.OnHotkeyPressed += OnHotkeyPressed;
             
             // Subscribe to ViewModel events (button clicks mirror hotkey)
-            _viewModel.OnRecordButtonClicked += () => _ = HandleDictationToggle();
+            _viewModel.OnRecordButtonClicked += OnRecordButtonClicked;
             _viewModel.OnExpandClicked += TransitionToExpanded;
             _viewModel.OnCollapseClicked += TransitionToCollapsed;
         }
 
         // ==================== HOVER HANDLERS (with Expanded guard) ====================
         
-        private void WidgetWindow_MouseEnter(object sender, MouseEventArgs e)
+        private void WidgetWindow_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // Critical: Do NOT hover-expand when in Expanded state
             if (_viewModel.VisualState == WidgetVisualState.Expanded) return;
@@ -58,7 +75,7 @@ namespace EliteWhisper.Views
             AnimateToHoverExpanded();
         }
 
-        private void WidgetWindow_MouseLeave(object sender, MouseEventArgs e)
+        private void WidgetWindow_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // Critical: Do NOT collapse when in Expanded state
             if (_viewModel.VisualState == WidgetVisualState.Expanded) return;
@@ -73,7 +90,7 @@ namespace EliteWhisper.Views
         private void TransitionToExpanded()
         {
             _viewModel.VisualState = WidgetVisualState.Expanded;
-            AnimateSize(320, 180, 328, 188);
+            AnimateSize(288, 52, 296, 56);
             
             // Reassert Z-order on expand (prevents burial by fullscreen apps)
             Win32.SetWindowPos(_handle, Win32.HWND_TOPMOST, 0, 0, 0, 0,
@@ -83,17 +100,17 @@ namespace EliteWhisper.Views
         private void TransitionToCollapsed()
         {
             _viewModel.VisualState = WidgetVisualState.Collapsed;
-            AnimateSize(140, 48, 148, 52);
+            AnimateSize(96, 36, 104, 40);
         }
 
         private void AnimateToHoverExpanded()
         {
-            AnimateSize(240, 48, 248, 52);
+            AnimateSize(200, 40, 208, 44);
         }
 
         private void AnimateToCollapsed()
         {
-            AnimateSize(140, 48, 148, 52);
+            AnimateSize(96, 36, 104, 40);
         }
 
         /// <summary>
@@ -117,22 +134,17 @@ namespace EliteWhisper.Views
             ShadowLayer.BeginAnimation(MinWidthProperty, shadowWidthAnim);
             ShadowLayer.BeginAnimation(HeightProperty, shadowHeightAnim);
             
-            // Update corner radius for expanded mode
-            if (contentHeight > 48)
-            {
-                ContentLayer.CornerRadius = new CornerRadius(16);
-                ShadowLayer.CornerRadius = new CornerRadius(18);
-            }
-            else
-            {
-                ContentLayer.CornerRadius = new CornerRadius(24);
-                ShadowLayer.CornerRadius = new CornerRadius(26);
-            }
+            // Update corner radius for expanded mode (capsule = height/2)
+            double contentCornerRadius = contentHeight / 2.0;
+            double shadowCornerRadius = shadowHeight / 2.0;
+            
+            ContentLayer.CornerRadius = new CornerRadius(contentCornerRadius);
+            ShadowLayer.CornerRadius = new CornerRadius(shadowCornerRadius);
         }
 
         // ==================== KEY HANDLERS ====================
         
-        private void WidgetWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void WidgetWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
@@ -175,11 +187,12 @@ namespace EliteWhisper.Views
             HideOverlay();
         }
 
-        // ==================== HOTKEY HANDLER (UNCHANGED LOGIC) ====================
+        // ==================== HOTKEY HANDLER ====================
         
-        private async void OnHotkeyPressed()
+        private void OnHotkeyPressed()
         {
-            await HandleDictationToggle();
+            if (_isShuttingDown || _isDisposed) return;
+            _ = HandleDictationToggle();
         }
 
         /// <summary>
@@ -212,28 +225,137 @@ namespace EliteWhisper.Views
         
         private void ShowOverlay()
         {
+            if (_isShuttingDown || _isDisposed) return;
+            
+            // Position at bottom-center of active screen before showing
+            PositionAtBottomCenter();
+            
             this.Show();
             
             Win32.SetWindowPos(_handle, Win32.HWND_TOPMOST, 0, 0, 0, 0, 
                 Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOACTIVATE | Win32.SWP_SHOWWINDOW);
             
             // Ensure we start in collapsed state
-            _viewModel.VisualState = WidgetVisualState.Collapsed;
+            if (_viewModel != null)
+            {
+                _viewModel.VisualState = WidgetVisualState.Collapsed;
+            }
             
             // Give focus so Escape key works
             this.Focusable = true;
             this.Focus();
         }
 
+        /// <summary>
+        /// Positions the widget at the bottom-center of the active screen,
+        /// respecting working area bounds, taskbars, and DPI scaling.
+        /// Uses P/Invoke instead of Windows Forms.
+        /// </summary>
+        private void PositionAtBottomCenter()
+        {
+            try
+            {
+                // Get cursor position
+                if (!GetCursorPos(out POINT cursorPos))
+                    return;
+
+                // Get monitor nearest to cursor
+                IntPtr hMonitor = MonitorFromPoint(cursorPos, MONITOR_DEFAULTTONEAREST);
+                if (hMonitor == IntPtr.Zero)
+                    return;
+
+                // Get monitor info (includes working area excluding taskbar)
+                MONITORINFO mi = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+                if (!GetMonitorInfo(hMonitor, ref mi))
+                    return;
+
+                // Get DPI for this monitor
+                uint dpiX, dpiY;
+                GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, out dpiX, out dpiY);
+                double dpiScaleX = dpiX / 96.0;
+                double dpiScaleY = dpiY / 96.0;
+
+                // Widget dimensions (collapsed state)
+                double widgetWidth = 96;
+                double widgetHeight = 36;
+
+                // Working area (excludes taskbar)
+                int workLeft = mi.rcWork.Left;
+                int workTop = mi.rcWork.Top;
+                int workRight = mi.rcWork.Right;
+                int workBottom = mi.rcWork.Bottom;
+                double workWidth = workRight - workLeft;
+                double workHeight = workBottom - workTop;
+
+                // Widget dimensions in physical pixels
+                double widgetWidthPx = widgetWidth * (dpiX / 96.0);
+                double widgetHeightPx = widgetHeight * (dpiY / 96.0);
+
+                // Center horizontally, 24px margin from bottom
+                double leftPx = workLeft + (workWidth - widgetWidthPx) / 2.0;
+                double topPx = workBottom - widgetHeightPx - 24 * (dpiY / 96.0);
+
+                // Convert to WPF device-independent units
+                double left = leftPx / (dpiX / 96.0);
+                double top = topPx / (dpiY / 96.0);
+
+                this.Left = left;
+                this.Top = top;
+                
+                _lastKnownPosition = new System.Windows.Point(left, top);
+            }
+            catch
+            {
+                // Fallback: center of primary screen
+                this.Left = 100;
+                this.Top = 100;
+            }
+        }
+
         private void HideOverlay()
         {
-            this.Hide();
-            _viewModel.State = WidgetState.Hidden;
-            _viewModel.VisualState = WidgetVisualState.Collapsed;
+            if (_isDisposed) return;
+            
+            // Save position before hiding
+            _lastKnownPosition = new System.Windows.Point(this.Left, this.Top);
+            
+            try
+            {
+                this.Hide();
+            }
+            catch
+            {
+                // Ignore hide errors during shutdown
+            }
+
+            // Null-safe: viewmodel may be disposed during shutdown
+            if (_viewModel != null)
+            {
+                try
+                {
+                    _viewModel.State = WidgetState.Hidden;
+                    _viewModel.VisualState = WidgetVisualState.Collapsed;
+                }
+                catch
+                {
+                    // Ignore VM errors during shutdown
+                }
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            // During application shutdown, allow the window to close
+            // Check if the application is shutting down
+            if (System.Windows.Application.Current == null || _isShuttingDown)
+            {
+                _isShuttingDown = true;
+                // Allow close during actual shutdown
+                e.Cancel = false;
+                return;
+            }
+
+            // Normal operation: hide to tray instead of closing
             e.Cancel = true;
             HideOverlay();
         }
@@ -242,6 +364,63 @@ namespace EliteWhisper.Views
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
+            
+            // Update last known position after drag
+            _lastKnownPosition = new System.Windows.Point(this.Left, this.Top);
+        }
+
+        /// <summary>
+        /// Performs deterministic cleanup of widget resources.
+        /// Called during actual application shutdown.
+        /// </summary>
+        internal void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+            _isShuttingDown = true;
+
+            // Unsubscribe from hotkey service
+            try
+            {
+                _hotkeyService.OnHotkeyPressed -= OnHotkeyPressed;
+            }
+            catch { }
+
+            // Unsubscribe from ViewModel events
+            try
+            {
+                _viewModel.OnRecordButtonClicked -= OnRecordButtonClicked;
+                _viewModel.OnExpandClicked -= TransitionToExpanded;
+                _viewModel.OnCollapseClicked -= TransitionToCollapsed;
+            }
+            catch { }
+
+            // Unsubscribe from window events
+            try
+            {
+                SourceInitialized -= WidgetWindow_SourceInitialized;
+                Loaded -= WidgetWindow_Loaded;
+                PreviewKeyDown -= WidgetWindow_PreviewKeyDown;
+                MouseEnter -= WidgetWindow_MouseEnter;
+                MouseLeave -= WidgetWindow_MouseLeave;
+            }
+            catch { }
+
+            // Unregister hotkey
+            try
+            {
+                _hotkeyService.Unregister(_handle);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Handles record button click from ViewModel.
+        /// </summary>
+        private void OnRecordButtonClicked()
+        {
+            if (_isShuttingDown || _isDisposed) return;
+            _ = HandleDictationToggle();
         }
     }
 }

@@ -6,7 +6,21 @@
 #define MyAppPublisher "NeoHackt"
 #define MyAppURL "https://github.com/neohackt/elite-whisper"
 #define MyAppExeName "EliteWhisper.exe"
-#define BuildDir "dist"
+
+; Installer staging directory, relative to this script. It is assembled and
+; verified by publish.ps1; this script consumes nothing else.
+;   publish.ps1 -> build\publish (self-contained app) + build\runtime (pinned,
+;   digest-verified llama.cpp) -> build\staging
+; Do not point this at a hand-maintained folder: the staging directory is the
+; only supported source of files for the installer.
+;
+; publish.ps1 overrides this with the absolute staging path it just assembled
+; (ISCC /DBuildDir=<path>). The relative default below is used when the script
+; is compiled by hand from the repository root; Inno Setup resolves relative
+; Source paths against the directory of this script.
+#ifndef BuildDir
+  #define BuildDir "build\staging"
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -25,6 +39,9 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=Output
 OutputBaseFilename=EliteWhisper_Setup
+; Surface the app version in Windows Explorer / Task Manager for the setup exe.
+VersionInfoVersion={#MyAppVersion}
+VersionInfoProductVersion={#MyAppVersion}
 SetupIconFile=Assets\app.ico
 Compression=lzma
 SolidCompression=yes
@@ -37,10 +54,24 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#BuildDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BuildDir}\llama.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BuildDir}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BuildDir}\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs createallsubdirs
+; The installer payload is exactly the verified staging tree, packaged whole.
+;
+; publish.ps1 assembles that tree and verifies it before this script runs: the
+; self-contained .NET runtime is present, the application resources match the
+; repository copies, the llama.cpp file set is exactly the digest-verified set
+; from runtime\llamacpp.json, and developer artefacts, logs and unrelated
+; tools are rejected. Packaging the tree wholesale keeps the payload and the
+; verified set in lockstep.
+;
+; A hand-written file list is deliberately NOT used: it silently drops anything
+; it fails to mention. That defect shipped EliteWhisper.deps.json,
+; EliteWhisper.runtimeconfig.json and the localized satellite assemblies - the
+; first two of which the installed app cannot start without.
+;
+; The compile-time guard below fails the build if a critical file is absent
+; from the staging tree, and Inno Setup validates every extracted file against
+; the CRC stored in the package.
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -49,3 +80,30 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+; ---------------------------------------------------------------------------
+; Compile-time fail-closed guard.
+;
+; The installer may only be built from the staging directory that publish.ps1
+; assembled and verified. Inno Setup already validates every Source: entry at
+; compile time, so an incomplete payload fails the build; the checks below
+; make that failure explicit and self-explanatory.
+;
+; This guard is deliberately compile-time rather than run-time: the staging
+; directory is a build input and does not exist on an end user's machine, so a
+; run-time check would abort every real installation. At install time Inno
+; Setup verifies each extracted file against the CRC it stored in the
+; package, so payload integrity is already covered without a run-time check.
+; ---------------------------------------------------------------------------
+#if !FileExists(AddBackslash(BuildDir) + "EliteWhisper.exe")
+  #error The staging directory is incomplete: EliteWhisper.exe was not found in the staging directory. Run publish.ps1 to assemble and verify it before compiling the installer.
+#endif
+#if !FileExists(AddBackslash(BuildDir) + "llama.exe")
+  #error The staging directory is incomplete: llama.exe was not found in the staging directory. Run publish.ps1 to assemble and verify it before compiling the installer.
+#endif
+#if !FileExists(AddBackslash(BuildDir) + "THIRD-PARTY-NOTICES.md")
+  #error The staging directory is incomplete: THIRD-PARTY-NOTICES.md was not found in the staging directory. Run publish.ps1 to assemble and verify it before compiling the installer.
+#endif
+#if !FileExists(AddBackslash(BuildDir) + "licenses\LICENSE-LLVM-OpenMP")
+  #error The staging directory is incomplete: the upstream llama.cpp license file was not found in the staging directory. Run publish.ps1 to assemble and verify it before compiling the installer.
+#endif

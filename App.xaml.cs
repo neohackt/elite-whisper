@@ -7,10 +7,11 @@ using Microsoft.Extensions.Hosting;
 using EliteWhisper.Views;
 using EliteWhisper.ViewModels;
 using EliteWhisper.Services;
+using WinForms = System.Windows.Forms;
 
 namespace EliteWhisper
 {
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         public static IHost? AppHost { get; private set; }
 
@@ -59,7 +60,10 @@ namespace EliteWhisper
                             services.AddHttpClient("Gemini", client =>
                             {
                                 client.Timeout = TimeSpan.FromSeconds(60);
-                            });
+                            })
+                            // Race IPv6/IPv4 connects: a blackholed IPv6 route must not
+                            // block the request until the client timeout expires.
+                            .ConfigurePrimaryHttpMessageHandler(() => HttpConnectivity.CreateHandler());
                             
                             services.AddHttpClient("OpenRouter", client =>
                             {
@@ -248,7 +252,7 @@ namespace EliteWhisper
                 {
                     _trayIcon.ShowBalloon("Elite Whisper", 
                         "Whisper is not configured. Right-click tray icon → Settings to set up.", 
-                        System.Windows.Forms.ToolTipIcon.Warning);
+                        WinForms.ToolTipIcon.Warning);
                 }
                 
                 Log("Startup Complete");

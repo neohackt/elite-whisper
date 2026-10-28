@@ -195,6 +195,9 @@ namespace EliteWhisper.Services
             try
             {
                 string transcription;
+                // How long the final status stays visible before the widget
+                // returns to "Ready".
+                int statusDurationMs = 800;
                 
                 // Try SpeechRecognitionService first (supports Parakeet + Whisper)
                 var speechService = (Application.Current as App)?.Services.GetService(typeof(Speech.SpeechRecognitionService)) as Speech.SpeechRecognitionService;
@@ -226,18 +229,21 @@ namespace EliteWhisper.Services
                 
                 if (!string.IsNullOrWhiteSpace(transcription))
                 {
-                    // Post-process with LLM if enabled
+                    // Post-process with LLM if enabled. The result states
+                    // explicitly whether the text was enhanced, so a failed
+                    // enhancement is never reported as a success.
                     var activeMode = _modeService.ActiveMode;
-                    var finalText = await _postProcessingService.ProcessAsync(transcription, activeMode);
-                    
+                    var enhancement = await _postProcessingService.ProcessAsync(transcription, activeMode, _cts?.Token ?? CancellationToken.None);
+                    bool enhancementOk = DictationStatusMessages.IsEnhancementSuccessful(enhancement);
+
                     if (CurrentSource == RecordingSource.Widget)
                     {
                         _widgetViewModel.StatusText = "Typing...";
                     }
-                    await _injectionService.InjectTextAsync(finalText, _cts?.Token ?? CancellationToken.None);
+                    await _injectionService.InjectTextAsync(enhancement.Text, _cts?.Token ?? CancellationToken.None);
                     
                     // Capture metrics
-                    int wordCount = finalText.Split(new[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
+                    int wordCount = enhancement.Text.Split(new[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
                     
                     // Duration from audio file or approximated. 
                     
@@ -263,13 +269,17 @@ namespace EliteWhisper.Services
                     // Save to History (save final text, not raw)
                     _historyService.AddRecord(new Models.DictationRecord
                     {
-                        Content = finalText,
+                        Content = enhancement.Text,
                         Timestamp = DateTime.Now,
                         Duration = _recordingDuration,
                         DurationSeconds = durationSec,
                         WordCount = wordCount,
                         ModelUsed = _aiEngine.GetConfiguration()?.DefaultModelPath ?? "Unknown",
-                        ApplicationName = activeWindow
+                        ApplicationName = activeWindow,
+                        EnhancementSucceeded = enhancement.Outcome == Models.PostProcessingOutcome.Disabled
+                            ? null
+                            : enhancement.Enhanced,
+                        EnhancementProvider = enhancement.ProviderName
                     });
                     
                     // Notify Dashboard to update (could effectively be done via HistoryService event or Messenger)
@@ -277,8 +287,15 @@ namespace EliteWhisper.Services
 
                     if (CurrentSource == RecordingSource.Widget)
                     {
-                        _widgetViewModel.StatusText = "Done!";
+                        // "Done!" only when the operation succeeded and, when
+                        // enhancement was enabled, enhancement actually
+                        // succeeded.
+                        _widgetViewModel.StatusText = DictationStatusMessages.ForPostProcessing(enhancement);
                     }
+
+                    // Give a failure message the same reading time the other
+                    // error statuses already get.
+                    statusDurationMs = enhancementOk ? 800 : 1500;
                 }
                 else
                 {
@@ -288,7 +305,7 @@ namespace EliteWhisper.Services
                     }
                 }
                 
-                await Task.Delay(800);
+                await Task.Delay(statusDurationMs);
             }
             catch (OperationCanceledException)
             {
@@ -351,8 +368,9 @@ namespace EliteWhisper.Services
                 {
                     if (CurrentSource == RecordingSource.Widget)
                     {
+                        // Setting the state also restores the status text
+                        // through UpdateVisuals, so it is not set twice here.
                         _widgetViewModel.State = WidgetState.Ready;
-                        _widgetViewModel.StatusText = "Ready";
                     }
                 }
                 

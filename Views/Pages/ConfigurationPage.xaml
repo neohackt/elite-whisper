@@ -120,7 +120,8 @@
             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                 <StackPanel>
                     <TextBlock Text="Updates" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
-                    <TextBlock Text="Check for the latest version of Elite Whisper." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
+                    <TextBlock Text="Check for the latest version of Elite Whisper." Style="{StaticResource BodyText}" Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding UpdateStatusText}" Style="{StaticResource BodyText}" TextWrapping="Wrap" Margin="0,0,0,16"/>
                     
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Check for Updates" 

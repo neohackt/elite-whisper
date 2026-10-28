@@ -1,13 +1,14 @@
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using EliteWhisper.ViewModels;
+using WinForms = System.Windows.Forms;
 
 namespace EliteWhisper.Views.Pages
 {
     /// <summary>
     /// Interaction logic for ModesPage.xaml
     /// </summary>
-    public partial class ModesPage : UserControl
+    public partial class ModesPage : System.Windows.Controls.UserControl
     {
         public ModesPage()
         {

@@ -17,11 +17,11 @@
         <StackPanel Margin="32">
             
             <!-- Page Header -->
-            <TextBlock Text="Welcome back" Style="{StaticResource HeadingLarge}" Margin="0,0,0,8"/>
-            <TextBlock Text="Your AI-powered dictation assistant is ready." Style="{StaticResource BodyText}" Margin="0,0,0,32"/>
+            <TextBlock Text="Welcome back" Style="{StaticResource HeadingLarge}" Margin="0,0,0,6"/>
+            <TextBlock Text="Your AI-powered dictation assistant is ready." Style="{StaticResource BodyText}" Margin="0,0,0,24"/>
             
             <!-- Status Card -->
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24" BorderBrush="{Binding CardBorderColor}" BorderThickness="1">
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -30,7 +30,7 @@
                     
                     <StackPanel Grid.Column="0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{Binding CardBorderColor}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Path Data="{StaticResource IconCheckCircleGeometry}" Fill="{StaticResource SuccessBrush}" Stretch="Uniform" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding AppStatus}" Style="{StaticResource HeadingSmall}"/>
                         </StackPanel>
                         
@@ -73,7 +73,7 @@
             </Border>
             
             <!-- Dashboard Card -->
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,24" Padding="24">
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -88,10 +88,10 @@
                     </Grid.ColumnDefinitions>
                     
                     <!-- Vertical Separators -->
-                    <Rectangle Grid.Column="1" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
-                    <Rectangle Grid.Column="3" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
-                    <Rectangle Grid.Column="5" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
-                    <Rectangle Grid.Column="7" Width="1" Fill="{StaticResource BorderPrimary}" Margin="0,4"/>
+                    <Rectangle Grid.Column="1" Width="1" Fill="{StaticResource BorderSubtleBrush}" Margin="0,4"/>
+                    <Rectangle Grid.Column="3" Width="1" Fill="{StaticResource BorderSubtleBrush}" Margin="0,4"/>
+                    <Rectangle Grid.Column="5" Width="1" Fill="{StaticResource BorderSubtleBrush}" Margin="0,4"/>
+                    <Rectangle Grid.Column="7" Width="1" Fill="{StaticResource BorderSubtleBrush}" Margin="0,4"/>
 
                     <!-- 1. AVG WPM -->
                     <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
@@ -141,16 +141,16 @@
             </Border>
             
             <!-- Quick Actions Header -->
-            <TextBlock Text="Get started" Style="{StaticResource HeadingMedium}" Margin="0,0,0,16"/>
+            <TextBlock Text="Get started" Style="{StaticResource HeadingMedium}" Margin="0,0,0,12"/>
             
             <!-- Quick Action Cards -->
             <UniformGrid Columns="2" Margin="0,0,0,24">
                 
                 <!-- Configure AI Models -->
-                <Border Style="{StaticResource CardStyle}" Margin="0,0,12,12">
+                <Border Style="{StaticResource CardStyle}" Margin="6">
                     <StackPanel>
-                        <Border Background="{StaticResource SidebarItemSelected}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconBrainGeometry}" Fill="{StaticResource AccentPrimary}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{StaticResource HoverSurfaceBrush}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <Path Data="{StaticResource IconBrainGeometry}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Configure AI Models" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Choose between speed and accuracy based on your needs." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
@@ -159,10 +159,10 @@
                 </Border>
                 
                 <!-- Change Shortcut -->
-                <Border Style="{StaticResource CardStyle}" Margin="12,0,0,12">
+                <Border Style="{StaticResource CardStyle}" Margin="6">
                     <StackPanel>
-                        <Border Background="{StaticResource SidebarItemSelected}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconKeyboardGeometry}" Fill="{StaticResource AccentPrimary}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{StaticResource HoverSurfaceBrush}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <Path Data="{StaticResource IconKeyboardGeometry}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Keyboard Shortcut" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Current shortcut: F2. Customize it to your preference." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
@@ -171,10 +171,10 @@
                 </Border>
                 
                 <!-- Test Microphone -->
-                <Border Style="{StaticResource CardStyle}" Margin="0,12,12,0">
+                <Border Style="{StaticResource CardStyle}" Margin="6">
                     <StackPanel>
-                        <Border Background="{StaticResource SidebarItemSelected}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconWaveSineGeometry}" Fill="{StaticResource AccentPrimary}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{StaticResource HoverSurfaceBrush}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <Path Data="{StaticResource IconWaveSineGeometry}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Test Microphone" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Make sure your microphone is working correctly." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
@@ -183,10 +183,10 @@
                 </Border>
                 
                 <!-- View History -->
-                <Border Style="{StaticResource CardStyle}" Margin="12,12,0,0">
+                <Border Style="{StaticResource CardStyle}" Margin="6">
                     <StackPanel>
-                        <Border Background="{StaticResource SidebarItemSelected}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
-                            <Path Data="{StaticResource IconHistoryGeometry}" Fill="{StaticResource AccentPrimary}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{StaticResource HoverSurfaceBrush}" CornerRadius="8" Width="48" Height="48" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <Path Data="{StaticResource IconHistoryGeometry}" Fill="{StaticResource PrimaryBrush}" Stretch="Uniform" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Dictation History" Style="{StaticResource HeadingSmall}" Margin="0,0,0,8"/>
                         <TextBlock Text="Review and search through your past dictations." Style="{StaticResource BodyText}" Margin="0,0,0,16"/>
@@ -197,7 +197,7 @@
             </UniformGrid>
             
             <!-- Tips Section -->
-            <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusMedium}" Padding="20" Margin="0,8,0,0">
+            <Border Background="{StaticResource BackgroundTertiary}" CornerRadius="{StaticResource RadiusMedium}" Padding="20" Margin="0,12,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Path Data="{StaticResource IconInfoGeometry}" Fill="{StaticResource AccentPrimary}" Stretch="Uniform" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Top"/>
                     <StackPanel>

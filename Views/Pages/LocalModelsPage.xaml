@@ -87,13 +87,14 @@
                                                     <TextBlock Text="{Binding Size}" Foreground="{StaticResource TextSecondary}" Margin="0,0,12,0"/>
                                                     <TextBlock Text="Ready" Foreground="{StaticResource AccentSuccess}"/>
                                                 </StackPanel>
+                                                <TextBlock Text="{Binding BenchmarkResult}" Foreground="{StaticResource TextSecondary}" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             
                                             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                <Button Content="Benchmark" Command="{Binding DataContext.BenchmarkCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                <Button Content="Benchmark" Command="{Binding DataContext.BenchmarkModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                                                         CommandParameter="{Binding}"
                                                         Style="{StaticResource SecondaryButton}" Margin="0,0,8,0"/>
-                                                <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                <Button Content="Delete" Command="{Binding DataContext.DeleteModelCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                                                         CommandParameter="{Binding}"
                                                         Style="{StaticResource DestructiveButton}"/>
                                             </StackPanel>

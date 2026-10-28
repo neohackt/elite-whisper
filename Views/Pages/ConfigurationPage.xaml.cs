@@ -1,10 +1,11 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using EliteWhisper.ViewModels;
+using WinForms = System.Windows.Forms;
 
 namespace EliteWhisper.Views.Pages
 {
-    public partial class ConfigurationPage : UserControl
+    public partial class ConfigurationPage : System.Windows.Controls.UserControl
     {
         private ConfigurationViewModel? _viewModel;
 
@@ -31,7 +32,7 @@ namespace EliteWhisper.Views.Pages
             this.Focusable = true;
         }
 
-        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (_viewModel?.IsCapturing == true)
             {

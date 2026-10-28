@@ -1,0 +1,94 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================================================
+         IVORY & FOREST - TYPOGRAPHY
+         Inter as primary font family with Segoe UI Variable / Segoe UI fallbacks.
+         Centralised TextBlock styles for consistent hierarchy.
+         ============================================================================ -->
+
+    <!-- Font Families -->
+    <!-- Inter Variable bundled as Resource: pack://application:,,,/Resources/Fonts/#Inter Variable -->
+    <FontFamily x:Key="FontPrimary">pack://application:,,,/Resources/Fonts/#Inter Variable</FontFamily>
+    <FontFamily x:Key="FontPrimaryFallback">Segoe UI Variable, Segoe UI</FontFamily>
+    <FontFamily x:Key="FontMono">Consolas, Cascadia Code, Segoe UI Mono</FontFamily>
+
+    <!-- ============================================================================
+         TEXTBLOCK STYLES - Centralised hierarchy
+         ============================================================================ -->
+
+<!-- Page titles: clear, moderately prominent, semibold -->
+    <Style x:Key="HeadingLarge" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="26"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="LineHeight" Value="34"/>
+    </Style>
+
+    <!-- Section titles: semibold, smaller than page titles -->
+    <Style x:Key="HeadingMedium" TargetType="TextBlock" BasedOn="{StaticResource HeadingLarge}">
+        <Setter Property="FontSize" Value="19"/>
+        <Setter Property="LineHeight" Value="27"/>
+    </Style>
+
+    <!-- Subsection titles -->
+    <Style x:Key="HeadingSmall" TargetType="TextBlock" BasedOn="{StaticResource HeadingLarge}">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="LineHeight" Value="24"/>
+    </Style>
+
+    <!-- Body text: regular weight, comfortable readability -->
+    <Style x:Key="BodyLarge" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="LineHeight" Value="24"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="BodyMedium" TargetType="TextBlock" BasedOn="{StaticResource BodyLarge}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <Style x:Key="BodySmall" TargetType="TextBlock" BasedOn="{StaticResource BodyLarge}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="LineHeight" Value="18"/>
+    </Style>
+
+<!-- Supporting descriptions and metadata -->
+    <Style x:Key="CaptionText" TargetType="TextBlock" BasedOn="{StaticResource BodySmall}">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiaryBrush}"/>
+        <Setter Property="LineHeight" Value="16"/>
+    </Style>
+
+    <!-- Buttons and navigation labels: consistent size and weight -->
+    <Style x:Key="ButtonText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Input text styling -->
+    <Style x:Key="InputText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontPrimary}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <!-- Monospaced text for logs, paths, diagnostic output -->
+    <Style x:Key="MonoText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FontMono}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="LineHeight" Value="18"/>
+    </Style>
+
+    <!-- Legacy aliases for backward compatibility -->
+    <Style x:Key="BodyText" TargetType="TextBlock" BasedOn="{StaticResource BodyMedium}"/>
+
+</ResourceDictionary>

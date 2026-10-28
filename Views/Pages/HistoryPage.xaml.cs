@@ -1,8 +1,9 @@
 using System.Windows.Controls;
+using WinForms = System.Windows.Forms;
 
 namespace EliteWhisper.Views.Pages
 {
-    public partial class HistoryPage : UserControl
+    public partial class HistoryPage : System.Windows.Controls.UserControl
     {
         public HistoryPage()
         {

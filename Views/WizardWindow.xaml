@@ -1,4 +1,4 @@
-<Window x:Class="EliteWhisper.Views.WizardWindow"
+﻿<Window x:Class="EliteWhisper.Views.WizardWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -53,14 +53,14 @@
                         <TextBlock Text="Model Storage" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                         <TextBlock Text="We need a place to store the AI models (approx 1-3GB)." FontSize="14" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center" Margin="0,0,0,24" TextWrapping="Wrap" TextAlignment="Center"/>
 
-                        <Border Background="{DynamicResource SurfacePrimary}" CornerRadius="6" Padding="16" Margin="0,0,0,24">
+                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="6" Padding="16" Margin="0,0,0,24">
                             <StackPanel>
                                 <TextBlock Text="Current Location:" FontSize="12" Foreground="{DynamicResource TextTertiary}" Margin="0,0,0,4"/>
                                 <TextBlock Text="{Binding ModelsDirectory}" FontSize="14" FontFamily="Consolas" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
                         </Border>
                         
-                        <Button Content="Change Location..." Command="{Binding ChangeDirectoryCommand}" Style="{DynamicResource SecondaryButton}" Foreground="#1F2937" HorizontalAlignment="Center"/>
+                        <Button Content="Change Location..." Command="{Binding ChangeDirectoryCommand}" Style="{DynamicResource SecondaryButton}" Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <!-- STEP 3: HOTKEYS -->
@@ -69,7 +69,7 @@
                         
                         <TextBlock Text="How to Use" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" Margin="0,0,0,32"/>
                         
-                        <Border Background="{DynamicResource SurfacePrimary}" CornerRadius="8" Padding="24" HorizontalAlignment="Center">
+                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="24" HorizontalAlignment="Center">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Border Background="{DynamicResource BackgroundPrimary}" CornerRadius="6" Padding="12,6" BorderBrush="{DynamicResource BorderPrimary}" BorderThickness="1" Margin="0,0,16,0">
                                     <TextBlock Text="F2" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
@@ -81,7 +81,7 @@
 
                     <!-- STEP 4: FINISH -->
                     <StackPanel Visibility="{Binding IsStep4, Converter={StaticResource BoolToVis}}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Path Data="{DynamicResource IconCheckCircleGeometry}" Fill="#10B981" Stretch="Uniform" Width="64" Height="64" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+                        <Path Data="{DynamicResource IconCheckCircleGeometry}" Fill="{DynamicResource SuccessBrush}" Stretch="Uniform" Width="64" Height="64" HorizontalAlignment="Center" Margin="0,0,0,24"/>
                         
                         <TextBlock Text="All Set!" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                         <TextBlock Text="Elite Whisper is ready to listen." FontSize="16" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>

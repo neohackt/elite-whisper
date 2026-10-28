@@ -56,18 +56,18 @@ namespace EliteWhisper.ViewModels
         // Container dimensions for animation
         public double ContainerWidth => VisualState switch
         {
-            WidgetVisualState.Collapsed => 140,
-            WidgetVisualState.HoverExpanded => 240,
-            WidgetVisualState.Expanded => 320,
-            _ => 140
+            WidgetVisualState.Collapsed => 96,
+            WidgetVisualState.HoverExpanded => 200,
+            WidgetVisualState.Expanded => 288,
+            _ => 96
         };
         
         public double ContainerHeight => VisualState switch
         {
-            WidgetVisualState.Collapsed => 48,
-            WidgetVisualState.HoverExpanded => 48,
-            WidgetVisualState.Expanded => 180,
-            _ => 48
+            WidgetVisualState.Collapsed => 36,
+            WidgetVisualState.HoverExpanded => 40,
+            WidgetVisualState.Expanded => 52,
+            _ => 36
         };
 
         // ==================== MIC LEVEL ====================
@@ -107,6 +107,28 @@ namespace EliteWhisper.ViewModels
             WidgetState.Listening => "Stop recording (F2)",
             _ => "Start recording (F2)"
         };
+        
+        // ==================== MODE DISPLAY ====================
+        
+        /// <summary>
+        /// Whether an active mode/provider is available for display in the expanded pill.
+        /// </summary>
+        public bool HasActiveMode => !string.IsNullOrEmpty(ActiveModeDisplay);
+        
+        /// <summary>
+        /// Display text for the active mode/provider in the expanded pill badge.
+        /// </summary>
+        public string ActiveModeDisplay { get; private set; } = "";
+        
+        /// <summary>
+        /// Updates the active mode display from the current mode service.
+        /// </summary>
+        public void UpdateActiveModeDisplay(string modeDisplay)
+        {
+            ActiveModeDisplay = modeDisplay ?? "";
+            OnPropertyChanged(nameof(HasActiveMode));
+            OnPropertyChanged(nameof(ActiveModeDisplay));
+        }
 
         // ==================== EVENTS ====================
         
@@ -150,8 +172,8 @@ namespace EliteWhisper.ViewModels
 
         // ==================== WAVEFORM VISUALIZATION ====================
         
-        // Number of bars in expanded waveform
-        public const int ExpandedBarCount = 20;
+        // Number of bars in expanded waveform (compact horizontal pill)
+        public const int ExpandedBarCount = 7;
         
         // Number of bars in mini waveform (collapsed pill)
         public const int MiniBarCount = 5;

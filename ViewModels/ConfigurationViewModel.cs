@@ -26,6 +26,9 @@ namespace EliteWhisper.ViewModels
         [ObservableProperty]
         private string _historyPath = string.Empty;
 
+        [ObservableProperty]
+        private string _updateStatusText = string.Empty;
+
         public ConfigurationViewModel(HotkeyService hotkeyService, WhisperConfigurationService configService, HistoryService historyService, IUpdateService updateService)
         {
             _hotkeyService = hotkeyService;
@@ -38,6 +41,10 @@ namespace EliteWhisper.ViewModels
             // Load initial history path
             HistoryPath = _configService.CurrentConfiguration.HistoryStoragePath 
                            ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EliteWhisper");
+
+            UpdateStatusText = _updateService.RemoteUpdatesEnabled
+                ? "Updates are checked automatically and verified against the release signing key before they are installed."
+                : "Automatic updates are disabled: this build has no release-signing key configured, so no update could be verified and installed. Download new versions manually from the official releases page.";
         }
 
         public void SetFocusCallback(Action requestFocus)

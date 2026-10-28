@@ -20,13 +20,12 @@
                 <ResourceDictionary Source="pack://application:,,,/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Converters -->
             <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         
-        <!-- Widget Button Style -->
+        <!-- Widget Button Style - Light theme -->
         <Style x:Key="WidgetIconButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Width" Value="32"/>
             <Setter Property="Height" Value="32"/>
@@ -45,10 +44,13 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#33FFFFFF"/>
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource HoverSurfaceBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -58,24 +60,14 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- 
-    ════════════════════════════════════════════════════════════════════════════
-    FLOATING WIDGET - Layered Shadow Architecture (NO DropShadowEffect)
-    
-    Structure:  Window → Grid → [ShadowBorder (ZIndex=0), ContentBorder (ZIndex=1)]
-    Shadow:     Pill-shaped Border behind main content (no effects)
-    Modes:      Collapsed → HoverExpanded → Expanded
-    ════════════════════════════════════════════════════════════════════════════
-    -->
-    
     <Grid x:Name="RootContainer">
-        <!-- SHADOW LAYER: Pill-shaped, slightly larger, positioned behind -->
+<!-- SHADOW LAYER: Pill-shaped, slightly larger, positioned behind -->
         <Border x:Name="ShadowLayer"
-                Height="52"
-                MinWidth="148"
-                CornerRadius="26"
-                Background="#40000000"
-                Opacity="0.25"
+                Height="40"
+                MinWidth="104"
+                CornerRadius="20"
+                Background="{StaticResource ShadowBrush}"
+                Opacity="0.12"
                 Margin="0,4,0,0"
                 IsHitTestVisible="False"
                 Panel.ZIndex="0"
@@ -84,11 +76,13 @@
         
         <!-- CONTENT LAYER: Main visible surface -->
         <Border x:Name="ContentLayer"
-                Height="48"
-                MinWidth="140"
-                Padding="18,0"
-                CornerRadius="24"
-                Background="#FF1E1E1E"
+                Height="36"
+                MinWidth="96"
+                Padding="14,0"
+                CornerRadius="18"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
                 ClipToBounds="True"
                 Panel.ZIndex="1"
                 SnapsToDevicePixels="True"
@@ -112,12 +106,12 @@
                     </StackPanel.Style>
                     
                     <!-- State Indicator -->
-                    <Grid Width="24" Height="24" Margin="0,0,10,0">
+                    <Grid Width="20" Height="20" Margin="0,0,8,0">
                         
                         <!-- Pulse Ring (Listening only) -->
                         <Ellipse x:Name="PulseRing" 
-                                 Width="24" Height="24" 
-                                 Fill="#EF4444" 
+                                 Width="20" Height="20" 
+                                 Fill="{StaticResource PrimaryBrush}" 
                                  Opacity="0"
                                  RenderTransformOrigin="0.5,0.5">
                             <Ellipse.RenderTransform>
@@ -131,11 +125,11 @@
                                                 <BeginStoryboard x:Name="PulseStoryboard">
                                                     <Storyboard RepeatBehavior="Forever">
                                                         <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                                         From="1" To="1.8" Duration="0:0:1" AutoReverse="True"/>
+                                                                       From="1" To="1.6" Duration="0:0:1" AutoReverse="True"/>
                                                         <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                                         From="1" To="1.8" Duration="0:0:1" AutoReverse="True"/>
+                                                                       From="1" To="1.6" Duration="0:0:1" AutoReverse="True"/>
                                                         <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                                         From="0.4" To="0" Duration="0:0:1" AutoReverse="True"/>
+                                                                       From="0.35" To="0" Duration="0:0:1" AutoReverse="True"/>
                                                     </Storyboard>
                                                 </BeginStoryboard>
                                             </DataTrigger.EnterActions>
@@ -148,19 +142,36 @@
                             </Ellipse.Style>
                         </Ellipse>
                         
-                        <!-- Core Dot: 8px circle -->
-                        <Ellipse Width="8" Height="8" 
+                        <!-- Core Dot: 8px circle with breathing animation for Processing -->
+                        <Ellipse x:Name="CoreDot" Width="8" Height="8" 
                                  VerticalAlignment="Center" 
-                                 HorizontalAlignment="Center">
+                                 HorizontalAlignment="Center"
+                                 RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Ellipse.RenderTransform>
                             <Ellipse.Style>
                                 <Style TargetType="Ellipse">
-                                    <Setter Property="Fill" Value="#6B7280"/>
+                                    <Setter Property="Fill" Value="{StaticResource TextTertiaryBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding State}" Value="{x:Static models:WidgetState.Listening}">
-                                            <Setter Property="Fill" Value="#EF4444"/>
+                                            <Setter Property="Fill" Value="{StaticResource ErrorBrush}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding State}" Value="{x:Static models:WidgetState.Processing}">
-                                            <Setter Property="Fill" Value="#6366F1"/>
+                                            <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"/>
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard x:Name="BreathingStoryboard">
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                       From="1" To="1.05" Duration="0:0:0.75" AutoReverse="True"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                       From="1" To="1.05" Duration="0:0:0.75" AutoReverse="True"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <StopStoryboard BeginStoryboardName="BreathingStoryboard"/>
+                                            </DataTrigger.ExitActions>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -168,57 +179,60 @@
                         </Ellipse>
                     </Grid>
                     
-                    <!-- Status Text: Explicitly set Foreground -->
+                    <!-- Status Text -->
                     <TextBlock Text="{Binding StatusText}" 
-                               Foreground="#FFFFFF" 
-                               FontSize="14" 
+                               Foreground="{StaticResource TextPrimaryBrush}" 
+                               FontSize="13" 
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
-                               FontFamily="Segoe UI Variable Display, Segoe UI"/>
-                    
+                               FontFamily="{StaticResource FontPrimary}"
+                               TextTrimming="CharacterEllipsis"/>
+                     
                     <!-- Mini Waveform (5 bars, visible only when listening) -->
                     <controls:WaveformControl 
                         Amplitudes="{Binding MiniAmplitudes}"
                         BarCount="5"
-                        BarWidth="2"
-                        BarSpacing="3"
-                        MaxBarHeight="9"
-                        MinBarHeight="1.5"
-                        CenterGap="2"
-                        BarFill="#4EA1FF"
-                        Width="35"
-                        Height="22"
-                        Margin="8,0,0,0"
+                        BarWidth="1.5"
+                        BarSpacing="2"
+                        MaxBarHeight="7"
+                        MinBarHeight="1"
+                        CenterGap="1.5"
+                        BarFill="{StaticResource PrimaryBrush}"
+                        Width="28"
+                        Height="20"
+                        Margin="6,0,0,0"
                         VerticalAlignment="Center"
                         Visibility="{Binding IsListening, Converter={StaticResource BoolToVis}}"/>
                     
                     <!-- Hover Action Buttons (visible only in HoverExpanded) -->
                     <StackPanel x:Name="HoverButtons"
                                 Orientation="Horizontal" 
-                                Margin="12,0,0,0"
+                                Margin="8,0,0,0"
                                 Visibility="{Binding IsHoverExpanded, Converter={StaticResource BoolToVis}}">
                         
                         <!-- Change Mode Button (Stub) -->
                         <Button Style="{StaticResource WidgetIconButton}" 
                                 ToolTip="Change mode (Ctrl+Shift+M)" 
-                                Margin="0,0,4,0">
+                                Margin="0,0,2,0"
+                                Width="28" Height="28">
                             <Path Data="{StaticResource IconGearGeometry}" 
-                                  Fill="#FFFFFF" 
+                                  Fill="{StaticResource TextPrimaryBrush}" 
                                   Stretch="Uniform" 
-                                  Width="14" Height="14"/>
+                                  Width="12" Height="12"/>
                         </Button>
                         
                         <!-- Record/Stop Button (mirrors hotkey) -->
                         <Button Style="{StaticResource WidgetIconButton}" 
                                 ToolTip="{Binding RecordButtonTooltip}"
                                 Command="{Binding ToggleRecordingCommand}"
-                                Margin="0,0,4,0">
+                                Margin="0,0,2,0"
+                                Width="28" Height="28">
                             <Grid>
                                 <!-- Mic icon when not listening -->
                                 <Path Data="{StaticResource IconMicrophoneGeometry}" 
-                                      Fill="#FFFFFF" 
+                                      Fill="{StaticResource TextPrimaryBrush}" 
                                       Stretch="Uniform" 
-                                      Width="14" Height="14">
+                                      Width="12" Height="12">
                                     <Path.Style>
                                         <Style TargetType="Path">
                                             <Style.Triggers>
@@ -230,8 +244,8 @@
                                     </Path.Style>
                                 </Path>
                                 <!-- Stop icon when listening -->
-                                <Rectangle Width="10" Height="10" 
-                                           Fill="#EF4444" 
+                                <Rectangle Width="8" Height="8" 
+                                           Fill="{StaticResource ErrorBrush}" 
                                            RadiusX="2" RadiusY="2"
                                            Visibility="{Binding IsListening, Converter={StaticResource BoolToVis}}"/>
                             </Grid>
@@ -240,100 +254,126 @@
                         <!-- Expand Button -->
                         <Button Style="{StaticResource WidgetIconButton}" 
                                 ToolTip="Expand window"
-                                Command="{Binding ExpandCommand}">
+                                Command="{Binding ExpandCommand}"
+                                Width="28" Height="28">
                             <Path Data="M 4 14 L 14 14 L 14 4 M 14 14 L 4 4" 
-                                  Stroke="#FFFFFF" 
+                                  Stroke="{StaticResource TextPrimaryBrush}" 
                                   StrokeThickness="2"
-                                  Width="12" Height="12"/>
+                                  Width="10" Height="10"/>
                         </Button>
                     </StackPanel>
                 </StackPanel>
                 
-                <!-- ==================== EXPANDED MODE ==================== -->
+                <!-- ==================== EXPANDED MODE (Compact Horizontal Pill) ==================== -->
                 <Grid x:Name="ExpandedContent"
                       Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}"
-                      Margin="0,12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                      Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>  <!-- State dot -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Status text -->
+                        <ColumnDefinition Width="*"/>     <!-- Waveform (flex) -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Mode badge -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Record/Stop -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Collapse -->
+                    </Grid.ColumnDefinitions>
                     
-                    <!-- Header -->
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <!-- State Indicator -->
-                        <Ellipse Grid.Column="0" Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center">
-                            <Ellipse.Style>
-                                <Style TargetType="Ellipse">
-                                    <Setter Property="Fill" Value="#6B7280"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding State}" Value="{x:Static models:WidgetState.Listening}">
-                                            <Setter Property="Fill" Value="#EF4444"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding State}" Value="{x:Static models:WidgetState.Processing}">
-                                            <Setter Property="Fill" Value="#6366F1"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Ellipse.Style>
-                        </Ellipse>
-                        
-                        <!-- Status -->
-                        <TextBlock Grid.Column="1" 
-                                   Text="{Binding StatusText}" 
-                                   Foreground="#FFFFFF" 
-                                   FontSize="14" 
-                                   FontWeight="SemiBold" 
-                                   VerticalAlignment="Center"/>
-                        
-                        <!-- Close Button -->
-                        <Button Grid.Column="2" 
-                                Style="{StaticResource WidgetIconButton}" 
-                                ToolTip="Close (Esc)"
-                                Command="{Binding CollapseCommand}"
-                                Width="24" Height="24">
-                            <Path Data="M 4 4 L 12 12 M 12 4 L 4 12" 
-                                  Stroke="#FFFFFF" 
-                                  StrokeThickness="2"
-                                  Width="10" Height="10"/>
-                        </Button>
-                    </Grid>
+<!-- State Indicator Dot -->
+                    <Ellipse Grid.Column="0" Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center"
+                           Fill="{StaticResource TextTertiaryBrush}"/>
                     
-                    <!-- Waveform Visualization (20 vertical bars) -->
-                    <Border Grid.Row="1" 
-                            Background="#18FFFFFF" 
-                            CornerRadius="12" 
-                            Height="70"
-                            Margin="0,12"
-                            ClipToBounds="True">
+                    <!-- Status Text -->
+                    <TextBlock Grid.Column="1" 
+                               Text="{Binding StatusText}" 
+                               Foreground="{StaticResource TextPrimaryBrush}" 
+                               FontSize="13" 
+                               FontWeight="SemiBold" 
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource FontPrimary}"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,0,10,0"/>
+                    
+                    <!-- Waveform Visualization (7 vertical bars, centered) -->
+                    <Border Grid.Column="2" 
+                            Background="{StaticResource HoverSurfaceBrush}" 
+                            CornerRadius="10" 
+                            Height="36"
+                            Margin="0,0,10,0"
+                            ClipToBounds="True"
+                            VerticalAlignment="Center">
                         <controls:WaveformControl 
                             Amplitudes="{Binding ExpandedAmplitudes}"
-                            BarCount="20"
+                            BarCount="7"
                             BarWidth="2"
-                            BarSpacing="4"
-                            MaxBarHeight="25"
+                            BarSpacing="3"
+                            MaxBarHeight="16"
                             MinBarHeight="2"
-                            CenterGap="4"
-                            BarFill="#4EA1FF"
+                            CenterGap="3"
+                            BarFill="{StaticResource PrimaryBrush}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Width="180"
-                            Height="55"/>
+                            Width="70"
+                            Height="28"/>
                     </Border>
                     
-                    <!-- Footer with shortcuts -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="F2" Foreground="#FFFFFF" FontSize="11" FontWeight="Bold" Margin="0,0,4,0"/>
-                        <TextBlock Text="Record" Foreground="#99FFFFFF" FontSize="11" Margin="0,0,16,0"/>
-                        <TextBlock Text="Esc" Foreground="#FFFFFF" FontSize="11" FontWeight="Bold" Margin="0,0,4,0"/>
-                        <TextBlock Text="Close" Foreground="#99FFFFFF" FontSize="11"/>
-                    </StackPanel>
+                    <!-- Mode Badge (shows current mode/provider) -->
+                    <Border Grid.Column="3"
+                            Background="{StaticResource HoverSurfaceBrush}"
+                            CornerRadius="8"
+                            Padding="6,2"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding HasActiveMode, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="{Binding ActiveModeDisplay}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" 
+                                   FontSize="10" 
+                                   FontWeight="Medium"
+                                   FontFamily="{StaticResource FontPrimary}"/>
+                    </Border>
+                    
+                    <!-- Record/Stop Button -->
+                    <Button Grid.Column="4" 
+                            Style="{StaticResource WidgetIconButton}" 
+                            ToolTip="{Binding RecordButtonTooltip}"
+                            Command="{Binding ToggleRecordingCommand}"
+                            Width="32" Height="32"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center">
+                        <Grid>
+                            <!-- Mic icon when not listening -->
+                            <Path Data="{StaticResource IconMicrophoneGeometry}" 
+                                  Fill="{StaticResource TextPrimaryBrush}" 
+                                  Stretch="Uniform" 
+                                  Width="14" Height="14">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsListening}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                            <!-- Stop icon when listening -->
+                            <Rectangle Width="10" Height="10" 
+                                       Fill="{StaticResource ErrorBrush}" 
+                                       RadiusX="2" RadiusY="2"
+                                       Visibility="{Binding IsListening, Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
+                    </Button>
+                    
+                    <!-- Collapse/Close Button -->
+                    <Button Grid.Column="5" 
+                            Style="{StaticResource WidgetIconButton}" 
+                            ToolTip="Collapse (Esc)"
+                            Command="{Binding CollapseCommand}"
+                            Width="32" Height="32"
+                            VerticalAlignment="Center">
+                        <Path Data="M 4 4 L 12 12 M 12 4 L 4 12" 
+                              Stroke="{StaticResource TextPrimaryBrush}" 
+                              StrokeThickness="2"
+                              Width="10" Height="10"/>
+                    </Button>
                 </Grid>
             </Grid>
         </Border>

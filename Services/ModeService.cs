@@ -122,7 +122,7 @@ Only include a greeting or closing if they are implied by the {{text}}. Do not i
 
 Write numbers as numerals where appropriate (e.g., ""five"" → ""5"", ""twenty dollars"" → ""$20"").
 
-Output only the email body text.",
+Output ONLY the finished email. Do not include any introduction, explanation of edits, postscript commentary, or enclosing Markdown fences. Do not write ""Here is the revised email"" or similar phrases. Do not include an ""Explanation of Changes"" section or any editorial commentary.",
                         PreferredProvider = PreferredProvider.Auto
                     }
                 },

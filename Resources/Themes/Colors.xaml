@@ -1,0 +1,157 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================================================
+         IVORY & FOREST - DESIGN TOKENS
+         Light-only premium theme: warm ivory backgrounds, crisp white surfaces,
+         forest green actions, dark charcoal text, restrained neutral borders.
+         ============================================================================ -->
+
+    <!-- ============================================================================
+         SURFACES
+         ============================================================================ -->
+    <!-- Main window and page background -->
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F6F3EC"/>
+
+    <!-- Primary cards, panels, dialogs, and elevated surfaces -->
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
+
+    <!-- Subtle grouped areas, selected-neutral surfaces, secondary regions -->
+    <SolidColorBrush x:Key="SecondarySurfaceBrush" Color="#E8E5DC"/>
+
+    <!-- Disabled background state -->
+    <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#F0EDE5"/>
+
+    <!-- Hover surface for interactive elements -->
+    <SolidColorBrush x:Key="HoverSurfaceBrush" Color="#EDEAE0"/>
+
+    <!-- Pressed surface for interactive elements -->
+    <SolidColorBrush x:Key="PressedSurfaceBrush" Color="#E2DFD3"/>
+
+    <!-- ============================================================================
+         PRIMARY (FOREST GREEN) - Interactive accent
+         ============================================================================ -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#285B49"/>
+    <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#214A3B"/>
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="#193B2F"/>
+    <SolidColorBrush x:Key="PrimaryFocusBrush" Color="#285B49"/>
+
+    <!-- ============================================================================
+         TEXT
+         ============================================================================ -->
+    <!-- Primary headings and body text -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#242923"/>
+
+    <!-- Supporting text, descriptions, and metadata -->
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#656B62"/>
+
+    <!-- Tertiary/disabled text, placeholders -->
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#92958D"/>
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="#92958D"/>
+
+<!-- ============================================================================
+         BORDERS & INPUTS
+         ============================================================================ -->
+    <SolidColorBrush x:Key="BorderBrush" Color="#D8D5CB"/>
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#D8D5CB" Opacity="0.4"/>
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="InputBorderBrush" Color="#D8D5CB"/>
+    <SolidColorBrush x:Key="InputFocusBorderBrush" Color="#285B49"/>
+    <SolidColorBrush x:Key="InputErrorBorderBrush" Color="#A43D36"/>
+
+<!-- ============================================================================
+         SEMANTIC COLORS
+         ============================================================================ -->
+    <!-- Success states (uses Primary forest green) -->
+    <SolidColorBrush x:Key="SuccessBrush" Color="#285B49"/>
+    <SolidColorBrush x:Key="SuccessSubtleBrush" Color="#285B49" Opacity="0.15"/>
+
+    <!-- Warning/amber states -->
+    <SolidColorBrush x:Key="WarningBrush" Color="#8A5A16"/>
+
+    <!-- Error/destructive states -->
+    <SolidColorBrush x:Key="ErrorBrush" Color="#A43D36"/>
+
+<!-- ============================================================================
+         SHADOWS & FOCUS
+         ============================================================================ -->
+    <Color x:Key="ShadowColor">#242923</Color>
+    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource ShadowColor}"/>
+    <SolidColorBrush x:Key="FocusRingBrush" Color="#285B49"/>
+
+    <!-- ============================================================================
+         LEGACY ALIASES (backward compatibility with existing Styles.xaml keys)
+         These map old resource keys to new design tokens so existing pages
+         continue working during the transition.
+         ============================================================================ -->
+    <SolidColorBrush x:Key="BackgroundPrimary" Color="#F6F3EC"/>
+    <SolidColorBrush x:Key="BackgroundSecondary" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="BackgroundTertiary" Color="#E8E5DC"/>
+    <SolidColorBrush x:Key="SidebarBackground" Color="#E8E5DC"/>
+    <SolidColorBrush x:Key="SidebarItemHover" Color="#EDEAE0"/>
+<SolidColorBrush x:Key="SidebarItemSelected" Color="#E0E5DC"/>
+    <SolidColorBrush x:Key="SidebarItemSelectedBorder" Color="#285B49"/>
+    <SolidColorBrush x:Key="NavItemSelectedBrush" Color="#E0E5DC"/>
+    <SolidColorBrush x:Key="TextPrimary" Color="#242923"/>
+    <SolidColorBrush x:Key="TextSecondary" Color="#656B62"/>
+    <SolidColorBrush x:Key="TextTertiary" Color="#92958D"/>
+    <SolidColorBrush x:Key="AccentPrimary" Color="#285B49"/>
+    <SolidColorBrush x:Key="AccentPrimaryHover" Color="#214A3B"/>
+    <SolidColorBrush x:Key="AccentSuccess" Color="#285B49"/>
+    <SolidColorBrush x:Key="AccentWarning" Color="#8A5A16"/>
+    <SolidColorBrush x:Key="AccentDanger" Color="#A43D36"/>
+    <SolidColorBrush x:Key="WarningColor" Color="#8A5A16"/>
+    <SolidColorBrush x:Key="BorderLight" Color="#D8D5CB"/>
+    <SolidColorBrush x:Key="BorderMedium" Color="#D8D5CB"/>
+    <SolidColorBrush x:Key="BorderSubtle" Color="#EDEAE0"/>
+    <SolidColorBrush x:Key="BorderPrimary" Color="#D8D5CB"/>
+
+    <!-- Legacy gradient aliases (replaced with solid colors in Controls.xaml) -->
+    <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#FCFCFC" Offset="0.5"/>
+        <GradientStop Color="#FAFAFA" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PrimaryButtonGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#3A6B5A" Offset="0"/>
+        <GradientStop Color="#285B49" Offset="0.4"/>
+        <GradientStop Color="#1F4A3C" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PrimaryButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#285B49" Offset="0"/>
+        <GradientStop Color="#214A3B" Offset="0.4"/>
+        <GradientStop Color="#193B2F" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SecondaryButtonGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#F9FAF8" Offset="0.5"/>
+        <GradientStop Color="#F3F4F1" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SecondaryButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#F9FAF8" Offset="0"/>
+        <GradientStop Color="#F3F4F1" Offset="0.5"/>
+        <GradientStop Color="#EDEAE0" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DestructiveButtonGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#B84D45" Offset="0"/>
+        <GradientStop Color="#A43D36" Offset="0.4"/>
+        <GradientStop Color="#8A322C" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DestructiveButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#A43D36" Offset="0"/>
+        <GradientStop Color="#8A322C" Offset="0.4"/>
+        <GradientStop Color="#702824" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SidebarGradient" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#EDEAE0" Offset="0"/>
+        <GradientStop Color="#E8E5DC" Offset="1"/>
+    </LinearGradientBrush>
+
+</ResourceDictionary>

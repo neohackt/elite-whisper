@@ -304,18 +304,88 @@ namespace EliteWhisper.ViewModels
             
             await Task.Run(() =>
             {
+                if (!Directory.Exists(modelsDir))
+                    Directory.CreateDirectory(modelsDir);
+
+                var rootAttrs = File.GetAttributes(modelsDir);
+                if ((rootAttrs & FileAttributes.ReparsePoint) != 0)
+                    throw new IOException("Models directory is a reparse point; extraction aborted.");
+
+                string rootFull = Path.GetFullPath(modelsDir);
+                string rootWithSep = rootFull.TrimEnd('\\') + '\\';
+
                 using (var stream = File.OpenRead(archivePath))
-                using (var reader = SharpCompress.Readers.ReaderFactory.Open(stream))
+                using (var reader = SharpCompress.Readers.ReaderFactory.OpenReader(stream))
                 {
                     while (reader.MoveToNextEntry())
                     {
-                        if (!reader.Entry.IsDirectory)
+                        if (reader.Entry.IsDirectory)
+                            continue;
+
+                        var entry = reader.Entry ?? throw new IOException("Archive entry is null");
+
+                        if (string.IsNullOrEmpty(entry.Key))
+                            throw new IOException("Archive entry has null or empty key");
+
+                        string entryKey = entry.Key.Replace('/', '\\');
+
+                        if (entryKey.StartsWith("\\") || entryKey.Contains(':'))
+                            throw new IOException($"Unsafe archive entry (rooted/drive): {reader.Entry.Key}");
+
+                        var components = entryKey.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (components.Length == 0)
+                            throw new IOException("Empty archive entry path");
+
+                        foreach (var comp in components)
                         {
-                            reader.WriteEntryToDirectory(modelsDir, new SharpCompress.Common.ExtractionOptions
+                            if (comp == "..")
+                                throw new IOException($"Path traversal rejected: {reader.Entry.Key}");
+                        }
+
+                        var safeComponents = components.Where(c => c != ".").ToArray();
+                        if (safeComponents.Length == 0)
+                            throw new IOException($"Entry resolves to root directory: {reader.Entry.Key}");
+
+                        string destPath = Path.Combine(rootFull, string.Join("\\", safeComponents));
+                        string destFull = Path.GetFullPath(destPath);
+
+                        if (!destFull.StartsWith(rootWithSep, StringComparison.OrdinalIgnoreCase))
+                            throw new IOException($"Entry escapes destination: {reader.Entry.Key}");
+
+                        string current = destFull;
+                        while (current.StartsWith(rootWithSep, StringComparison.OrdinalIgnoreCase)
+                               && current.Length > rootWithSep.Length)
+                        {
+                            string? parent = Path.GetDirectoryName(current);
+                            if (parent == null || parent.Length < rootFull.Length) break;
+
+                            if (Directory.Exists(parent))
                             {
-                                ExtractFullPath = true,
-                                Overwrite = true
-                            });
+                                var parentAttrs = File.GetAttributes(parent);
+                                if ((parentAttrs & FileAttributes.ReparsePoint) != 0)
+                                    throw new IOException($"Reparse point in extraction path: {parent}");
+                            }
+                            current = parent;
+                        }
+
+                        if (File.Exists(destFull))
+                        {
+                            var destAttrs = File.GetAttributes(destFull);
+                            if ((destAttrs & FileAttributes.ReparsePoint) != 0)
+                                throw new IOException($"Destination is a reparse point: {destFull}");
+                        }
+
+                        string? destDir = Path.GetDirectoryName(destFull);
+                        if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
+                            Directory.CreateDirectory(destDir);
+
+                        using (var entryStream = reader.OpenEntryStream())
+                        using (var fileStream = new FileStream(destFull, FileMode.Create, FileAccess.Write, FileShare.None, 81920))
+                        {
+                            byte[] buffer = new byte[81920];
+                            int read;
+                            while ((read = entryStream.Read(buffer, 0, buffer.Length)) > 0)
+                                fileStream.Write(buffer, 0, read);
                         }
                     }
                 }

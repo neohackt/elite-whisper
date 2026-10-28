@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -27,7 +27,7 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NetSparkleUpdater.UI.WPF" Version="3.0.4" />
     <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.12.30" />
-    <PackageReference Include="SharpCompress" Version="0.38.0" />
+    <PackageReference Include="SharpCompress" Version="0.48.0" />
     <PackageReference Include="System.Management" Version="10.0.3" />
   </ItemGroup>
 
@@ -40,6 +40,9 @@
     </None>
     <Resource Include="Assets\app.ico" />
     <Resource Include="Assets\logo.png" />
+    <Resource Include="Resources\Fonts\Inter-Variable.ttf" />
+    <Resource Include="Resources\Fonts\Inter-Variable-Italic.ttf" />
+    <Resource Include="Resources\Fonts\OFL.txt" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,8 @@ namespace EliteWhisper.Services.LLM
         
         public string Name => "Local (Built-in)";
 
-        public bool IsAvailable => _modelService.GetInstalledModels().Any();
+        public bool IsAvailable => _llamaService.IsRuntimeAvailable
+            && _modelService.GetInstalledModels().Any();
 
         public LocalLlmProvider(LlamaCppService llamaService, LocalModelService modelService)
         {
